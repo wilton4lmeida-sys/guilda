@@ -127,6 +127,10 @@ input:focus {
 .btn:active {
   transform: translateY(0);
 }
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 .error {
   background: rgba(248,113,113,0.1);
   border: 1px solid rgba(248,113,113,0.3);
@@ -173,7 +177,7 @@ input:focus {
         <input type="password" id="password" required autocomplete="current-password">
       </div>
       
-      <button type="submit" class="btn">Entrar</button>
+      <button type="submit" class="btn" id="submitBtn">Entrar</button>
     </form>
   </div>
 
@@ -190,15 +194,35 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Check if already logged in
-const { data: { session } } = await sb.auth.getSession();
-if (session) {
-  const { data: profile } = await sb.from('profiles').select('role').eq('id', session.user.id).single();
-  if (profile?.role === 'admin') {
-    window.location.href = 'painel-mestre.html';
-  } else {
-    window.location.href = 'dashboard.html';
+async function checkSession() {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      console.log('Session found:', session.user.email);
+      
+      // Get profile with role
+      const { data: profile, error } = await sb.from('profiles').select('role, name, email').eq('id', session.user.id).single();
+      
+      console.log('Profile data:', profile);
+      console.log('Profile error:', error);
+      
+      if (profile) {
+        // Redirect based on role
+        if (profile.role === 'admin') {
+          console.log('Redirecting to painel-mestre.html');
+          window.location.href = 'painel-mestre.html';
+        } else {
+          console.log('Redirecting to dashboard.html');
+          window.location.href = 'dashboard.html';
+        }
+      }
+    }
+  } catch (err) {
+    console.error('Check session error:', err);
   }
 }
+
+checkSession();
 
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -206,28 +230,52 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
   const errorDiv = document.getElementById('error');
+  const submitBtn = document.getElementById('submitBtn');
   
   errorDiv.classList.remove('show');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Entrando...';
   
   try {
+    console.log('Attempting login for:', email);
+    
     const { data, error } = await sb.auth.signInWithPassword({ email, password });
     
-    if (error) throw error;
+    if (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
     
-    // Check role
-    const { data: profile } = await sb.from('profiles').select('role').eq('id', data.user.id).single();
+    console.log('Login successful, user:', data.user.email);
     
-    if (profile?.role === 'admin') {
+    // Get profile with role
+    const { data: profile, error: profileError } = await sb.from('profiles').select('role, name, email').eq('id', data.user.id).single();
+    
+    console.log('Profile after login:', profile);
+    console.log('Profile error:', profileError);
+    
+    if (profileError) {
+      console.error('Profile fetch error:', profileError);
+      throw new Error('Erro ao buscar perfil: ' + profileError.message);
+    }
+    
+    // Redirect based on role
+    if (profile && profile.role === 'admin') {
+      console.log('User is admin, redirecting to painel-mestre.html');
       window.location.href = 'painel-mestre.html';
     } else {
+      console.log('User is member, redirecting to dashboard.html');
       window.location.href = 'dashboard.html';
     }
     
   } catch (err) {
+    console.error('Full error:', err);
     errorDiv.textContent = err.message === 'Invalid login credentials' 
       ? 'Email ou senha incorretos' 
       : err.message;
     errorDiv.classList.add('show');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Entrar';
   }
 });
 </script>
