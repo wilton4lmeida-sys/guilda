@@ -521,31 +521,53 @@ setTimeout(() => { document.getElementById('xpFill').style.width = '81.6%'; }, 3
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  const supabaseUrl = 'https://rsittecjptwozwxlnfvy.supabase.co';
-  const supabaseKey = 'sb_publishable_-EsFNTHW8GRwFoJpK2EfEw_MF3msyPY';
-  const supabase = supabaseCreateClient(supabaseUrl, supabaseKey);
-  async function checkSession() {
-    const { data: { session }, error } = await supabase.auth.getSession();
-    if (!session) {
-      window.location.href = 'index.html';
-      return;
-    }
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', session.user.id)
-      .single();
-    if (profile) {
-      if(document.getElementById('userName')) document.getElementById('userName').innerText = profile.full_name || 'BDR';
-      if(document.getElementById('userLevel')) document.getElementById('userLevel').innerText = `Nível ${profile.level}`;
-      if(document.getElementById('userXp')) document.getElementById('userXp').innerText = `${profile.xp} XP`;
-    }
-  }
-  async function logout() {
-    await supabase.auth.signOut();
+// ⚙️ CONFIGURAÇÃO — mesmas credenciais do index.html
+const SUPABASE_URL = 'https://SEU_PROJETO.supabase.co';
+const SUPABASE_ANON_KEY = 'SUA_ANON_KEY_AQUI';
+
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function checkSession() {
+  const { data: { session } } = await sb.auth.getSession();
+
+  // Se não tiver logado, manda pro login
+  if (!session) {
     window.location.href = 'index.html';
+    return null;
   }
-  checkSession();
+
+  // Puxa o profile do banco
+  const { data: profile } = await sb
+    .from('profiles')
+    .select('*')
+    .eq('id', session.user.id)
+    .single();
+
+  if (profile) {
+    // Atualiza elementos se existirem na página
+    const els = {
+      'userName': profile.full_name || 'BDR',
+      'userLevel': `Nível ${profile.level} — ${profile.level_name}`,
+      'userXp': `${profile.xp}`,
+      'userInitials': profile.avatar_initials || '??',
+    };
+    for (const [id, val] of Object.entries(els)) {
+      const el = document.getElementById(id);
+      if (el) el.innerText = val;
+    }
+  }
+
+  return { session, profile };
+}
+
+async function logout() {
+  await sb.auth.signOut();
+  window.location.href = 'index.html';
+}
+
+// Roda ao carregar
+checkSession();
 </script>
 </body>
 </html>
