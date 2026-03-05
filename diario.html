@@ -342,10 +342,10 @@ a { color: inherit; text-decoration: none; }
       </a>
     </nav>
     <div class="sidebar-profile">
-      <div class="profile-avatar">RC</div>
+      <div class="profile-avatar" id="sidebarInitials">—</div>
       <div class="profile-info">
-        <div class="name">Raul Costa</div>
-        <div class="level-tag">Nível 4 — Caçador</div>
+        <div class="name" id="sidebarName">Carregando...</div>
+        <div class="level-tag" id="sidebarLevel">—</div>
       </div>
     </div>
   </aside>
@@ -358,11 +358,10 @@ a { color: inherit; text-decoration: none; }
     </div>
     <div class="topbar-right">
       <div class="xp-topbar">
-        <span class="xp-val">2.450</span>
+        <span class="xp-val" id="topbarXp">0</span>
         <span class="xp-label">XP Total</span>
       </div>
-      <div class="topbar-btn">🔔</div>
-      <div class="topbar-btn">⚙️</div>
+      <div class="topbar-btn" onclick="logout()" title="Sair" style="cursor:pointer;">🚪</div>
     </div>
   </header>
 
@@ -414,115 +413,25 @@ a { color: inherit; text-decoration: none; }
   </div>
 </main>
 
-<script>
-
-// Set today's date
-document.getElementById('diarioDate').valueAsDate = new Date();
-
-function salvarDiario() {
-  const entry = {
-    date: document.getElementById('diarioDate').value,
-    contatos: parseInt(document.getElementById('contatos').value) || 0,
-    atendidas: parseInt(document.getElementById('atendidas').value) || 0,
-    decisores: parseInt(document.getElementById('decisores').value) || 0,
-    reunioes: parseInt(document.getElementById('reunioes').value) || 0,
-  };
-  if (!entry.date) return alert('Selecione uma data.');
-  let diario = JSON.parse(localStorage.getItem('guilda_diario') || '[]');
-  diario = diario.filter(e => e.date !== entry.date);
-  diario.push(entry);
-  diario.sort((a,b) => b.date.localeCompare(a.date));
-  localStorage.setItem('guilda_diario', JSON.stringify(diario));
-  // Reset
-  ['contatos','atendidas','decisores','reunioes'].forEach(id => document.getElementById(id).value = '');
-  updateFunnel();
-  loadHistory();
-  const msg = document.getElementById('saveMsg');
-  msg.textContent = '✓ Salvo com sucesso!';
-  msg.style.opacity = '1';
-  setTimeout(() => msg.style.opacity = '0', 2000);
-}
-
-function loadHistory() {
-  const diario = JSON.parse(localStorage.getItem('guilda_diario') || '[]');
-  const tbody = document.getElementById('historyBody');
-  const empty = document.getElementById('emptyHistory');
-
-  // Add demo data if empty
-  if (diario.length === 0) {
-    const demo = [
-      {date:'2026-03-04',contatos:28,atendidas:15,decisores:6,reunioes:3},
-      {date:'2026-03-03',contatos:32,atendidas:18,decisores:8,reunioes:4},
-      {date:'2026-02-28',contatos:25,atendidas:12,decisores:5,reunioes:2},
-      {date:'2026-02-27',contatos:30,atendidas:16,decisores:7,reunioes:3},
-      {date:'2026-02-26',contatos:22,atendidas:10,decisores:4,reunioes:1},
-    ];
-    localStorage.setItem('guilda_diario', JSON.stringify(demo));
-    loadHistory();
-    return;
-  }
-
-  if (diario.length === 0) { empty.style.display = 'block'; tbody.innerHTML = ''; return; }
-  empty.style.display = 'none';
-  tbody.innerHTML = diario.map(e => {
-    const rate = e.contatos > 0 ? ((e.reunioes / e.contatos) * 100).toFixed(1) : '0.0';
-    const rClass = rate >= 10 ? 'good' : rate >= 5 ? 'ok' : 'bad';
-    const d = e.date.split('-');
-    return `<tr>
-      <td>${d[2]}/${d[1]}</td>
-      <td class="mono">${e.contatos}</td>
-      <td class="mono">${e.atendidas}</td>
-      <td class="mono">${e.decisores}</td>
-      <td class="mono">${e.reunioes}</td>
-      <td style="text-align:center"><span class="conv-rate ${rClass}">${rate}%</span></td>
-    </tr>`;
-  }).join('');
-}
-
-loadHistory();
-
-</script>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ⚙️ CONFIGURAÇÃO — mesmas credenciais do index.html
 const SUPABASE_URL = 'https://rsittecjptwozwxlnfvy.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_-EsFNTHW8GRwFoJpK2EfEw_MF3msyPY';
-
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-async function checkSession() {
-  const { data: { session } } = await sb.auth.getSession();
-
-  // Se não tiver logado, manda pro login
-  if (!session) {
-    window.location.href = 'index.html';
-    return null;
-  }
-
-  // Puxa o profile do banco
-  const { data: profile } = await sb
-    .from('profiles')
-    .select('*')
-    .eq('id', session.user.id)
-    .single();
-
-  if (profile) {
-    // Atualiza elementos se existirem na página
-    const els = {
-      'userName': profile.full_name || 'BDR',
-      'userLevel': `Nível ${profile.level} — ${profile.level_name}`,
-      'userXp': `${profile.xp}`,
-      'userInitials': profile.avatar_initials || '??',
-    };
-    for (const [id, val] of Object.entries(els)) {
-      const el = document.getElementById(id);
-      if (el) el.innerText = val;
-    }
-  }
-
-  return { session, profile };
+const LEVELS = [
+  { level: 1, name: 'Recruta', min: 0 },
+  { level: 2, name: 'Escudeiro', min: 400 },
+  { level: 3, name: 'Guerreiro', min: 1000 },
+  { level: 4, name: 'Caçador', min: 2000 },
+  { level: 5, name: 'Comandante', min: 3000 },
+  { level: 6, name: 'Mestre', min: 4000 },
+  { level: 7, name: 'Lorde', min: 5000 },
+];
+function getLevelInfo(xp) {
+  for (let i = LEVELS.length - 1; i >= 0; i--) { if (xp >= LEVELS[i].min) return LEVELS[i]; }
+  return LEVELS[0];
 }
 
 async function logout() {
@@ -530,8 +439,79 @@ async function logout() {
   window.location.href = 'index.html';
 }
 
-// Roda ao carregar
-checkSession();
+async function initPage() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = 'index.html'; return null; }
+  const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
+  if (!profile) return null;
+  const lvl = getLevelInfo(profile.xp);
+  // Update sidebar
+  const si = document.getElementById('sidebarInitials'); if(si) si.textContent = profile.avatar_initials || '??';
+  const sn = document.getElementById('sidebarName'); if(sn) sn.textContent = profile.full_name;
+  const sl = document.getElementById('sidebarLevel'); if(sl) sl.textContent = 'Nível ' + lvl.level + ' — ' + lvl.name;
+  const tx = document.getElementById('topbarXp'); if(tx) tx.textContent = profile.xp.toLocaleString('pt-BR');
+  return { session, profile, lvl };
+}
+
+
+async function onPageReady({ session, profile }) {
+  document.getElementById('diarioDate').valueAsDate = new Date();
+  await loadHistory(session.user.id);
+}
+
+async function salvarDiario() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return;
+
+  const entry = {
+    user_id: session.user.id,
+    date: document.getElementById('diarioDate').value,
+    contatos_tentados: parseInt(document.getElementById('contatos').value) || 0,
+    ligacoes_atendidas: parseInt(document.getElementById('atendidas').value) || 0,
+    conexao_decisor: parseInt(document.getElementById('decisores').value) || 0,
+    reunioes_marcadas: parseInt(document.getElementById('reunioes').value) || 0,
+  };
+  if (!entry.date) return alert('Selecione uma data.');
+
+  const { error } = await sb.from('diary_entries').upsert(entry, { onConflict: 'user_id,date' });
+
+  if (error) { alert('Erro ao salvar: ' + error.message); return; }
+
+  ['contatos','atendidas','decisores','reunioes'].forEach(id => document.getElementById(id).value = '');
+  const msg = document.getElementById('saveMsg');
+  msg.textContent = '✓ Salvo!';
+  msg.style.opacity = '1';
+  setTimeout(() => msg.style.opacity = '0', 2000);
+  await loadHistory(session.user.id);
+}
+
+async function loadHistory(userId) {
+  const { data: entries } = await sb
+    .from('diary_entries').select('*')
+    .eq('user_id', userId)
+    .order('date', { ascending: false })
+    .limit(20);
+
+  const tbody = document.getElementById('historyBody');
+  const empty = document.getElementById('emptyHistory');
+
+  if (!entries || entries.length === 0) {
+    if(empty) empty.style.display = 'block';
+    if(tbody) tbody.innerHTML = '';
+    return;
+  }
+  if(empty) empty.style.display = 'none';
+  tbody.innerHTML = entries.map(e => {
+    const rate = e.contatos_tentados > 0 ? ((e.reunioes_marcadas / e.contatos_tentados) * 100).toFixed(1) : '0.0';
+    const rClass = rate >= 10 ? 'good' : rate >= 5 ? 'ok' : 'bad';
+    const d = e.date.split('-');
+    return '<tr><td>' + d[2] + '/' + d[1] + '</td><td class="mono">' + e.contatos_tentados + '</td><td class="mono">' + e.ligacoes_atendidas + '</td><td class="mono">' + e.conexao_decisor + '</td><td class="mono">' + e.reunioes_marcadas + '</td><td style="text-align:center"><span class="conv-rate ' + rClass + '">' + rate + '%</span></td></tr>';
+  }).join('');
+}
+
+initPage().then(result => {
+  if (result && typeof onPageReady === 'function') onPageReady(result);
+});
 </script>
 </body>
 </html>

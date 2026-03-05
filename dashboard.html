@@ -386,10 +386,10 @@ a { color: inherit; text-decoration: none; }
       </a>
     </nav>
     <div class="sidebar-profile">
-      <div class="profile-avatar">RC</div>
+      <div class="profile-avatar" id="sidebarInitials">—</div>
       <div class="profile-info">
-        <div class="name">Raul Costa</div>
-        <div class="level-tag">Nível 4 — Caçador</div>
+        <div class="name" id="sidebarName">Carregando...</div>
+        <div class="level-tag" id="sidebarLevel">—</div>
       </div>
     </div>
   </aside>
@@ -402,11 +402,10 @@ a { color: inherit; text-decoration: none; }
     </div>
     <div class="topbar-right">
       <div class="xp-topbar">
-        <span class="xp-val">2.450</span>
+        <span class="xp-val" id="topbarXp">0</span>
         <span class="xp-label">XP Total</span>
       </div>
-      <div class="topbar-btn">🔔</div>
-      <div class="topbar-btn">⚙️</div>
+      <div class="topbar-btn" onclick="logout()" title="Sair" style="cursor:pointer;">🚪</div>
     </div>
   </header>
 
@@ -416,149 +415,91 @@ a { color: inherit; text-decoration: none; }
     <div class="hero-welcome animate-in delay-1">
       <div class="hero-card hero-main">
         <div class="hero-greeting">Bem-vindo de volta</div>
-        <h2 class="hero-name">Raul <span>Costa</span></h2>
-        <div class="hero-subtitle">Sua semana começou forte. 3 missões pendentes e um encontro hoje às 15h.</div>
+        <h2 class="hero-name" id="heroName">Carregando...</h2>
+        <div class="hero-subtitle" id="heroSubtitle">Conectando ao sistema...</div>
         <div class="level-display">
-          <div class="level-badge">4</div>
-          <div class="level-info"><div class="level-name">Caçador</div><div class="level-rank">Nível 4 de 7</div></div>
+          <div class="level-badge" id="heroLevelNum">—</div>
+          <div class="level-info">
+            <div class="level-name" id="heroLevelName">—</div>
+            <div class="level-rank" id="heroLevelRank">—</div>
+          </div>
         </div>
         <div class="xp-progress">
-          <div class="xp-bar-header"><span class="current">2.450 / 3.000 XP</span><span class="remaining">Faltam 550 XP para Comandante</span></div>
+          <div class="xp-bar-header">
+            <span class="current" id="heroXpCurrent">0 / 0 XP</span>
+            <span class="remaining" id="heroXpRemaining">—</span>
+          </div>
           <div class="xp-bar"><div class="xp-bar-fill" id="xpFill"></div></div>
         </div>
       </div>
-      <div class="hero-card hero-ranking">
-        <div class="ranking-position">3<sup>º</sup></div>
-        <div class="ranking-label">Ranking Semanal</div>
-        <div style="font-size:0.8rem;color:var(--text-secondary);">de <strong>12 BDRs</strong> ativos</div>
-        <div class="ranking-trend">↑ Subiu 2 posições</div>
+      <div class="hero-card hero-ranking" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+        <div id="heroRankPos" style="font-family:'Bebas Neue',sans-serif;font-size:5rem;line-height:1;color:var(--gold);text-shadow:0 0 40px rgba(201,168,76,0.3);">—</div>
+        <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;">Ranking Semanal</div>
+        <div id="heroRankTotal" style="font-size:0.8rem;color:var(--text-secondary);">Calculando...</div>
       </div>
     </div>
 
     <!-- METRICS -->
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px;" class="animate-in delay-2">
-      <div class="metric-card"><div class="metric-icon gold">📞</div><div class="metric-value">87</div><div class="metric-label">Ligações feitas</div><span class="metric-change up">↑ 12%</span></div>
-      <div class="metric-card"><div class="metric-icon blue">🎯</div><div class="metric-value">30</div><div class="metric-label">Contatos com decisor</div><span class="metric-change up">↑ 20%</span></div>
-      <div class="metric-card"><div class="metric-icon green">📅</div><div class="metric-value">13</div><div class="metric-label">Reuniões marcadas</div><span class="metric-change up">↑ 8%</span></div>
+      <div class="metric-card"><div class="metric-icon gold">📞</div><div class="metric-value" id="metLigacoes">0</div><div class="metric-label">Ligações feitas</div></div>
+      <div class="metric-card"><div class="metric-icon blue">🎯</div><div class="metric-value" id="metDecisores">0</div><div class="metric-label">Contatos com decisor</div></div>
+      <div class="metric-card"><div class="metric-icon green">📅</div><div class="metric-value" id="metReunioes">0</div><div class="metric-label">Reuniões marcadas</div></div>
     </div>
 
-    <!-- MISSIONS + CALLS -->
+    <!-- MISSIONS + MEETINGS -->
     <div class="grid-2 animate-in delay-3">
       <div class="card">
         <div class="card-header"><span class="card-title">Missões da Semana</span><a href="missoes.html" class="card-action">Ver todas →</a></div>
-        <div class="mission-item"><div class="mission-status done">✓</div><div class="mission-info"><div class="mission-name">Fazer 40 ligações</div><div class="mission-desc">Completou 87 ligações · Excedeu a meta</div></div><span class="mission-xp">+100 XP</span></div>
-        <div class="mission-item"><div class="mission-status in-progress">◐</div><div class="mission-info"><div class="mission-name">Gravar 1 ligação e enviar pro mentor</div><div class="mission-desc">Gravação pendente de envio</div></div><span class="mission-xp">+150 XP</span></div>
-        <div class="mission-item"><div class="mission-status pending"></div><div class="mission-info"><div class="mission-name">Quebrar 3 objeções diferentes</div><div class="mission-desc">0 de 3 objeções registradas</div></div><span class="mission-xp">+200 XP</span></div>
+        <div id="dashMissions">
+          <div style="text-align:center;padding:30px;color:var(--text-muted);font-size:0.85rem;">Nenhuma missão ativa esta semana.</div>
+        </div>
       </div>
       <div class="card">
         <div class="card-header"><span class="card-title">Próximos Encontros</span><a href="encontros.html" class="card-action">Agenda →</a></div>
-        <div class="call-item"><div class="call-date"><span class="day">05</span><span class="month">Mar</span></div><div class="call-info"><div class="call-title">Encontro Semanal com Mentor</div><div class="call-time">Hoje · 15:00 - 15:45</div></div><span class="call-tag mentor">Mentor</span></div>
-        <div class="call-item"><div class="call-date"><span class="day">10</span><span class="month">Mar</span></div><div class="call-info"><div class="call-title">Review Geral — Semana 14</div><div class="call-time">Segunda · 10:00 - 11:00</div></div><span class="call-tag geral">Geral</span></div>
+        <div id="dashMeetings">
+          <div style="text-align:center;padding:30px;color:var(--text-muted);font-size:0.85rem;">Nenhum encontro agendado.</div>
+        </div>
       </div>
     </div>
 
-    <!-- ARSENAL PREVIEW -->
+    <!-- RANKING -->
     <div class="card animate-in delay-4" style="margin-bottom:24px;">
-      <div class="card-header"><span class="card-title">Arsenal</span><a href="arsenal.html" class="card-action">Ver tudo →</a></div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">
-        <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
-          <div style="font-size:0.62rem;color:var(--accent-red);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:6px;">▶ Vídeo · 5 min</div>
-          <div style="font-size:0.85rem;font-weight:500;margin-bottom:6px;">Quebra de objeção: "Tá caro"</div>
-          <div style="width:100%;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;"><div style="height:100%;width:0%;background:var(--accent-green);border-radius:2px;"></div></div>
-          <div style="font-size:0.65rem;color:var(--text-muted);margin-top:4px;">Não iniciado</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
-          <div style="font-size:0.62rem;color:var(--accent-purple);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:6px;">🎧 Áudio · 18 min</div>
-          <div style="font-size:0.85rem;font-weight:500;margin-bottom:6px;">Cold Call Comentada #12</div>
-          <div style="width:100%;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;"><div style="height:100%;width:40%;background:var(--accent-green);border-radius:2px;"></div></div>
-          <div style="font-size:0.65rem;color:var(--text-muted);margin-top:4px;">40% concluído</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
-          <div style="font-size:0.62rem;color:var(--accent-blue);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:6px;">📄 Documento · 12 min</div>
-          <div style="font-size:0.85rem;font-weight:500;margin-bottom:6px;">Cadência de follow-up: Guia</div>
-          <div style="width:100%;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;"><div style="height:100%;width:0%;background:var(--accent-green);border-radius:2px;"></div></div>
-          <div style="font-size:0.65rem;color:var(--text-muted);margin-top:4px;">Não iniciado</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- RANKING + UNLOCKED -->
-    <div class="grid-2-1 animate-in delay-4">
-      <div class="card">
-        <div class="card-header"><span class="card-title">Ranking Semanal</span><a href="ranking.html" class="card-action">Completo →</a></div>
-        <div class="ranking-row"><span class="ranking-pos gold">1</span><div class="ranking-avatar">JV</div><span class="ranking-name">João Vitor</span><span class="ranking-lvl">Comandante</span><span class="ranking-score">720 XP</span></div>
-        <div class="ranking-row"><span class="ranking-pos silver">2</span><div class="ranking-avatar">LM</div><span class="ranking-name">Lucas Mendes</span><span class="ranking-lvl">Guerreiro</span><span class="ranking-score">680 XP</span></div>
-        <div class="ranking-row me"><span class="ranking-pos bronze">3</span><div class="ranking-avatar">RC</div><span class="ranking-name">Raul Costa ← Você</span><span class="ranking-lvl">Caçador</span><span class="ranking-score">610 XP</span></div>
-        <div class="ranking-row"><span class="ranking-pos">4</span><div class="ranking-avatar">PA</div><span class="ranking-name">Pedro Alves</span><span class="ranking-lvl">Guerreiro</span><span class="ranking-score">540 XP</span></div>
-        <div class="ranking-row"><span class="ranking-pos">5</span><div class="ranking-avatar">MS</div><span class="ranking-name">Marina Silva</span><span class="ranking-lvl">Caçador</span><span class="ranking-score">490 XP</span></div>
-        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
-          <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Seu XP — Últimas 8 semanas</div>
-          <div class="mini-chart"><div class="bar muted" style="height:30%"></div><div class="bar muted" style="height:45%"></div><div class="bar muted" style="height:40%"></div><div class="bar muted" style="height:55%"></div><div class="bar muted" style="height:60%"></div><div class="bar muted" style="height:70%"></div><div class="bar muted" style="height:80%"></div><div class="bar gold" style="height:90%"></div></div>
-          <div class="chart-labels"><span>S7</span><span>S8</span><span>S9</span><span>S10</span><span>S11</span><span>S12</span><span>S13</span><span>S14</span></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header"><span class="card-title">Desbloqueado</span><a href="arsenal.html" class="card-action">Arsenal →</a></div>
-        <div class="unlock-item"><div class="unlock-thumb">📹</div><div class="unlock-info"><div class="unlock-title">Reunião Real — Clínica Odonto</div><div class="unlock-cat">Sala de Guerra</div></div><span class="unlock-new">Novo</span></div>
-        <div class="unlock-item"><div class="unlock-thumb">📖</div><div class="unlock-info"><div class="unlock-title">Script: Imobiliárias</div><div class="unlock-cat">Arsenal · Prospecção</div></div><span class="unlock-new">Novo</span></div>
-        <div class="unlock-item"><div class="unlock-thumb">🎯</div><div class="unlock-info"><div class="unlock-title">Técnica: Ancoragem de Preço</div><div class="unlock-cat">Arsenal · Avançado</div></div><span class="unlock-new">Novo</span></div>
-        <div style="margin-top:16px;padding:14px;background:rgba(255,255,255,0.02);border-radius:var(--radius-sm);border:1px dashed var(--border);text-align:center;">
-          <div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:6px;">Próximo desbloqueio no Nível 5</div>
-          <div style="font-size:0.82rem;font-weight:600;">🔒 Prospecção por Nicho Avançada</div>
-          <div style="font-size:0.68rem;color:var(--gold);margin-top:4px;">Faltam 550 XP</div>
-        </div>
+      <div class="card-header"><span class="card-title">Ranking</span><a href="ranking.html" class="card-action">Completo →</a></div>
+      <div id="dashRanking">
+        <div style="text-align:center;padding:30px;color:var(--text-muted);font-size:0.85rem;">Carregando ranking...</div>
       </div>
     </div>
 
   </div>
 </main>
 
-<script>
-
-setTimeout(() => { document.getElementById('xpFill').style.width = '81.6%'; }, 300);
-
-</script>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ⚙️ CONFIGURAÇÃO — mesmas credenciais do index.html
 const SUPABASE_URL = 'https://rsittecjptwozwxlnfvy.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_-EsFNTHW8GRwFoJpK2EfEw_MF3msyPY';
-
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-async function checkSession() {
-  const { data: { session } } = await sb.auth.getSession();
+// XP thresholds per level
+const LEVELS = [
+  { level: 1, name: 'Recruta', min: 0, max: 400 },
+  { level: 2, name: 'Escudeiro', min: 400, max: 1000 },
+  { level: 3, name: 'Guerreiro', min: 1000, max: 2000 },
+  { level: 4, name: 'Caçador', min: 2000, max: 3000 },
+  { level: 5, name: 'Comandante', min: 3000, max: 4000 },
+  { level: 6, name: 'Mestre', min: 4000, max: 5000 },
+  { level: 7, name: 'Lorde', min: 5000, max: 99999 },
+];
 
-  // Se não tiver logado, manda pro login
-  if (!session) {
-    window.location.href = 'index.html';
-    return null;
+function getLevelInfo(xp) {
+  for (let i = LEVELS.length - 1; i >= 0; i--) {
+    if (xp >= LEVELS[i].min) return LEVELS[i];
   }
+  return LEVELS[0];
+}
 
-  // Puxa o profile do banco
-  const { data: profile } = await sb
-    .from('profiles')
-    .select('*')
-    .eq('id', session.user.id)
-    .single();
-
-  if (profile) {
-    // Atualiza elementos se existirem na página
-    const els = {
-      'userName': profile.full_name || 'BDR',
-      'userLevel': `Nível ${profile.level} — ${profile.level_name}`,
-      'userXp': `${profile.xp}`,
-      'userInitials': profile.avatar_initials || '??',
-    };
-    for (const [id, val] of Object.entries(els)) {
-      const el = document.getElementById(id);
-      if (el) el.innerText = val;
-    }
-  }
-
-  return { session, profile };
+function getNextLevel(level) {
+  return LEVELS.find(l => l.level === level + 1) || null;
 }
 
 async function logout() {
@@ -566,8 +507,163 @@ async function logout() {
   window.location.href = 'index.html';
 }
 
-// Roda ao carregar
-checkSession();
+async function loadDashboard() {
+  // Check session
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = 'index.html'; return; }
+
+  // Get profile
+  const { data: profile } = await sb
+    .from('profiles').select('*').eq('id', session.user.id).single();
+
+  if (!profile) return;
+
+  const lvl = getLevelInfo(profile.xp);
+  const nextLvl = getNextLevel(lvl.level);
+
+  // Sidebar
+  document.getElementById('sidebarInitials').textContent = profile.avatar_initials || '??';
+  document.getElementById('sidebarName').textContent = profile.full_name;
+  document.getElementById('sidebarLevel').textContent = 'Nível ' + lvl.level + ' — ' + lvl.name;
+
+  // Topbar
+  document.getElementById('topbarXp').textContent = profile.xp.toLocaleString('pt-BR');
+
+  // Hero name
+  const parts = profile.full_name.split(' ');
+  const firstName = parts[0] || '';
+  const lastName = parts.slice(1).join(' ') || '';
+  document.getElementById('heroName').innerHTML = firstName + ' <span style="color:var(--gold)">' + lastName + '</span>';
+
+  // Level display
+  document.getElementById('heroLevelNum').textContent = lvl.level;
+  document.getElementById('heroLevelName').textContent = lvl.name;
+  document.getElementById('heroLevelRank').textContent = 'Nível ' + lvl.level + ' de 7';
+
+  // XP bar
+  const xpInLevel = profile.xp - lvl.min;
+  const xpNeeded = (nextLvl ? nextLvl.min : lvl.max) - lvl.min;
+  const pct = Math.min((xpInLevel / xpNeeded) * 100, 100);
+  const remaining = nextLvl ? (nextLvl.min - profile.xp) : 0;
+
+  document.getElementById('heroXpCurrent').textContent = profile.xp.toLocaleString('pt-BR') + ' / ' + (nextLvl ? nextLvl.min.toLocaleString('pt-BR') : lvl.max.toLocaleString('pt-BR')) + ' XP';
+  document.getElementById('heroXpRemaining').textContent = nextLvl ? 'Faltam ' + remaining.toLocaleString('pt-BR') + ' XP para ' + nextLvl.name : 'Nível máximo!';
+  setTimeout(() => { document.getElementById('xpFill').style.width = pct + '%'; }, 300);
+
+  // Subtitle
+  document.getElementById('heroSubtitle').textContent = profile.xp === 0
+    ? 'Comece preenchendo seu diário e completando missões para ganhar XP.'
+    : 'Continue evoluindo. Cada missão te aproxima do próximo nível.';
+
+  // ---- RANKING ----
+  const { data: allProfiles } = await sb
+    .from('profiles').select('*').eq('role', 'bdr').order('xp', { ascending: false });
+
+  if (allProfiles && allProfiles.length > 0) {
+    const myRank = allProfiles.findIndex(p => p.id === session.user.id) + 1;
+    document.getElementById('heroRankPos').innerHTML = myRank > 0 ? myRank + '<sup style="font-size:1.8rem;color:var(--gold-dim);">º</sup>' : '—';
+    document.getElementById('heroRankTotal').innerHTML = 'de <strong>' + allProfiles.length + ' BDRs</strong> ativos';
+
+    // Ranking list (top 5)
+    const posColors = ['#ffd700', '#c0c0c0', '#cd7f32'];
+    let rankHtml = '';
+    allProfiles.slice(0, 5).forEach((p, i) => {
+      const isMe = p.id === session.user.id;
+      const posColor = i < 3 ? posColors[i] : 'var(--text-muted)';
+      const lvlInfo = getLevelInfo(p.xp);
+      rankHtml += '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);' + (isMe ? 'background:rgba(201,168,76,0.05);margin:0 -24px;padding:12px 24px;border-radius:8px;' : '') + '">';
+      rankHtml += '<span style="width:28px;font-family:\'JetBrains Mono\',monospace;font-size:0.8rem;font-weight:700;color:' + posColor + ';text-align:center;">' + (i+1) + '</span>';
+      rankHtml += '<div style="width:32px;height:32px;border-radius:50%;background:' + (isMe ? 'linear-gradient(135deg,var(--gold),var(--gold-dim))' : 'var(--bg-secondary)') + ';display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:' + (isMe ? 'var(--bg-primary)' : 'var(--text-secondary)') + ';">' + (p.avatar_initials || '??') + '</div>';
+      rankHtml += '<span style="flex:1;font-size:0.85rem;font-weight:500;">' + p.full_name + (isMe ? ' ← Você' : '') + '</span>';
+      rankHtml += '<span style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;width:80px;text-align:center;">' + lvlInfo.name + '</span>';
+      rankHtml += '<span style="font-family:\'JetBrains Mono\',monospace;font-size:0.8rem;font-weight:600;color:var(--gold);width:70px;text-align:right;">' + p.xp + ' XP</span>';
+      rankHtml += '</div>';
+    });
+    document.getElementById('dashRanking').innerHTML = rankHtml || '<div style="text-align:center;padding:30px;color:var(--text-muted);">Nenhum BDR cadastrado ainda.</div>';
+  }
+
+  // ---- METRICS (this week diary) ----
+  const today = new Date();
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1));
+  const mondayStr = monday.toISOString().split('T')[0];
+
+  const { data: diary } = await sb
+    .from('diary_entries').select('*')
+    .eq('user_id', session.user.id)
+    .gte('date', mondayStr);
+
+  let totLig = 0, totDec = 0, totReun = 0;
+  if (diary) {
+    diary.forEach(d => {
+      totLig += d.contatos_tentados || 0;
+      totDec += d.conexao_decisor || 0;
+      totReun += d.reunioes_marcadas || 0;
+    });
+  }
+  document.getElementById('metLigacoes').textContent = totLig;
+  document.getElementById('metDecisores').textContent = totDec;
+  document.getElementById('metReunioes').textContent = totReun;
+
+  // ---- MISSIONS ----
+  const { data: missions } = await sb
+    .from('missions').select('*')
+    .lte('week_start', today.toISOString().split('T')[0])
+    .gte('week_end', today.toISOString().split('T')[0]);
+
+  if (missions && missions.length > 0) {
+    const { data: progress } = await sb
+      .from('mission_progress').select('*').eq('user_id', session.user.id);
+
+    const progressMap = {};
+    if (progress) progress.forEach(p => { progressMap[p.mission_id] = p.status; });
+
+    const statusIcon = { concluida: '<div style="width:32px;height:32px;border-radius:50%;background:rgba(52,211,153,0.15);border:2px solid var(--accent-green);color:var(--accent-green);display:flex;align-items:center;justify-content:center;font-size:0.85rem;">✓</div>', em_andamento: '<div style="width:32px;height:32px;border-radius:50%;background:rgba(201,168,76,0.1);border:2px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:0.85rem;">◐</div>', pendente: '<div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.04);border:2px solid var(--text-muted);display:flex;align-items:center;justify-content:center;"></div>' };
+
+    let mHtml = '';
+    missions.slice(0, 3).forEach(m => {
+      const st = progressMap[m.id] || 'pendente';
+      mHtml += '<div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);">';
+      mHtml += statusIcon[st];
+      mHtml += '<div style="flex:1;"><div style="font-size:0.85rem;font-weight:500;margin-bottom:2px;">' + m.title + '</div><div style="font-size:0.72rem;color:var(--text-muted);">' + (st === 'concluida' ? 'Concluída' : st === 'em_andamento' ? 'Em andamento' : 'Pendente') + '</div></div>';
+      mHtml += '<span style="font-family:\'JetBrains Mono\',monospace;font-size:0.75rem;font-weight:600;color:var(--gold);background:rgba(201,168,76,0.08);padding:4px 10px;border-radius:6px;">+' + m.xp_reward + ' XP</span>';
+      mHtml += '</div>';
+    });
+    document.getElementById('dashMissions').innerHTML = mHtml;
+  }
+
+  // ---- MEETINGS ----
+  const { data: meetings } = await sb
+    .from('meetings').select('*')
+    .gte('meeting_date', today.toISOString().split('T')[0])
+    .order('meeting_date', { ascending: true })
+    .limit(3);
+
+  if (meetings && meetings.length > 0) {
+    const tagColors = { mentor: 'rgba(167,139,250,0.12)', geral: 'rgba(96,165,250,0.12)', especial: 'rgba(251,146,60,0.12)' };
+    const tagText = { mentor: 'var(--accent-purple)', geral: 'var(--accent-blue)', especial: 'var(--accent-orange)' };
+    const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+    let eHtml = '';
+    meetings.forEach(m => {
+      const d = new Date(m.meeting_date + 'T00:00:00');
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = months[d.getMonth()];
+      const time = m.meeting_time ? m.meeting_time.slice(0, 5) : '';
+      const bg = tagColors[m.meeting_type] || tagColors.geral;
+      const tc = tagText[m.meeting_type] || tagText.geral;
+
+      eHtml += '<div style="display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,0.02);border-radius:8px;margin-bottom:10px;border:1px solid var(--border);">';
+      eHtml += '<div style="width:48px;height:48px;background:rgba(201,168,76,0.08);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><span style="font-family:\'Bebas Neue\',sans-serif;font-size:1.4rem;color:var(--gold);line-height:1;">' + day + '</span><span style="font-size:0.55rem;text-transform:uppercase;letter-spacing:1px;color:var(--gold-dim);">' + month + '</span></div>';
+      eHtml += '<div style="flex:1;"><div style="font-size:0.85rem;font-weight:600;margin-bottom:2px;">' + m.title + '</div><div style="font-size:0.72rem;color:var(--text-muted);">' + time + '</div></div>';
+      eHtml += '<span style="font-size:0.65rem;padding:4px 10px;border-radius:4px;font-weight:600;text-transform:uppercase;letter-spacing:1px;background:' + bg + ';color:' + tc + ';">' + m.meeting_type + '</span>';
+      eHtml += '</div>';
+    });
+    document.getElementById('dashMeetings').innerHTML = eHtml;
+  }
+}
+
+loadDashboard();
 </script>
 </body>
 </html>

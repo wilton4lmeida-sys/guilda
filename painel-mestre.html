@@ -355,10 +355,10 @@ a { color: inherit; text-decoration: none; }
       </a>
     </div>
     <div class="sidebar-profile">
-      <div class="profile-avatar" style="background:linear-gradient(135deg,var(--accent-red),#b91c1c);">GM</div>
+      <div class="profile-avatar" id="sidebarInitials">—</div>
       <div class="profile-info">
-        <div class="name">Gestor Mestre</div>
-        <div class="level-tag" style="color:var(--accent-red);">Admin</div>
+        <div class="name" id="sidebarName">Carregando...</div>
+        <div class="level-tag" id="sidebarLevel">—</div>
       </div>
     </div>
   </aside>
@@ -371,188 +371,98 @@ a { color: inherit; text-decoration: none; }
     </div>
     <div class="topbar-right">
       <div class="xp-topbar">
-        <span class="xp-val">2.450</span>
+        <span class="xp-val" id="topbarXp">0</span>
         <span class="xp-label">XP Total</span>
       </div>
-      <div class="topbar-btn">🔔</div>
-      <div class="topbar-btn">⚙️</div>
+      <div class="topbar-btn" onclick="logout()" title="Sair" style="cursor:pointer;">🚪</div>
     </div>
   </header>
 
   <div class="content">
-    
     <!-- ADMIN BANNER -->
-    <div class="admin-banner animate-in delay-1">
-      <div class="ab-icon">🔐</div>
-      <div class="ab-text">
-        <h3>Painel do Gestor Mestre</h3>
-        <p>Gerencie membros, missões, conteúdo e encontros da Guilda.</p>
-      </div>
+    <div style="background:linear-gradient(135deg,rgba(248,113,113,0.08),rgba(248,113,113,0.02));border:1px solid rgba(248,113,113,0.2);border-radius:12px;padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;gap:16px;" class="animate-in delay-1">
+      <div style="font-size:1.5rem;">🔐</div>
+      <div><h3 style="font-size:0.95rem;font-weight:600;color:var(--accent-red);margin-bottom:2px;">Painel do Gestor Mestre</h3><p style="font-size:0.78rem;color:var(--text-muted);">Gerencie membros, missões e encontros da Guilda.</p></div>
     </div>
 
     <!-- QUICK ACTIONS -->
-    <div class="quick-actions animate-in delay-2">
-      <div class="qa-card" onclick="openModal('modalMissao')"><div class="qa-icon">🎯</div><div class="qa-label">Nova Missão</div><div class="qa-desc">Criar missão semanal</div></div>
-      <div class="qa-card" onclick="openModal('modalConteudo')"><div class="qa-icon">⚔️</div><div class="qa-label">Novo Conteúdo</div><div class="qa-desc">Adicionar ao Arsenal</div></div>
-      <div class="qa-card" onclick="openModal('modalEncontro')"><div class="qa-icon">📅</div><div class="qa-label">Novo Encontro</div><div class="qa-desc">Agendar meeting</div></div>
-      <div class="qa-card" onclick="openModal('modalMembro')"><div class="qa-icon">👤</div><div class="qa-label">Novo Membro</div><div class="qa-desc">Adicionar BDR ao time</div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px;" class="animate-in delay-2">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;" onclick="openModal('modalMissao')"><div style="font-size:1.5rem;margin-bottom:8px;">🎯</div><div style="font-size:0.82rem;font-weight:600;margin-bottom:4px;">Nova Missão</div><div style="font-size:0.7rem;color:var(--text-muted);">Criar missão semanal</div></div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;" onclick="openModal('modalEncontro')"><div style="font-size:1.5rem;margin-bottom:8px;">📅</div><div style="font-size:0.82rem;font-weight:600;margin-bottom:4px;">Novo Encontro</div><div style="font-size:0.7rem;color:var(--text-muted);">Agendar meeting</div></div>
     </div>
 
     <div class="grid-2 animate-in delay-3">
-      <!-- MEMBERS -->
-      <div class="admin-section">
-        <h3>👥 Membros (12)</h3>
-        <div class="member-row"><div class="mr-avatar">JV</div><div class="mr-info"><div class="mr-name">João Vitor</div><div class="mr-level">Nível 5 · Comandante · 720 XP</div></div><div class="mr-actions"><button class="btn btn-outline btn-sm">Editar</button></div></div>
-        <div class="member-row"><div class="mr-avatar">LM</div><div class="mr-info"><div class="mr-name">Lucas Mendes</div><div class="mr-level">Nível 3 · Guerreiro · 680 XP</div></div><div class="mr-actions"><button class="btn btn-outline btn-sm">Editar</button></div></div>
-        <div class="member-row"><div class="mr-avatar">RC</div><div class="mr-info"><div class="mr-name">Raul Costa</div><div class="mr-level">Nível 4 · Caçador · 610 XP</div></div><div class="mr-actions"><button class="btn btn-outline btn-sm">Editar</button></div></div>
-        <div class="member-row"><div class="mr-avatar">PA</div><div class="mr-info"><div class="mr-name">Pedro Alves</div><div class="mr-level">Nível 3 · Guerreiro · 540 XP</div></div><div class="mr-actions"><button class="btn btn-outline btn-sm">Editar</button></div></div>
-        <div class="member-row"><div class="mr-avatar">MS</div><div class="mr-info"><div class="mr-name">Marina Silva</div><div class="mr-level">Nível 4 · Caçador · 490 XP</div></div><div class="mr-actions"><button class="btn btn-outline btn-sm">Editar</button></div></div>
-        <div class="member-row"><div class="mr-avatar">TF</div><div class="mr-info"><div class="mr-name">Thiago Freitas</div><div class="mr-level">Nível 2 · Escudeiro · 320 XP</div></div><div class="mr-actions"><button class="btn btn-outline btn-sm">Editar</button></div></div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;">
+        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:1.5px;margin-bottom:16px;">👥 Membros</h3>
+        <div id="adminMembers"><div style="color:var(--text-muted);font-size:0.85rem;">Carregando...</div></div>
       </div>
-
-      <!-- ACTIVE MISSIONS -->
-      <div class="admin-section">
-        <h3>🎯 Missões Ativas (5)</h3>
-        <div class="admin-item"><div style="font-size:1rem;">📞</div><div class="ai-info"><div class="ai-title">Fazer 40 ligações</div><div class="ai-meta">Prospecção · 100 XP · 8 de 12 completaram</div></div><button class="btn btn-outline btn-sm">Editar</button></div>
-        <div class="admin-item"><div style="font-size:1rem;">📖</div><div class="ai-info"><div class="ai-title">Estudar 2 aulas do Arsenal</div><div class="ai-meta">Estudo · 50 XP · 10 de 12 completaram</div></div><button class="btn btn-outline btn-sm">Editar</button></div>
-        <div class="admin-item"><div style="font-size:1rem;">🎙️</div><div class="ai-info"><div class="ai-title">Gravar ligação pro mentor</div><div class="ai-meta">Prática · 150 XP · 3 de 12 completaram</div></div><button class="btn btn-outline btn-sm">Editar</button></div>
-        <div class="admin-item"><div style="font-size:1rem;">💪</div><div class="ai-info"><div class="ai-title">Quebrar 3 objeções</div><div class="ai-meta">Prospecção · 200 XP · 2 de 12 completaram</div></div><button class="btn btn-outline btn-sm">Editar</button></div>
-        <div class="admin-item"><div style="font-size:1rem;">📅</div><div class="ai-info"><div class="ai-title">Participar do encontro semanal</div><div class="ai-meta">Encontro · 100 XP · Hoje 15:00</div></div><button class="btn btn-outline btn-sm">Editar</button></div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;">
+        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:1.5px;margin-bottom:16px;">🎯 Missões Ativas</h3>
+        <div id="adminMissions"><div style="color:var(--text-muted);font-size:0.85rem;">Carregando...</div></div>
       </div>
     </div>
 
-    <div class="grid-2 animate-in delay-4">
-      <!-- CONTENT -->
-      <div class="admin-section">
-        <h3>⚔️ Conteúdo do Arsenal (24)</h3>
-        <div class="admin-item"><div style="font-size:1rem;">▶️</div><div class="ai-info"><div class="ai-title">Processo Comercial do Grupo Rugido</div><div class="ai-meta">Fundamentos · Vídeo · Nível 1+</div></div><button class="btn btn-outline btn-sm">Editar</button></div>
-        <div class="admin-item"><div style="font-size:1rem;">📄</div><div class="ai-info"><div class="ai-title">Script completo de abordagem</div><div class="ai-meta">Prospecção · Documento · Nível 2+</div></div><button class="btn btn-outline btn-sm">Editar</button></div>
-        <div class="admin-item"><div style="font-size:1rem;">🎧</div><div class="ai-info"><div class="ai-title">Cold Call Comentada #12</div><div class="ai-meta">Prospecção · Áudio · Nível 2+</div></div><button class="btn btn-outline btn-sm">Editar</button></div>
-        <div style="text-align:center;padding:12px;"><span class="card-action" style="font-size:0.75rem;">Ver todos os 24 conteúdos →</span></div>
-      </div>
-
-      <!-- MEETINGS -->
-      <div class="admin-section">
-        <h3>📅 Encontros Agendados</h3>
-        <div class="admin-item"><div style="font-size:1rem;">🟢</div><div class="ai-info"><div class="ai-title">Encontro com Mentor — Hoje</div><div class="ai-meta">15:00 · Google Meet · Individual</div></div><button class="btn btn-outline btn-sm">Editar</button></div>
-        <div class="admin-item"><div style="font-size:1rem;">🔵</div><div class="ai-info"><div class="ai-title">Review Geral — Semana 14</div><div class="ai-meta">10/03 · 10:00 · Google Meet · Todos</div></div><button class="btn btn-outline btn-sm">Editar</button></div>
-        <div class="admin-item"><div style="font-size:1rem;">🟠</div><div class="ai-info"><div class="ai-title">Workshop: Prospecção por Nicho</div><div class="ai-meta">14/03 · 14:00 · Google Meet · Especial</div></div><button class="btn btn-outline btn-sm">Editar</button></div>
-      </div>
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-top:20px;" class="animate-in delay-4">
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:1.5px;margin-bottom:16px;">📅 Encontros Agendados</h3>
+      <div id="adminMeetings"><div style="color:var(--text-muted);font-size:0.85rem;">Carregando...</div></div>
     </div>
 
-    <!-- MODALS -->
-    <div class="modal-overlay" id="modalMissao">
-      <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modalMissao')">✕</button>
-        <h3>🎯 Nova Missão</h3>
-        <div class="form-group"><label class="form-label">Nome da missão</label><input class="form-input" placeholder="Ex: Fazer 40 ligações" /></div>
-        <div class="form-group"><label class="form-label">Descrição</label><textarea class="form-textarea" placeholder="Instruções detalhadas..."></textarea></div>
+    <!-- MODAL MISSAO -->
+    <div style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:1000;justify-content:center;align-items:center;" id="modalMissao" onclick="if(event.target===this)closeModal('modalMissao')">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:28px;width:90%;max-width:520px;">
+        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;margin-bottom:20px;">🎯 Nova Missão</h3>
+        <div class="form-group"><label class="form-label">Título</label><input class="form-input" id="mTitle" placeholder="Ex: Fazer 40 ligações" /></div>
+        <div class="form-group"><label class="form-label">Descrição</label><textarea class="form-textarea" id="mDesc" placeholder="Instruções..."></textarea></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <div class="form-group"><label class="form-label">XP Recompensa</label><input class="form-input" type="number" placeholder="100" /></div>
-          <div class="form-group"><label class="form-label">Categoria</label><select class="form-select"><option>Prospecção</option><option>Estudo</option><option>Prática</option><option>Encontro</option></select></div>
+          <div class="form-group"><label class="form-label">XP</label><input class="form-input" type="number" id="mXp" placeholder="100" /></div>
+          <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="mCat"><option value="prospecção">Prospecção</option><option value="estudo">Estudo</option><option value="prática">Prática</option><option value="encontro">Encontro</option></select></div>
         </div>
-        <div class="form-group"><label class="form-label">Prazo</label><input class="form-input" type="date" /></div>
-        <button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:8px;">Criar Missão</button>
-      </div>
-    </div>
-
-    <div class="modal-overlay" id="modalConteudo">
-      <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modalConteudo')">✕</button>
-        <h3>⚔️ Novo Conteúdo</h3>
-        <div class="form-group"><label class="form-label">Título</label><input class="form-input" placeholder="Ex: Script de prospecção" /></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <div class="form-group"><label class="form-label">Categoria</label><select class="form-select"><option>Fundamentos</option><option>Prospecção</option><option>Reunião de Vendas</option><option>Avançado</option></select></div>
-          <div class="form-group"><label class="form-label">Tipo</label><select class="form-select"><option>Vídeo</option><option>Documento</option><option>Áudio</option><option>Template</option></select></div>
+          <div class="form-group"><label class="form-label">Início semana</label><input class="form-input" type="date" id="mStart" /></div>
+          <div class="form-group"><label class="form-label">Fim semana</label><input class="form-input" type="date" id="mEnd" /></div>
         </div>
-        <div class="form-group"><label class="form-label">Nível mínimo</label><select class="form-select"><option>Nível 1 — Recruta</option><option>Nível 2 — Escudeiro</option><option>Nível 3 — Guerreiro</option><option>Nível 4 — Caçador</option><option>Nível 5 — Comandante</option><option>Nível 6 — Mestre</option><option>Nível 7 — Lorde</option></select></div>
-        <div class="form-group"><label class="form-label">Link do conteúdo (URL)</label><input class="form-input" placeholder="https://..." /></div>
-        <div class="form-group"><label class="form-label">Duração</label><input class="form-input" placeholder="Ex: 12 min" /></div>
-        <button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:8px;">Adicionar ao Arsenal</button>
+        <button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:8px;" onclick="criarMissao()">Criar Missão</button>
       </div>
     </div>
 
-    <div class="modal-overlay" id="modalEncontro">
-      <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modalEncontro')">✕</button>
-        <h3>📅 Novo Encontro</h3>
-        <div class="form-group"><label class="form-label">Título</label><input class="form-input" placeholder="Ex: Review Geral" /></div>
+    <!-- MODAL ENCONTRO -->
+    <div style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:1000;justify-content:center;align-items:center;" id="modalEncontro" onclick="if(event.target===this)closeModal('modalEncontro')">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:28px;width:90%;max-width:520px;">
+        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;margin-bottom:20px;">📅 Novo Encontro</h3>
+        <div class="form-group"><label class="form-label">Título</label><input class="form-input" id="eTitle" placeholder="Ex: Review Geral" /></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <div class="form-group"><label class="form-label">Data</label><input class="form-input" type="date" /></div>
-          <div class="form-group"><label class="form-label">Horário</label><input class="form-input" type="time" /></div>
+          <div class="form-group"><label class="form-label">Data</label><input class="form-input" type="date" id="eDate" /></div>
+          <div class="form-group"><label class="form-label">Horário</label><input class="form-input" type="time" id="eTime" /></div>
         </div>
-        <div class="form-group"><label class="form-label">Tipo</label><select class="form-select"><option>Geral</option><option>Mentor</option><option>Especial</option></select></div>
-        <div class="form-group"><label class="form-label">Link do Meet</label><input class="form-input" placeholder="https://meet.google.com/..." /></div>
-        <div class="form-group"><label class="form-label">Descrição</label><textarea class="form-textarea" placeholder="Pauta do encontro..."></textarea></div>
-        <button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:8px;">Agendar Encontro</button>
+        <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="eType"><option value="geral">Geral</option><option value="mentor">Mentor</option><option value="especial">Especial</option></select></div>
+        <div class="form-group"><label class="form-label">Link</label><input class="form-input" id="eLink" placeholder="https://meet.google.com/..." /></div>
+        <button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:8px;" onclick="criarEncontro()">Agendar Encontro</button>
       </div>
     </div>
-
-    <div class="modal-overlay" id="modalMembro">
-      <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modalMembro')">✕</button>
-        <h3>👤 Novo Membro</h3>
-        <div class="form-group"><label class="form-label">Nome completo</label><input class="form-input" placeholder="Nome do BDR" /></div>
-        <div class="form-group"><label class="form-label">E-mail</label><input class="form-input" type="email" placeholder="email@empresa.com" /></div>
-        <div class="form-group"><label class="form-label">Nível inicial</label><select class="form-select"><option>Nível 1 — Recruta</option><option>Nível 2 — Escudeiro</option></select></div>
-        <div class="form-group"><label class="form-label">Mentor responsável</label><select class="form-select"><option>João Vitor (Comandante)</option><option>Raul Costa (Caçador)</option></select></div>
-        <button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:8px;">Adicionar Membro</button>
-      </div>
-    </div>
+  
 
   </div>
 </main>
 
-<script>
-
-function openModal(id) { document.getElementById(id).classList.add('show'); }
-function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', e => { if(e.target === m) m.classList.remove('show'); });
-});
-
-</script>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ⚙️ CONFIGURAÇÃO — mesmas credenciais do index.html
 const SUPABASE_URL = 'https://rsittecjptwozwxlnfvy.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_-EsFNTHW8GRwFoJpK2EfEw_MF3msyPY';
-
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-async function checkSession() {
-  const { data: { session } } = await sb.auth.getSession();
-
-  // Se não tiver logado, manda pro login
-  if (!session) {
-    window.location.href = 'index.html';
-    return null;
-  }
-
-  // Puxa o profile do banco
-  const { data: profile } = await sb
-    .from('profiles')
-    .select('*')
-    .eq('id', session.user.id)
-    .single();
-
-  if (profile) {
-    // Atualiza elementos se existirem na página
-    const els = {
-      'userName': profile.full_name || 'BDR',
-      'userLevel': `Nível ${profile.level} — ${profile.level_name}`,
-      'userXp': `${profile.xp}`,
-      'userInitials': profile.avatar_initials || '??',
-    };
-    for (const [id, val] of Object.entries(els)) {
-      const el = document.getElementById(id);
-      if (el) el.innerText = val;
-    }
-  }
-
-  return { session, profile };
+const LEVELS = [
+  { level: 1, name: 'Recruta', min: 0 },
+  { level: 2, name: 'Escudeiro', min: 400 },
+  { level: 3, name: 'Guerreiro', min: 1000 },
+  { level: 4, name: 'Caçador', min: 2000 },
+  { level: 5, name: 'Comandante', min: 3000 },
+  { level: 6, name: 'Mestre', min: 4000 },
+  { level: 7, name: 'Lorde', min: 5000 },
+];
+function getLevelInfo(xp) {
+  for (let i = LEVELS.length - 1; i >= 0; i--) { if (xp >= LEVELS[i].min) return LEVELS[i]; }
+  return LEVELS[0];
 }
 
 async function logout() {
@@ -560,12 +470,109 @@ async function logout() {
   window.location.href = 'index.html';
 }
 
-// Roda ao carregar — com checagem de admin
-checkSession().then(result => {
+async function initPage() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = 'index.html'; return null; }
+  const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
+  if (!profile) return null;
+  const lvl = getLevelInfo(profile.xp);
+  // Update sidebar
+  const si = document.getElementById('sidebarInitials'); if(si) si.textContent = profile.avatar_initials || '??';
+  const sn = document.getElementById('sidebarName'); if(sn) sn.textContent = profile.full_name;
+  const sl = document.getElementById('sidebarLevel'); if(sl) sl.textContent = 'Nível ' + lvl.level + ' — ' + lvl.name;
+  const tx = document.getElementById('topbarXp'); if(tx) tx.textContent = profile.xp.toLocaleString('pt-BR');
+  return { session, profile, lvl };
+}
+
+
+function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+async function criarMissao() {
+  const { data: { session } } = await sb.auth.getSession();
+  const { error } = await sb.from('missions').insert({
+    title: document.getElementById('mTitle').value,
+    description: document.getElementById('mDesc').value,
+    xp_reward: parseInt(document.getElementById('mXp').value) || 100,
+    category: document.getElementById('mCat').value,
+    week_start: document.getElementById('mStart').value,
+    week_end: document.getElementById('mEnd').value,
+    created_by: session.user.id,
+  });
+  if (error) { alert('Erro: ' + error.message); return; }
+  closeModal('modalMissao');
+  alert('Missão criada!');
+  onPageReady({ session });
+}
+
+async function criarEncontro() {
+  const { data: { session } } = await sb.auth.getSession();
+  const { error } = await sb.from('meetings').insert({
+    title: document.getElementById('eTitle').value,
+    meeting_date: document.getElementById('eDate').value,
+    meeting_time: document.getElementById('eTime').value,
+    meeting_type: document.getElementById('eType').value,
+    link: document.getElementById('eLink').value,
+    created_by: session.user.id,
+  });
+  if (error) { alert('Erro: ' + error.message); return; }
+  closeModal('modalEncontro');
+  alert('Encontro agendado!');
+  onPageReady({ session });
+}
+
+async function onPageReady({ session }) {
+  // Members
+  const { data: members } = await sb.from('profiles').select('*').eq('role', 'bdr').order('xp', { ascending: false });
+  if (members) {
+    let h = '';
+    members.forEach(m => {
+      const lvl = getLevelInfo(m.xp);
+      h += '<div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);">';
+      h += '<div style="width:36px;height:36px;border-radius:50%;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text-secondary);">' + (m.avatar_initials||'??') + '</div>';
+      h += '<div style="flex:1;"><div style="font-size:0.85rem;font-weight:500;">' + m.full_name + '</div><div style="font-size:0.68rem;color:var(--text-muted);">Nível ' + lvl.level + ' · ' + lvl.name + ' · ' + m.xp + ' XP</div></div>';
+      h += '</div>';
+    });
+    document.getElementById('adminMembers').innerHTML = h || '<div style="color:var(--text-muted);">Nenhum BDR cadastrado.</div>';
+  }
+
+  // Missions
+  const today = new Date().toISOString().split('T')[0];
+  const { data: missions } = await sb.from('missions').select('*').gte('week_end', today).order('week_start');
+  if (missions && missions.length > 0) {
+    let h = '';
+    missions.forEach(m => {
+      h += '<div style="display:flex;align-items:center;gap:14px;padding:12px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid var(--border);margin-bottom:8px;">';
+      h += '<div style="font-size:1rem;">🎯</div>';
+      h += '<div style="flex:1;"><div style="font-size:0.85rem;font-weight:500;">' + m.title + '</div><div style="font-size:0.68rem;color:var(--text-muted);">' + m.category + ' · ' + m.xp_reward + ' XP</div></div>';
+      h += '</div>';
+    });
+    document.getElementById('adminMissions').innerHTML = h;
+  } else {
+    document.getElementById('adminMissions').innerHTML = '<div style="color:var(--text-muted);font-size:0.85rem;">Nenhuma missão ativa.</div>';
+  }
+
+  // Meetings
+  const { data: meetings } = await sb.from('meetings').select('*').gte('meeting_date', today).order('meeting_date');
+  if (meetings && meetings.length > 0) {
+    let h = '';
+    meetings.forEach(m => {
+      h += '<div style="display:flex;align-items:center;gap:14px;padding:12px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid var(--border);margin-bottom:8px;">';
+      h += '<div style="font-size:1rem;">📅</div>';
+      h += '<div style="flex:1;"><div style="font-size:0.85rem;font-weight:500;">' + m.title + '</div><div style="font-size:0.68rem;color:var(--text-muted);">' + m.meeting_date + ' · ' + (m.meeting_time||'').slice(0,5) + ' · ' + m.meeting_type + '</div></div>';
+      h += '</div>';
+    });
+    document.getElementById('adminMeetings').innerHTML = h;
+  } else {
+    document.getElementById('adminMeetings').innerHTML = '<div style="color:var(--text-muted);font-size:0.85rem;">Nenhum encontro agendado.</div>';
+  }
+}
+
+initPage().then(result => {
   if (result && result.profile && result.profile.role !== 'admin') {
-    // Não é admin? Manda pro dashboard
     window.location.href = 'dashboard.html';
   }
+  if (result && typeof onPageReady === 'function') onPageReady(result);
 });
 </script>
 </body>

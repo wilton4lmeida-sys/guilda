@@ -333,10 +333,10 @@ a { color: inherit; text-decoration: none; }
       </a>
     </nav>
     <div class="sidebar-profile">
-      <div class="profile-avatar">RC</div>
+      <div class="profile-avatar" id="sidebarInitials">—</div>
       <div class="profile-info">
-        <div class="name">Raul Costa</div>
-        <div class="level-tag">Nível 4 — Caçador</div>
+        <div class="name" id="sidebarName">Carregando...</div>
+        <div class="level-tag" id="sidebarLevel">—</div>
       </div>
     </div>
   </aside>
@@ -349,11 +349,10 @@ a { color: inherit; text-decoration: none; }
     </div>
     <div class="topbar-right">
       <div class="xp-topbar">
-        <span class="xp-val">2.450</span>
+        <span class="xp-val" id="topbarXp">0</span>
         <span class="xp-label">XP Total</span>
       </div>
-      <div class="topbar-btn">🔔</div>
-      <div class="topbar-btn">⚙️</div>
+      <div class="topbar-btn" onclick="logout()" title="Sair" style="cursor:pointer;">🚪</div>
     </div>
   </header>
 
@@ -439,50 +438,25 @@ a { color: inherit; text-decoration: none; }
   </div>
 </main>
 
-<script>
-
-</script>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ⚙️ CONFIGURAÇÃO — mesmas credenciais do index.html
 const SUPABASE_URL = 'https://rsittecjptwozwxlnfvy.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_-EsFNTHW8GRwFoJpK2EfEw_MF3msyPY';
-
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-async function checkSession() {
-  const { data: { session } } = await sb.auth.getSession();
-
-  // Se não tiver logado, manda pro login
-  if (!session) {
-    window.location.href = 'index.html';
-    return null;
-  }
-
-  // Puxa o profile do banco
-  const { data: profile } = await sb
-    .from('profiles')
-    .select('*')
-    .eq('id', session.user.id)
-    .single();
-
-  if (profile) {
-    // Atualiza elementos se existirem na página
-    const els = {
-      'userName': profile.full_name || 'BDR',
-      'userLevel': `Nível ${profile.level} — ${profile.level_name}`,
-      'userXp': `${profile.xp}`,
-      'userInitials': profile.avatar_initials || '??',
-    };
-    for (const [id, val] of Object.entries(els)) {
-      const el = document.getElementById(id);
-      if (el) el.innerText = val;
-    }
-  }
-
-  return { session, profile };
+const LEVELS = [
+  { level: 1, name: 'Recruta', min: 0 },
+  { level: 2, name: 'Escudeiro', min: 400 },
+  { level: 3, name: 'Guerreiro', min: 1000 },
+  { level: 4, name: 'Caçador', min: 2000 },
+  { level: 5, name: 'Comandante', min: 3000 },
+  { level: 6, name: 'Mestre', min: 4000 },
+  { level: 7, name: 'Lorde', min: 5000 },
+];
+function getLevelInfo(xp) {
+  for (let i = LEVELS.length - 1; i >= 0; i--) { if (xp >= LEVELS[i].min) return LEVELS[i]; }
+  return LEVELS[0];
 }
 
 async function logout() {
@@ -490,8 +464,23 @@ async function logout() {
   window.location.href = 'index.html';
 }
 
-// Roda ao carregar
-checkSession();
+async function initPage() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = 'index.html'; return null; }
+  const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
+  if (!profile) return null;
+  const lvl = getLevelInfo(profile.xp);
+  // Update sidebar
+  const si = document.getElementById('sidebarInitials'); if(si) si.textContent = profile.avatar_initials || '??';
+  const sn = document.getElementById('sidebarName'); if(sn) sn.textContent = profile.full_name;
+  const sl = document.getElementById('sidebarLevel'); if(sl) sl.textContent = 'Nível ' + lvl.level + ' — ' + lvl.name;
+  const tx = document.getElementById('topbarXp'); if(tx) tx.textContent = profile.xp.toLocaleString('pt-BR');
+  return { session, profile, lvl };
+}
+
+initPage().then(result => {
+  if (result && typeof onPageReady === 'function') onPageReady(result);
+});
 </script>
 </body>
 </html>

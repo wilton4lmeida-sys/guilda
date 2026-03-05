@@ -339,10 +339,10 @@ a { color: inherit; text-decoration: none; }
       </a>
     </nav>
     <div class="sidebar-profile">
-      <div class="profile-avatar">RC</div>
+      <div class="profile-avatar" id="sidebarInitials">—</div>
       <div class="profile-info">
-        <div class="name">Raul Costa</div>
-        <div class="level-tag">Nível 4 — Caçador</div>
+        <div class="name" id="sidebarName">Carregando...</div>
+        <div class="level-tag" id="sidebarLevel">—</div>
       </div>
     </div>
   </aside>
@@ -355,162 +355,41 @@ a { color: inherit; text-decoration: none; }
     </div>
     <div class="topbar-right">
       <div class="xp-topbar">
-        <span class="xp-val">2.450</span>
+        <span class="xp-val" id="topbarXp">0</span>
         <span class="xp-label">XP Total</span>
       </div>
-      <div class="topbar-btn">🔔</div>
-      <div class="topbar-btn">⚙️</div>
+      <div class="topbar-btn" onclick="logout()" title="Sair" style="cursor:pointer;">🚪</div>
     </div>
   </header>
 
   <div class="content">
-    
-    <!-- TOTALS -->
-    <div class="metric-hero animate-in delay-1">
-      <div class="mh-card c1"><div class="mh-label">Contatos (semana)</div><div class="mh-value" id="totContatos">137</div><div class="mh-sub">Meta: 200</div></div>
-      <div class="mh-card c2"><div class="mh-label">Ligações atendidas</div><div class="mh-value" id="totAtendidas">71</div><div class="mh-sub">Taxa: 51.8%</div></div>
-      <div class="mh-card c3"><div class="mh-label">Conexões decisor</div><div class="mh-value" id="totDecisores">30</div><div class="mh-sub">Taxa: 42.3%</div></div>
-      <div class="mh-card c4"><div class="mh-label">Reuniões marcadas</div><div class="mh-value" id="totReunioes">13</div><div class="mh-sub">Taxa: 43.3%</div></div>
+    <div id="metricasContent">
+      <div style="text-align:center;padding:60px;color:var(--text-muted);">Carregando métricas...</div>
     </div>
-
-    <!-- FUNNEL -->
-    <div class="grid-2 animate-in delay-2">
-      <div class="card">
-        <div class="card-header"><span class="card-title">Funil da Semana</span></div>
-        <div class="funnel-visual">
-          <div class="funnel-bar"><span class="fb-label">Contatos tentados</span><div class="fb-fill" style="width:100%;background:var(--gold);">137</div><span class="fb-pct">100%</span></div>
-          <div class="funnel-connector"></div>
-          <div class="funnel-bar"><span class="fb-label">Ligações atendidas</span><div class="fb-fill" style="width:51.8%;background:var(--accent-blue);">71</div><span class="fb-pct">51.8%</span></div>
-          <div class="funnel-connector"></div>
-          <div class="funnel-bar"><span class="fb-label">Conexão com decisor</span><div class="fb-fill" style="width:21.9%;background:var(--accent-green);">30</div><span class="fb-pct">21.9%</span></div>
-          <div class="funnel-connector"></div>
-          <div class="funnel-bar"><span class="fb-label">Reuniões marcadas</span><div class="fb-fill" style="width:9.5%;background:var(--accent-purple);">13</div><span class="fb-pct">9.5%</span></div>
-        </div>
-      </div>
-
-      <!-- DAILY CHART -->
-      <div class="card">
-        <div class="card-header"><span class="card-title">Contatos Diários</span></div>
-        <div class="bar-chart" id="dailyChart"></div>
-        <div class="legend">
-          <div class="legend-item"><div class="legend-dot" style="background:var(--gold);"></div>Contatos</div>
-          <div class="legend-item"><div class="legend-dot" style="background:var(--accent-green);"></div>Reuniões</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WEEKLY COMPARISON -->
-    <div class="card animate-in delay-3">
-      <div class="card-header"><span class="card-title">Evolução Semanal</span></div>
-      <div style="overflow-x:auto;">
-        <table class="history-table" style="width:100%;border-collapse:collapse;">
-          <thead><tr>
-            <th style="text-align:left;font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;padding:12px 16px;border-bottom:1px solid var(--border);">Semana</th>
-            <th style="text-align:center;font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;padding:12px 16px;border-bottom:1px solid var(--border);">Contatos</th>
-            <th style="text-align:center;font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;padding:12px 16px;border-bottom:1px solid var(--border);">Atendidas</th>
-            <th style="text-align:center;font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;padding:12px 16px;border-bottom:1px solid var(--border);">Decisores</th>
-            <th style="text-align:center;font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;padding:12px 16px;border-bottom:1px solid var(--border);">Reuniões</th>
-            <th style="text-align:center;font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;padding:12px 16px;border-bottom:1px solid var(--border);">Conv.</th>
-          </tr></thead>
-          <tbody>
-            <tr><td style="padding:14px 16px;border-bottom:1px solid var(--border);font-weight:600;color:var(--gold);">S14 (atual)</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;">137</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;">71</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;">30</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;">13</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;"><span style="color:var(--accent-green);font-size:0.8rem;font-weight:600;">9.5%</span></td></tr>
-            <tr><td style="padding:14px 16px;border-bottom:1px solid var(--border);">S13</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;">125</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;">62</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;">25</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;">10</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;"><span style="color:var(--gold);font-size:0.8rem;font-weight:600;">8.0%</span></td></tr>
-            <tr><td style="padding:14px 16px;border-bottom:1px solid var(--border);">S12</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;">110</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;">55</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;">20</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;">8</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;"><span style="color:var(--gold);font-size:0.8rem;font-weight:600;">7.3%</span></td></tr>
-            <tr><td style="padding:14px 16px;border-bottom:1px solid var(--border);">S11</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;">98</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;">48</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;">18</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;">6</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;"><span style="color:var(--accent-red);font-size:0.8rem;font-weight:600;">6.1%</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+  
 
   </div>
 </main>
 
-<script>
-
-// Build daily chart from localStorage or demo data
-const days = ['Seg','Ter','Qua','Qui','Sex'];
-const demoContatos = [28,32,30,25,22];
-const demoReunioes = [3,4,2,3,1];
-const chart = document.getElementById('dailyChart');
-const maxVal = Math.max(...demoContatos);
-days.forEach((d,i) => {
-  const col = document.createElement('div');
-  col.className = 'bc-col';
-  const valC = document.createElement('div');
-  valC.className = 'bc-val';
-  valC.textContent = demoContatos[i];
-  const barC = document.createElement('div');
-  barC.className = 'bc-bar';
-  barC.style.background = 'var(--gold)';
-  barC.style.height = (demoContatos[i]/maxVal*130) + 'px';
-  barC.style.opacity = '0.7';
-  const valR = document.createElement('div');
-  valR.className = 'bc-val';
-  valR.textContent = demoReunioes[i];
-  valR.style.color = 'var(--accent-green)';
-  const barR = document.createElement('div');
-  barR.className = 'bc-bar';
-  barR.style.background = 'var(--accent-green)';
-  barR.style.height = (demoReunioes[i]/maxVal*130) + 'px';
-  const label = document.createElement('div');
-  label.className = 'bc-label';
-  label.textContent = d;
-  // Wrap bars
-  const barsWrap = document.createElement('div');
-  barsWrap.style.cssText = 'display:flex;gap:3px;align-items:flex-end;width:100%;height:140px;';
-  const c1 = document.createElement('div');
-  c1.style.cssText = 'flex:1;display:flex;flex-direction:column;align-items:center;';
-  c1.appendChild(valC); c1.appendChild(barC);
-  const c2 = document.createElement('div');
-  c2.style.cssText = 'flex:1;display:flex;flex-direction:column;align-items:center;';
-  c2.appendChild(valR); c2.appendChild(barR);
-  barsWrap.appendChild(c1); barsWrap.appendChild(c2);
-  col.appendChild(barsWrap); col.appendChild(label);
-  chart.appendChild(col);
-});
-
-</script>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ⚙️ CONFIGURAÇÃO — mesmas credenciais do index.html
 const SUPABASE_URL = 'https://rsittecjptwozwxlnfvy.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_-EsFNTHW8GRwFoJpK2EfEw_MF3msyPY';
-
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-async function checkSession() {
-  const { data: { session } } = await sb.auth.getSession();
-
-  // Se não tiver logado, manda pro login
-  if (!session) {
-    window.location.href = 'index.html';
-    return null;
-  }
-
-  // Puxa o profile do banco
-  const { data: profile } = await sb
-    .from('profiles')
-    .select('*')
-    .eq('id', session.user.id)
-    .single();
-
-  if (profile) {
-    // Atualiza elementos se existirem na página
-    const els = {
-      'userName': profile.full_name || 'BDR',
-      'userLevel': `Nível ${profile.level} — ${profile.level_name}`,
-      'userXp': `${profile.xp}`,
-      'userInitials': profile.avatar_initials || '??',
-    };
-    for (const [id, val] of Object.entries(els)) {
-      const el = document.getElementById(id);
-      if (el) el.innerText = val;
-    }
-  }
-
-  return { session, profile };
+const LEVELS = [
+  { level: 1, name: 'Recruta', min: 0 },
+  { level: 2, name: 'Escudeiro', min: 400 },
+  { level: 3, name: 'Guerreiro', min: 1000 },
+  { level: 4, name: 'Caçador', min: 2000 },
+  { level: 5, name: 'Comandante', min: 3000 },
+  { level: 6, name: 'Mestre', min: 4000 },
+  { level: 7, name: 'Lorde', min: 5000 },
+];
+function getLevelInfo(xp) {
+  for (let i = LEVELS.length - 1; i >= 0; i--) { if (xp >= LEVELS[i].min) return LEVELS[i]; }
+  return LEVELS[0];
 }
 
 async function logout() {
@@ -518,8 +397,54 @@ async function logout() {
   window.location.href = 'index.html';
 }
 
-// Roda ao carregar
-checkSession();
+async function initPage() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = 'index.html'; return null; }
+  const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
+  if (!profile) return null;
+  const lvl = getLevelInfo(profile.xp);
+  // Update sidebar
+  const si = document.getElementById('sidebarInitials'); if(si) si.textContent = profile.avatar_initials || '??';
+  const sn = document.getElementById('sidebarName'); if(sn) sn.textContent = profile.full_name;
+  const sl = document.getElementById('sidebarLevel'); if(sl) sl.textContent = 'Nível ' + lvl.level + ' — ' + lvl.name;
+  const tx = document.getElementById('topbarXp'); if(tx) tx.textContent = profile.xp.toLocaleString('pt-BR');
+  return { session, profile, lvl };
+}
+
+
+async function onPageReady({ session }) {
+  const today = new Date();
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1));
+  const mondayStr = monday.toISOString().split('T')[0];
+
+  const { data: diary } = await sb.from('diary_entries').select('*').eq('user_id', session.user.id).gte('date', mondayStr).order('date');
+
+  let totC = 0, totA = 0, totD = 0, totR = 0;
+  if (diary) diary.forEach(d => { totC += d.contatos_tentados||0; totA += d.ligacoes_atendidas||0; totD += d.conexao_decisor||0; totR += d.reunioes_marcadas||0; });
+
+  const pctA = totC > 0 ? ((totA/totC)*100).toFixed(1) : '0.0';
+  const pctD = totC > 0 ? ((totD/totC)*100).toFixed(1) : '0.0';
+  const pctR = totC > 0 ? ((totR/totC)*100).toFixed(1) : '0.0';
+
+  let html = '';
+  html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;">';
+  html += '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;position:relative;overflow:hidden;"><div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);"></div><div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Contatos (semana)</div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:2.4rem;color:var(--gold);">' + totC + '</div></div>';
+  html += '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;position:relative;overflow:hidden;"><div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent-blue);"></div><div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Ligações atendidas</div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:2.4rem;color:var(--accent-blue);">' + totA + '</div><div style="font-size:0.72rem;color:var(--text-muted);">Taxa: ' + pctA + '%</div></div>';
+  html += '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;position:relative;overflow:hidden;"><div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent-green);"></div><div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Conexão decisor</div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:2.4rem;color:var(--accent-green);">' + totD + '</div><div style="font-size:0.72rem;color:var(--text-muted);">Taxa: ' + pctD + '%</div></div>';
+  html += '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;position:relative;overflow:hidden;"><div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent-purple);"></div><div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Reuniões marcadas</div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:2.4rem;color:var(--accent-purple);">' + totR + '</div><div style="font-size:0.72rem;color:var(--text-muted);">Taxa: ' + pctR + '%</div></div>';
+  html += '</div>';
+
+  if (!diary || diary.length === 0) {
+    html += '<div style="text-align:center;padding:40px;color:var(--text-muted);background:var(--bg-card);border:1px solid var(--border);border-radius:12px;">Nenhum registro no diário esta semana.<br><a href="diario.html" style="color:var(--gold);">Ir para o Diário →</a></div>';
+  }
+
+  document.getElementById('metricasContent').innerHTML = html;
+}
+
+initPage().then(result => {
+  if (result && typeof onPageReady === 'function') onPageReady(result);
+});
 </script>
 </body>
 </html>
