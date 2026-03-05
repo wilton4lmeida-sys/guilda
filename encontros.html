@@ -352,88 +352,15 @@ a { color: inherit; text-decoration: none; }
         <span class="xp-val" id="topbarXp">0</span>
         <span class="xp-label">XP Total</span>
       </div>
-      <div class="topbar-btn" onclick="logout()" title="Sair" style="cursor:pointer;">🚪</div>
+      <div class="topbar-btn" onclick="logout()" title="Sair" style="cursor:pointer;font-size:0.75rem;font-weight:600;letter-spacing:1px;">SAIR</div>
     </div>
   </header>
 
   <div class="content">
-    
-    <!-- UPCOMING -->
-    <div class="section-label animate-in delay-1">Próximos Encontros</div>
-
-    <div class="animate-in delay-2">
-      <div class="encontro-card highlight">
-        <div class="encontro-date-block"><span class="edb-day">05</span><span class="edb-month">Mar</span></div>
-        <div class="encontro-body">
-          <h4>Encontro Semanal com Mentor</h4>
-          <div class="eb-time">Quarta · 15:00 — 15:45 · Google Meet</div>
-          <div class="eb-desc">Review individual de performance + feedback da ligação gravada.</div>
-        </div>
-        <div class="encontro-tags"><span class="e-tag hoje">Hoje</span><span class="e-tag mentor">Mentor</span></div>
-      </div>
-
-      <div class="encontro-card">
-        <div class="encontro-date-block"><span class="edb-day">10</span><span class="edb-month">Mar</span></div>
-        <div class="encontro-body">
-          <h4>Review Geral — Semana 14</h4>
-          <div class="eb-time">Segunda · 10:00 — 11:00 · Google Meet</div>
-          <div class="eb-desc">Análise coletiva dos resultados da semana. Ranking atualizado e destaques.</div>
-        </div>
-        <div class="encontro-tags"><span class="e-tag geral">Geral</span></div>
-      </div>
-
-      <div class="encontro-card">
-        <div class="encontro-date-block"><span class="edb-day">12</span><span class="edb-month">Mar</span></div>
-        <div class="encontro-body">
-          <h4>Encontro Semanal com Mentor</h4>
-          <div class="eb-time">Quarta · 15:00 — 15:45 · Google Meet</div>
-          <div class="eb-desc">Sessão individual com mentor.</div>
-        </div>
-        <div class="encontro-tags"><span class="e-tag mentor">Mentor</span></div>
-      </div>
-
-      <div class="encontro-card">
-        <div class="encontro-date-block"><span class="edb-day">14</span><span class="edb-month">Mar</span></div>
-        <div class="encontro-body">
-          <h4>Workshop: Prospecção por Nicho</h4>
-          <div class="eb-time">Sexta · 14:00 — 16:00 · Google Meet</div>
-          <div class="eb-desc">Sessão especial sobre estratégias de prospecção segmentada para clínicas e imobiliárias.</div>
-        </div>
-        <div class="encontro-tags"><span class="e-tag especial">Especial</span></div>
-      </div>
+    <div id="encontrosContent" class="animate-in delay-1">
+      <div style="text-align:center;padding:40px;color:var(--text-muted);">Carregando encontros...</div>
     </div>
-
-    <!-- PAST -->
-    <div class="section-label animate-in delay-3">Encontros Passados</div>
-    <div class="animate-in delay-4">
-      <div class="encontro-card past">
-        <div class="encontro-date-block"><span class="edb-day">03</span><span class="edb-month">Mar</span></div>
-        <div class="encontro-body">
-          <h4>Review Geral — Semana 13</h4>
-          <div class="eb-time">Segunda · 10:00 — 11:00</div>
-          <div class="eb-status" style="color:var(--accent-green);">✓ Participou · Gravação disponível</div>
-        </div>
-        <div class="encontro-tags"><span class="e-tag geral">Geral</span></div>
-      </div>
-      <div class="encontro-card past">
-        <div class="encontro-date-block"><span class="edb-day">26</span><span class="edb-month">Fev</span></div>
-        <div class="encontro-body">
-          <h4>Encontro Semanal com Mentor</h4>
-          <div class="eb-time">Quarta · 15:00 — 15:45</div>
-          <div class="eb-status" style="color:var(--accent-green);">✓ Participou · Gravação disponível</div>
-        </div>
-        <div class="encontro-tags"><span class="e-tag mentor">Mentor</span></div>
-      </div>
-      <div class="encontro-card past">
-        <div class="encontro-date-block"><span class="edb-day">24</span><span class="edb-month">Fev</span></div>
-        <div class="encontro-body">
-          <h4>Review Geral — Semana 12</h4>
-          <div class="eb-time">Segunda · 10:00 — 11:00</div>
-          <div class="eb-status" style="color:var(--accent-red);">✗ Não participou</div>
-        </div>
-        <div class="encontro-tags"><span class="e-tag geral">Geral</span></div>
-      </div>
-    </div>
+  
 
   </div>
 </main>
@@ -476,6 +403,61 @@ async function initPage() {
   const sl = document.getElementById('sidebarLevel'); if(sl) sl.textContent = 'Nível ' + lvl.level + ' — ' + lvl.name;
   const tx = document.getElementById('topbarXp'); if(tx) tx.textContent = profile.xp.toLocaleString('pt-BR');
   return { session, profile, lvl };
+}
+
+
+async function onPageReady({ session }) {
+  const today = new Date().toISOString().split('T')[0];
+  const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  
+  const { data: upcoming } = await sb.from('meetings').select('*').gte('meeting_date', today).order('meeting_date');
+  const { data: past } = await sb.from('meetings').select('*').lt('meeting_date', today).order('meeting_date', { ascending: false }).limit(10);
+
+  let html = '';
+  
+  // Upcoming
+  html += '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--text-muted);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">Próximos Encontros</div>';
+  
+  if (upcoming && upcoming.length > 0) {
+    upcoming.forEach(m => {
+      const d = new Date(m.meeting_date + 'T00:00:00');
+      const day = String(d.getDate()).padStart(2,'0');
+      const month = months[d.getMonth()];
+      const time = m.meeting_time ? m.meeting_time.slice(0,5) : '';
+      const isToday = m.meeting_date === today;
+      const tagBg = { mentor: 'rgba(167,139,250,0.12)', geral: 'rgba(96,165,250,0.12)', especial: 'rgba(251,146,60,0.12)' };
+      const tagColor = { mentor: 'var(--accent-purple)', geral: 'var(--accent-blue)', especial: 'var(--accent-orange)' };
+      
+      html += '<div style="display:flex;align-items:center;gap:20px;padding:24px;background:var(--bg-card);border:1px solid ' + (isToday ? 'var(--gold)' : 'var(--border)') + ';border-radius:12px;margin-bottom:14px;position:relative;overflow:hidden;">';
+      if (isToday) html += '<div style="position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--gold);"></div>';
+      html += '<div style="width:64px;height:64px;background:rgba(201,168,76,0.08);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-family:\'Bebas Neue\',sans-serif;font-size:2rem;color:var(--gold);line-height:1;">' + day + '</span><span style="font-size:0.6rem;text-transform:uppercase;letter-spacing:1px;color:var(--gold-dim);">' + month + '</span></div>';
+      html += '<div style="flex:1;"><h4 style="font-size:1rem;font-weight:600;margin-bottom:4px;">' + m.title + '</h4><div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">' + time + (m.link ? ' · <a href="' + m.link + '" target="_blank" style="color:var(--gold);">Entrar</a>' : '') + '</div>';
+      if (m.description) html += '<div style="font-size:0.75rem;color:var(--text-muted);">' + m.description + '</div>';
+      html += '</div>';
+      html += '<div style="display:flex;gap:8px;flex-direction:column;align-items:flex-end;">';
+      if (isToday) html += '<span style="font-size:0.62rem;padding:4px 12px;border-radius:4px;font-weight:600;text-transform:uppercase;letter-spacing:1px;background:var(--gold);color:var(--bg-primary);">Hoje</span>';
+      html += '<span style="font-size:0.62rem;padding:4px 12px;border-radius:4px;font-weight:600;text-transform:uppercase;letter-spacing:1px;background:' + (tagBg[m.meeting_type]||tagBg.geral) + ';color:' + (tagColor[m.meeting_type]||tagColor.geral) + ';">' + m.meeting_type + '</span>';
+      html += '</div></div>';
+    });
+  } else {
+    html += '<div style="text-align:center;padding:30px;color:var(--text-muted);background:var(--bg-card);border:1px solid var(--border);border-radius:12px;margin-bottom:24px;">Nenhum encontro agendado.</div>';
+  }
+
+  // Past
+  if (past && past.length > 0) {
+    html += '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--text-muted);margin:28px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--border);">Encontros Passados</div>';
+    past.forEach(m => {
+      const d = new Date(m.meeting_date + 'T00:00:00');
+      const day = String(d.getDate()).padStart(2,'0');
+      const month = months[d.getMonth()];
+      html += '<div style="display:flex;align-items:center;gap:20px;padding:24px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;opacity:0.5;">';
+      html += '<div style="width:64px;height:64px;background:rgba(201,168,76,0.08);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-family:\'Bebas Neue\',sans-serif;font-size:2rem;color:var(--gold);line-height:1;">' + day + '</span><span style="font-size:0.6rem;text-transform:uppercase;letter-spacing:1px;color:var(--gold-dim);">' + month + '</span></div>';
+      html += '<div style="flex:1;"><h4 style="font-size:1rem;font-weight:600;margin-bottom:4px;">' + m.title + '</h4><div style="font-size:0.8rem;color:var(--text-secondary);">' + (m.meeting_time||'').slice(0,5) + '</div></div>';
+      html += '</div>';
+    });
+  }
+
+  document.getElementById('encontrosContent').innerHTML = html;
 }
 
 initPage().then(result => {

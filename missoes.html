@@ -366,80 +366,15 @@ a { color: inherit; text-decoration: none; }
         <span class="xp-val" id="topbarXp">0</span>
         <span class="xp-label">XP Total</span>
       </div>
-      <div class="topbar-btn" onclick="logout()" title="Sair" style="cursor:pointer;">🚪</div>
+      <div class="topbar-btn" onclick="logout()" title="Sair" style="cursor:pointer;font-size:0.75rem;font-weight:600;letter-spacing:1px;">SAIR</div>
     </div>
   </header>
 
   <div class="content">
-    
-    <!-- SUMMARY -->
-    <div class="missions-summary animate-in delay-1">
-      <div class="ms-box green"><div class="ms-num">2</div><div class="ms-label">Concluídas</div></div>
-      <div class="ms-box gold"><div class="ms-num">1</div><div class="ms-label">Em andamento</div></div>
-      <div class="ms-box muted"><div class="ms-num">2</div><div class="ms-label">Pendentes</div></div>
+    <div id="missoesContent" class="animate-in delay-1">
+      <div style="text-align:center;padding:40px;color:var(--text-muted);">Carregando missões...</div>
     </div>
-
-    <!-- WEEK HEADER -->
-    <div class="week-header animate-in delay-2">
-      <div><h3>Semana 14 · 3 a 9 Mar 2026</h3><div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">XP possível esta semana: 600 XP</div></div>
-      <div class="week-progress">
-        <div class="wp-bar"><div class="wp-fill" style="width:40%"></div></div>
-        <span class="wp-text">2/5</span>
-      </div>
-    </div>
-
-    <!-- MISSIONS -->
-    <div class="animate-in delay-3">
-      <div class="mission-full">
-        <div class="mf-status done">✓</div>
-        <div class="mf-body">
-          <h4>Fazer 40 ligações esta semana</h4>
-          <div class="mf-desc">Realize no mínimo 40 tentativas de contato com empresas do ICP. Registre no diário cada tentativa.</div>
-          <div class="mf-meta"><span class="mf-tag prosp">Prospecção</span><span class="mf-deadline">Completou 87 ligações · Excedeu +117%</span></div>
-        </div>
-        <span class="mf-xp earned">+100 XP ✓</span>
-      </div>
-
-      <div class="mission-full">
-        <div class="mf-status done">✓</div>
-        <div class="mf-body">
-          <h4>Estudar 2 aulas do Arsenal de Prospecção</h4>
-          <div class="mf-desc">Assistir e marcar como concluídas 2 aulas da seção Prospecção do Arsenal.</div>
-          <div class="mf-meta"><span class="mf-tag estudo">Estudo</span><span class="mf-deadline">Concluído em 04/03</span></div>
-        </div>
-        <span class="mf-xp earned">+50 XP ✓</span>
-      </div>
-
-      <div class="mission-full">
-        <div class="mf-status in-progress">◐</div>
-        <div class="mf-body">
-          <h4>Gravar 1 ligação e enviar pro mentor</h4>
-          <div class="mf-desc">Grave uma ligação real com um lead e envie o áudio para avaliação do seu mentor. Ele vai dar feedback e XP bônus por qualidade.</div>
-          <div class="mf-meta"><span class="mf-tag pratica">Prática</span><span class="mf-deadline">Gravação feita · Pendente envio</span></div>
-        </div>
-        <span class="mf-xp">+150 XP</span>
-      </div>
-
-      <div class="mission-full">
-        <div class="mf-status pending"></div>
-        <div class="mf-body">
-          <h4>Quebrar 3 objeções diferentes em ligações reais</h4>
-          <div class="mf-desc">Durante suas ligações, identifique e quebre pelo menos 3 objeções diferentes. Registre qual objeção e como quebrou.</div>
-          <div class="mf-meta"><span class="mf-tag prosp">Prospecção</span><span class="mf-deadline">0 de 3 registradas · Prazo: 09/03</span></div>
-        </div>
-        <span class="mf-xp">+200 XP</span>
-      </div>
-
-      <div class="mission-full">
-        <div class="mf-status pending"></div>
-        <div class="mf-body">
-          <h4>Participar do encontro semanal com mentor</h4>
-          <div class="mf-desc">Esteja presente no encontro semanal com seu mentor. Câmera ligada, com perguntas preparadas.</div>
-          <div class="mf-meta"><span class="mf-tag call">Encontro</span><span class="mf-deadline">Hoje às 15:00</span></div>
-        </div>
-        <span class="mf-xp">+100 XP</span>
-      </div>
-    </div>
+  
 
   </div>
 </main>
@@ -482,6 +417,79 @@ async function initPage() {
   const sl = document.getElementById('sidebarLevel'); if(sl) sl.textContent = 'Nível ' + lvl.level + ' — ' + lvl.name;
   const tx = document.getElementById('topbarXp'); if(tx) tx.textContent = profile.xp.toLocaleString('pt-BR');
   return { session, profile, lvl };
+}
+
+
+async function onPageReady({ session }) {
+  const today = new Date().toISOString().split('T')[0];
+  
+  const { data: missions } = await sb.from('missions').select('*')
+    .lte('week_start', today).gte('week_end', today).order('created_at');
+
+  const { data: progress } = await sb.from('mission_progress').select('*').eq('user_id', session.user.id);
+  const progressMap = {};
+  if (progress) progress.forEach(p => { progressMap[p.mission_id] = p.status; });
+
+  let html = '';
+
+  if (!missions || missions.length === 0) {
+    html = '<div style="text-align:center;padding:60px 20px;color:var(--text-muted);">';
+    html += '<div style="font-size:3rem;margin-bottom:16px;">🎯</div>';
+    html += '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:1.5rem;letter-spacing:2px;color:var(--text-primary);margin-bottom:8px;">Missões</div>';
+    html += '<div style="font-size:0.9rem;max-width:400px;margin:0 auto;line-height:1.6;">Nenhuma missão ativa esta semana.<br>Aguarde o gestor criar novas missões.</div>';
+    html += '</div>';
+    document.getElementById('missoesContent').innerHTML = html;
+    return;
+  }
+
+  // Summary
+  let done = 0, prog = 0, pend = 0;
+  missions.forEach(m => {
+    const st = progressMap[m.id] || 'pendente';
+    if (st === 'concluida') done++;
+    else if (st === 'em_andamento') prog++;
+    else pend++;
+  });
+
+  html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;">';
+  html += '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:18px;text-align:center;"><div style="font-family:\'Bebas Neue\',sans-serif;font-size:2rem;color:var(--accent-green);">' + done + '</div><div style="font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Concluídas</div></div>';
+  html += '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:18px;text-align:center;"><div style="font-family:\'Bebas Neue\',sans-serif;font-size:2rem;color:var(--gold);">' + prog + '</div><div style="font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Em andamento</div></div>';
+  html += '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:18px;text-align:center;"><div style="font-family:\'Bebas Neue\',sans-serif;font-size:2rem;color:var(--text-muted);">' + pend + '</div><div style="font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Pendentes</div></div>';
+  html += '</div>';
+
+  // XP possible
+  const totalXp = missions.reduce((s, m) => s + m.xp_reward, 0);
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding:20px 24px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;">';
+  html += '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:1.4rem;letter-spacing:1px;">Missões da Semana</div><div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">XP possível: ' + totalXp + ' XP</div></div>';
+  html += '<div style="display:flex;align-items:center;gap:12px;"><div style="width:120px;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div style="height:100%;background:var(--gold);border-radius:3px;width:' + (missions.length > 0 ? Math.round((done/missions.length)*100) : 0) + '%;"></div></div><span style="font-family:\'JetBrains Mono\',monospace;font-size:0.8rem;color:var(--gold);font-weight:600;">' + done + '/' + missions.length + '</span></div>';
+  html += '</div>';
+
+  // Mission list
+  const catColors = { 'prospecção': 'var(--gold)', estudo: 'var(--accent-blue)', 'prática': 'var(--accent-green)', encontro: 'var(--accent-purple)' };
+  const catBg = { 'prospecção': 'rgba(201,168,76,0.1)', estudo: 'rgba(96,165,250,0.1)', 'prática': 'rgba(52,211,153,0.1)', encontro: 'rgba(167,139,250,0.1)' };
+
+  missions.forEach(m => {
+    const st = progressMap[m.id] || 'pendente';
+    let statusHtml = '';
+    if (st === 'concluida') statusHtml = '<div style="width:40px;height:40px;border-radius:50%;background:rgba(52,211,153,0.15);border:2px solid var(--accent-green);color:var(--accent-green);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">✓</div>';
+    else if (st === 'em_andamento') statusHtml = '<div style="width:40px;height:40px;border-radius:50%;background:rgba(201,168,76,0.1);border:2px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">◐</div>';
+    else statusHtml = '<div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.04);border:2px solid var(--text-muted);flex-shrink:0;"></div>';
+
+    const xpClass = st === 'concluida' ? 'color:var(--accent-green);background:rgba(52,211,153,0.08);' : 'color:var(--gold);background:rgba(201,168,76,0.08);';
+
+    html += '<div style="display:flex;align-items:flex-start;gap:16px;padding:20px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;">';
+    html += statusHtml;
+    html += '<div style="flex:1;"><h4 style="font-size:0.95rem;font-weight:600;margin-bottom:4px;">' + m.title + '</h4>';
+    if (m.description) html += '<div style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:8px;line-height:1.5;">' + m.description + '</div>';
+    html += '<div style="display:flex;align-items:center;gap:16px;">';
+    html += '<span style="font-size:0.62rem;padding:3px 8px;border-radius:4px;font-weight:600;text-transform:uppercase;letter-spacing:1px;background:' + (catBg[m.category]||catBg['prospecção']) + ';color:' + (catColors[m.category]||catColors['prospecção']) + ';">' + m.category + '</span>';
+    html += '<span style="font-size:0.7rem;color:var(--text-muted);">' + (st === 'concluida' ? 'Concluída' : st === 'em_andamento' ? 'Em andamento' : 'Pendente') + '</span>';
+    html += '</div></div>';
+    html += '<span style="font-family:\'JetBrains Mono\',monospace;font-size:0.85rem;font-weight:600;padding:6px 14px;border-radius:8px;white-space:nowrap;align-self:center;' + xpClass + '">+' + m.xp_reward + ' XP' + (st === 'concluida' ? ' ✓' : '') + '</span>';
+    html += '</div>';
+  });
+
+  document.getElementById('missoesContent').innerHTML = html;
 }
 
 initPage().then(result => {

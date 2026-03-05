@@ -361,15 +361,14 @@ a { color: inherit; text-decoration: none; }
         <span class="xp-val" id="topbarXp">0</span>
         <span class="xp-label">XP Total</span>
       </div>
-      <div class="topbar-btn" onclick="logout()" title="Sair" style="cursor:pointer;">🚪</div>
+      <div class="topbar-btn" onclick="logout()" title="Sair" style="cursor:pointer;font-size:0.75rem;font-weight:600;letter-spacing:1px;">SAIR</div>
     </div>
   </header>
 
   <div class="content">
-    
     <!-- FORM -->
-    <div class="diario-form animate-in delay-1" style="max-width:480px;">
-      <h3>Registrar Dia</h3>
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:24px;max-width:480px;" class="animate-in delay-1">
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:1px;margin-bottom:20px;">Registrar Dia</h3>
       <div class="form-group">
         <label class="form-label">Data</label>
         <input type="date" class="form-input" id="diarioDate" />
@@ -391,24 +390,32 @@ a { color: inherit; text-decoration: none; }
         <input type="number" class="form-input" id="reunioes" placeholder="0" min="0" />
       </div>
       <div style="margin-top:20px;display:flex;gap:12px;">
-        <button class="btn btn-gold" onclick="salvarDiario()">Salvar Registro</button>
+        <button class="btn btn-gold" id="btnSalvar" onclick="salvarDiario()">Salvar Registro</button>
         <span id="saveMsg" style="font-size:0.8rem;color:var(--accent-green);align-self:center;opacity:0;transition:opacity 0.3s;"></span>
       </div>
     </div>
 
     <!-- HISTORY -->
-    <div class="card animate-in delay-2">
-      <div class="card-header"><span class="card-title">Histórico do Diário</span></div>
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;" class="animate-in delay-2">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:1.5px;margin-bottom:20px;">Histórico do Diário</div>
       <div style="overflow-x:auto;">
-        <table class="history-table">
-          <thead><tr><th>Data</th><th style="text-align:center">Contatos</th><th style="text-align:center">Atendidas</th><th style="text-align:center">Decisores</th><th style="text-align:center">Reuniões</th><th style="text-align:center">Taxa</th></tr></thead>
+        <table style="width:100%;border-collapse:collapse;" id="historyTable">
+          <thead><tr>
+            <th style="text-align:left;font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;padding:12px 16px;border-bottom:1px solid var(--border);font-weight:600;">Data</th>
+            <th style="text-align:center;font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;padding:12px 16px;border-bottom:1px solid var(--border);font-weight:600;">Contatos</th>
+            <th style="text-align:center;font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;padding:12px 16px;border-bottom:1px solid var(--border);font-weight:600;">Atendidas</th>
+            <th style="text-align:center;font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;padding:12px 16px;border-bottom:1px solid var(--border);font-weight:600;">Decisores</th>
+            <th style="text-align:center;font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;padding:12px 16px;border-bottom:1px solid var(--border);font-weight:600;">Reuniões</th>
+            <th style="text-align:center;font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;padding:12px 16px;border-bottom:1px solid var(--border);font-weight:600;">Taxa</th>
+          </tr></thead>
           <tbody id="historyBody"></tbody>
         </table>
       </div>
-      <div id="emptyHistory" style="text-align:center;padding:40px;color:var(--text-muted);font-size:0.85rem;display:none;">
+      <div id="emptyHistory" style="text-align:center;padding:30px;color:var(--text-muted);font-size:0.85rem;">
         Nenhum registro ainda. Preencha o formulário acima para começar.
       </div>
     </div>
+  
 
   </div>
 </main>
@@ -439,79 +446,98 @@ async function logout() {
   window.location.href = 'index.html';
 }
 
+let currentUserId = null;
+
 async function initPage() {
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { window.location.href = 'index.html'; return null; }
   const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
   if (!profile) return null;
   const lvl = getLevelInfo(profile.xp);
-  // Update sidebar
   const si = document.getElementById('sidebarInitials'); if(si) si.textContent = profile.avatar_initials || '??';
   const sn = document.getElementById('sidebarName'); if(sn) sn.textContent = profile.full_name;
   const sl = document.getElementById('sidebarLevel'); if(sl) sl.textContent = 'Nível ' + lvl.level + ' — ' + lvl.name;
   const tx = document.getElementById('topbarXp'); if(tx) tx.textContent = profile.xp.toLocaleString('pt-BR');
+  
+  currentUserId = session.user.id;
+  document.getElementById('diarioDate').valueAsDate = new Date();
+  await loadHistory();
   return { session, profile, lvl };
 }
 
-
-async function onPageReady({ session, profile }) {
-  document.getElementById('diarioDate').valueAsDate = new Date();
-  await loadHistory(session.user.id);
-}
-
 async function salvarDiario() {
-  const { data: { session } } = await sb.auth.getSession();
-  if (!session) return;
+  if (!currentUserId) return alert('Erro: não logado.');
+  const dateVal = document.getElementById('diarioDate').value;
+  if (!dateVal) return alert('Selecione uma data.');
 
   const entry = {
-    user_id: session.user.id,
-    date: document.getElementById('diarioDate').value,
+    user_id: currentUserId,
+    date: dateVal,
     contatos_tentados: parseInt(document.getElementById('contatos').value) || 0,
     ligacoes_atendidas: parseInt(document.getElementById('atendidas').value) || 0,
     conexao_decisor: parseInt(document.getElementById('decisores').value) || 0,
     reunioes_marcadas: parseInt(document.getElementById('reunioes').value) || 0,
   };
-  if (!entry.date) return alert('Selecione uma data.');
 
   const { error } = await sb.from('diary_entries').upsert(entry, { onConflict: 'user_id,date' });
 
-  if (error) { alert('Erro ao salvar: ' + error.message); return; }
+  if (error) {
+    alert('Erro ao salvar: ' + error.message);
+    console.error(error);
+    return;
+  }
 
+  // Limpa campos
   ['contatos','atendidas','decisores','reunioes'].forEach(id => document.getElementById(id).value = '');
+  
   const msg = document.getElementById('saveMsg');
   msg.textContent = '✓ Salvo!';
   msg.style.opacity = '1';
-  setTimeout(() => msg.style.opacity = '0', 2000);
-  await loadHistory(session.user.id);
+  setTimeout(() => msg.style.opacity = '0', 2500);
+  
+  await loadHistory();
 }
 
-async function loadHistory(userId) {
-  const { data: entries } = await sb
+async function loadHistory() {
+  if (!currentUserId) return;
+  
+  const { data: entries, error } = await sb
     .from('diary_entries').select('*')
-    .eq('user_id', userId)
+    .eq('user_id', currentUserId)
     .order('date', { ascending: false })
-    .limit(20);
+    .limit(30);
 
   const tbody = document.getElementById('historyBody');
   const empty = document.getElementById('emptyHistory');
 
-  if (!entries || entries.length === 0) {
-    if(empty) empty.style.display = 'block';
-    if(tbody) tbody.innerHTML = '';
+  if (error) {
+    console.error('Erro ao carregar histórico:', error);
     return;
   }
-  if(empty) empty.style.display = 'none';
+
+  if (!entries || entries.length === 0) {
+    empty.style.display = 'block';
+    tbody.innerHTML = '';
+    return;
+  }
+
+  empty.style.display = 'none';
   tbody.innerHTML = entries.map(e => {
     const rate = e.contatos_tentados > 0 ? ((e.reunioes_marcadas / e.contatos_tentados) * 100).toFixed(1) : '0.0';
-    const rClass = rate >= 10 ? 'good' : rate >= 5 ? 'ok' : 'bad';
+    const rClass = parseFloat(rate) >= 10 ? 'color:var(--accent-green);background:rgba(52,211,153,0.1);' : parseFloat(rate) >= 5 ? 'color:var(--gold);background:rgba(201,168,76,0.1);' : 'color:var(--accent-red);background:rgba(248,113,113,0.1);';
     const d = e.date.split('-');
-    return '<tr><td>' + d[2] + '/' + d[1] + '</td><td class="mono">' + e.contatos_tentados + '</td><td class="mono">' + e.ligacoes_atendidas + '</td><td class="mono">' + e.conexao_decisor + '</td><td class="mono">' + e.reunioes_marcadas + '</td><td style="text-align:center"><span class="conv-rate ' + rClass + '">' + rate + '%</span></td></tr>';
+    return '<tr>' +
+      '<td style="padding:14px 16px;border-bottom:1px solid var(--border);">' + d[2] + '/' + d[1] + '</td>' +
+      '<td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:\'JetBrains Mono\',monospace;font-size:0.82rem;">' + e.contatos_tentados + '</td>' +
+      '<td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:\'JetBrains Mono\',monospace;font-size:0.82rem;">' + e.ligacoes_atendidas + '</td>' +
+      '<td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:\'JetBrains Mono\',monospace;font-size:0.82rem;">' + e.conexao_decisor + '</td>' +
+      '<td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;font-family:\'JetBrains Mono\',monospace;font-size:0.82rem;">' + e.reunioes_marcadas + '</td>' +
+      '<td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center;"><span style="font-size:0.7rem;padding:2px 8px;border-radius:4px;font-weight:600;' + rClass + '">' + rate + '%</span></td>' +
+      '</tr>';
   }).join('');
 }
 
-initPage().then(result => {
-  if (result && typeof onPageReady === 'function') onPageReady(result);
-});
+initPage();
 </script>
 </body>
 </html>
