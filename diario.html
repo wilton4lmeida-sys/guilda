@@ -450,7 +450,7 @@ let currentUserId = null;
 
 async function initPage() {
   const { data: { session } } = await sb.auth.getSession();
-  if (!session) { window.location.href = 'index.html'; return null; }
+if (!session) { window.location.href = 'index.html'; return null; }
   const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
   if (!profile) return null;
   const lvl = getLevelInfo(profile.xp);
