@@ -90,13 +90,13 @@ input[type=number]{-moz-appearance:textfield}
 body::before {
   content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.05'/%3E%3C/svg%3E");
-  background-size: 300px 300px; opacity: .55;
+  background-size: 300px 300px; opacity: .45;
 }
 body::after {
-  content:''; position:fixed; top:-25vh; left:-10vw;
-  width:65vw; height:60vh;
-  background: radial-gradient(ellipse, rgba(245,197,24,.04) 0%, transparent 60%);
-  pointer-events:none; z-index:0;
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 10%, rgba(245,197,24,.04) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 85% 85%, rgba(90,60,140,.05) 0%, transparent 55%);
 }
 
 ::-webkit-scrollbar{width:3px}
@@ -223,12 +223,13 @@ body::after {
 
 /* ══ CARD BASE ══ */
 .card{
-  background:var(--card);
-  border:1px solid rgba(255,255,255,.08);
+  background:rgba(10,10,12,.96);
+  border:1px solid rgba(255,255,255,.07);
   border-radius:var(--r);padding:20px;
   position:relative;overflow:hidden;transition:border-color .2s;
+  box-shadow:0 4px 24px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.025);
 }
-.card:hover{border-color:rgba(245,197,24,.14)}
+.card:hover{border-color:rgba(245,197,24,.18)}
 
 /* linha dourada topo */
 .card-goldline::before{
@@ -245,7 +246,7 @@ body::after {
 }
 
 .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.card-title{display:flex;align-items:center;gap:9px;font-size:.9rem;font-weight:700;color:var(--t1)}
+.card-title{display:flex;align-items:center;gap:9px;font-size:.9rem;font-weight:700;color:#D4BC62}
 .card-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(80,80,95,.25);flex-shrink:0}
 .card-icon svg{width:14px;height:14px;stroke:var(--p3);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .card-icon.gold{background:rgba(245,197,24,.15)}
@@ -291,8 +292,8 @@ body::after {
 .badge-title{font-size:.56rem;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:var(--p3);text-align:center}
 
 /* corpo */
-.hero-body{flex:1;display:flex;flex-direction:column;justify-content:center}
-.hero-name{font-weight:800;font-size:1.55rem;color:#FFFFFF;margin-bottom:8px;line-height:1.2;text-shadow:0 0 30px rgba(255,255,255,.12)}
+.hero-body{flex:1;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.hero-name{font-weight:800;font-size:1.55rem;color:#EDD97A;margin-bottom:8px;line-height:1.2;text-shadow:0 0 30px rgba(245,197,24,.18)}
 .hero-lvl-row{display:flex;align-items:center;gap:8px;margin-bottom:15px}
 .hero-lvl-badge{
   background:rgba(60,60,72,.35);border:1px solid rgba(160,160,176,.24);
@@ -320,13 +321,13 @@ body::after {
 /* ══ MÉTRICAS ══ */
 .metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .metric-tile{
-  background:var(--card2);
+  background:rgba(8,8,10,.95);
   border:1px solid rgba(255,255,255,.07);
   border-radius:12px;padding:16px;transition:border-color .2s;
   position:relative;overflow:hidden;
 }
 .metric-tile:hover{border-color:rgba(245,197,24,.2)}
-.metric-label{font-size:.68rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:6px;font-weight:700}
+.metric-label{font-size:.68rem;text-transform:uppercase;letter-spacing:1.1px;color:rgba(200,185,120,.7);margin-bottom:6px;font-weight:700}
 .metric-value{font-size:1.6rem;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--g1)}
 
 /* ══ RANKING LATERAL ══ */
@@ -498,7 +499,7 @@ body::after {
 .table tbody td{padding:12px;font-size:.88rem;color:var(--t1)}
 
 /* ══ PAGE CARD ══ */
-.page-card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:var(--r);padding:20px;margin-bottom:14px}
+.page-card{background:rgba(10,10,12,.97);border:1px solid rgba(255,255,255,.07);border-radius:var(--r);padding:20px;margin-bottom:14px;box-shadow:0 4px 24px rgba(0,0,0,.4)}
 
 /* ══ EMPTY ══ */
 .empty-state{text-align:center;padding:32px 16px}
@@ -566,15 +567,180 @@ input[type=date]::-webkit-datetime-edit-fields-wrapper{color:var(--g1)}
 .level-unlock-title{font-size:.78rem;font-weight:700;color:var(--t1);margin-bottom:2px}
 .level-unlock-sub{font-size:.66rem;color:var(--t3);font-weight:500}
 .level-unlock-xp{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:800;color:var(--g1);flex-shrink:0}
+/* ══ NOVO GRID DASHBOARD 2 COLUNAS ══ */
+.dash-grid-new {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 18px;
+  align-items: start;
+}
+.dash-col-left { display: flex; flex-direction: column; gap: 16px; }
+.dash-col-right { position: sticky; top: 80px; }
+
+.dash-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* ══ HERO melhorado ══ */
+.hero {
+  background: linear-gradient(145deg, #0D0B1C 0%, #080710 55%, #0B0A16 100%);
+  border: 1px solid rgba(245,197,24,.18);
+  border-radius: var(--r);
+  padding: 22px 24px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.03);
+}
+.hero::before {
+  content:''; position:absolute; top:0; left:16px; right:16px; height:2px;
+  background:linear-gradient(90deg,transparent,#F5C518 30%,#D4A017 70%,transparent);
+}
+.hero::after {
+  content:''; position:absolute; top:-60px; right:-40px;
+  width:260px; height:260px;
+  background: radial-gradient(circle, rgba(100,70,160,.12) 0%, transparent 60%);
+  pointer-events:none;
+}
+.hero-glow-gold {
+  position:absolute; bottom:-60px; left:-40px;
+  width:200px; height:200px;
+  background: radial-gradient(circle, rgba(245,197,24,.09) 0%, transparent 65%);
+  pointer-events:none;
+}
+.hero-inner { display:flex; gap:20px; align-items:center; position:relative; z-index:1; }
+.hero-badge-col {
+  flex-shrink:0; display:flex; flex-direction:column; align-items:center; gap:5px;
+}
+
+/* ══ FUNIL CARD ══ */
+.funil-card {
+  background: rgba(8,8,10,.98);
+  border: 1px solid rgba(245,197,24,.14);
+  border-radius: var(--r);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 40px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.025);
+  position: relative;
+}
+.funil-card::before {
+  content:''; position:absolute; top:0; left:16px; right:16px; height:2px;
+  background:linear-gradient(90deg,transparent,rgba(245,197,24,.7) 35%,rgba(180,140,10,.6) 65%,transparent);
+}
+.funil-card-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid rgba(245,197,24,.08);
+}
+.funil-visual {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1;
+}
+.funil-empty-state {
+  text-align:center; padding:40px 20px;
+}
+.funil-step-new {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.funil-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0 4px;
+}
+.funil-bar-label {
+  font-size: .72rem;
+  font-weight: 700;
+  color: rgba(200,185,120,.8);
+  min-width: 130px;
+  flex-shrink: 0;
+}
+.funil-bar-outer {
+  flex: 1;
+  height: 28px;
+  background: rgba(255,255,255,.04);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.06);
+  position: relative;
+}
+.funil-bar-fill {
+  height: 100%;
+  border-radius: 8px;
+  position: relative;
+  transition: width 1.2s cubic-bezier(.25,.46,.45,.94);
+  display: flex; align-items: center; justify-content: flex-end;
+  padding-right: 10px;
+  min-width: 36px;
+}
+.funil-bar-pct {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .65rem;
+  font-weight: 800;
+  color: rgba(0,0,0,.85);
+  white-space: nowrap;
+}
+.funil-bar-vol {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .68rem;
+  font-weight: 800;
+  min-width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.funil-connector {
+  width: 2px;
+  height: 10px;
+  margin-left: calc(130px + 14px + 4px);
+  opacity: .3;
+}
+.funil-step-new.step-0 .funil-bar-fill { background: linear-gradient(90deg, #B8860B, #F5C518, #FFD740); }
+.funil-step-new.step-1 .funil-bar-fill { background: linear-gradient(90deg, #8A7020, #C4A030, #E8C050); }
+.funil-step-new.step-2 .funil-bar-fill { background: linear-gradient(90deg, #604A10, #9A7A28, #B89038); }
+.funil-step-new.step-3 .funil-bar-fill { background: linear-gradient(90deg, #3A2C08, #6A5018, #8A6A28); }
+.funil-step-new.step-0 .funil-bar-vol { color: #F5C518; }
+.funil-step-new.step-1 .funil-bar-vol { color: #C4A030; }
+.funil-step-new.step-2 .funil-bar-vol { color: #9A7A28; }
+.funil-step-new.step-3 .funil-bar-vol { color: #EDD97A; }
+.funil-step-label-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: .56rem; font-weight: 800; text-transform: uppercase; letter-spacing: .8px;
+  padding: 2px 8px; border-radius: 20px;
+  margin-bottom: 2px;
+  width: fit-content;
+}
+.funil-step-new.step-0 .funil-step-label-badge { background: rgba(245,197,24,.12); color: #F5C518; border: 1px solid rgba(245,197,24,.22); }
+.funil-step-new.step-1 .funil-step-label-badge { background: rgba(196,160,48,.1); color: #C4A030; border: 1px solid rgba(196,160,48,.2); }
+.funil-step-new.step-2 .funil-step-label-badge { background: rgba(154,122,40,.1); color: #9A7A28; border: 1px solid rgba(154,122,40,.2); }
+.funil-step-new.step-3 .funil-step-label-badge { background: rgba(237,217,122,.1); color: #EDD97A; border: 1px solid rgba(237,217,122,.2); }
+
+.funil-taxa-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px 18px;
+  border-top: 1px solid rgba(245,197,24,.1);
+  background: rgba(245,197,24,.03);
+}
+
 /* ══ RESPONSIVE ══ */
+
 @media(max-width:1100px){
   .dash-grid{grid-template-columns:1fr}
+  .dash-grid-new{grid-template-columns:1fr}
+  .dash-col-right{position:static}
   .dash-left{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .materials-grid{grid-template-columns:repeat(3,1fr)}
 }
 @media(max-width:760px){
   .sidebar{display:none}.main{margin-left:0}
   .dash-left{display:flex;flex-direction:column}
+  .dash-bottom-row{grid-template-columns:1fr}
   .materials-grid{grid-template-columns:repeat(2,1fr)}
   .stats-row{grid-template-columns:1fr 1fr}
   .funil-label{min-width:130px}
@@ -592,7 +758,7 @@ input[type=date]::-webkit-datetime-edit-fields-wrapper{color:var(--g1)}
 <aside class="sidebar">
   <div class="sidebar-logo">
     <!-- LOGO LEÃO -->
-    <div class="logo-lion" style="background:transparent;border-radius:8px;overflow:hidden"><img src="data:image/png;base64,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" style="width:120px;height:auto;object-fit:contain;filter:drop-shadow(0 0 8px rgba(245,197,24,.15))" alt="Guilda"></div>
+    <div class="logo-lion" style="background:transparent;border-radius:8px;overflow:hidden"><img src="data:image/png;base64,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"" style="width:120px;height:auto;object-fit:contain;filter:drop-shadow(0 0 8px rgba(245,197,24,.15))" alt="Guilda"></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-item active" onclick="switchTab('dashboard')" data-tab="dashboard" data-tooltip="Dashboard">
@@ -659,202 +825,185 @@ input[type=date]::-webkit-datetime-edit-fields-wrapper{color:var(--g1)}
 
   <!-- ══ TAB: DASHBOARD ══ -->
   <div id="tab-dashboard" class="tab-content active">
-    <div class="dash-grid">
+    <div class="dash-grid-new">
 
-      <!-- COLUNA ESQUERDA: ranking + encontros -->
-    
+      <!-- COLUNA ESQUERDA: info membro (topo) + ranking + encontros (embaixo) -->
+      <div class="dash-col-left">
 
-      <!-- COLUNA ESQUERDA: membro + resumo -->
-      <div class="dash-left">
-
-        <!-- Hero -->
-        <div class="hero">
+        <!-- ══ HERO CARD ══ -->
+        <div class="hero" id="heroCard">
           <div class="hero-glow-gold"></div>
-          <div class="hero-inner" style="display:flex;gap:20px;align-items:center">
-            <!-- Badge grande -->
-            <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px">
-              <img id="heroBadgeImg" src="" alt="badge" style="width:72px;height:72px;object-fit:contain;display:none;filter:drop-shadow(0 0 12px rgba(245,197,24,.3))">
-              <div id="heroBadgeSvg" style="width:72px;height:72px;display:flex;align-items:center;justify-content:center;background:rgba(245,197,24,.08);border-radius:50%;border:2px solid rgba(245,197,24,.2)">
-                <svg width="36" height="36" viewBox="0 0 28 28" fill="none"><path d="M14 2L3 8v7c0 6 4.3 11.6 11 12.9C20.7 26.6 25 21 25 15V8L14 2z" stroke="#F5C518" stroke-width="1.5" fill="rgba(245,197,24,.1)"/></svg>
+          <!-- linha dourada topo -->
+          <div class="hero-inner">
+            <!-- BADGE + NÍVEL -->
+            <div class="hero-badge-col">
+              <img id="heroBadgeImg" src="" alt="badge" style="width:80px;height:80px;object-fit:contain;display:none;filter:drop-shadow(0 0 14px rgba(245,197,24,.45))">
+              <div id="heroBadgeSvg" style="width:80px;height:80px;display:flex;align-items:center;justify-content:center;background:rgba(245,197,24,.06);border-radius:50%;border:2px solid rgba(245,197,24,.22)">
+                <svg width="40" height="40" viewBox="0 0 28 28" fill="none"><path d="M14 2L3 8v7c0 6 4.3 11.6 11 12.9C20.7 26.6 25 21 25 15V8L14 2z" stroke="#F5C518" stroke-width="1.5" fill="rgba(245,197,24,.1)"/></svg>
               </div>
-              <span id="heroBadgeEmoji" style="font-size:1.1rem">🔰</span>
+              <div id="heroBadgeLevel" style="font-size:.58rem;font-weight:900;text-transform:uppercase;letter-spacing:1.2px;color:rgba(245,197,24,.75);text-align:center;margin-top:4px">NV 2</div>
             </div>
-            <!-- Info -->
-            <div class="hero-body" style="flex:1;min-width:0">
-              <div id="heroName" style="font-size:1.35rem;font-weight:800;color:#F0EDE0;line-height:1.1;margin-bottom:4px">Wilton Almeida</div>
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-                <span id="heroLevelBadge" style="background:rgba(245,197,24,.15);color:#F5C518;font-size:.65rem;font-weight:800;padding:2px 8px;border-radius:20px;border:1px solid rgba(245,197,24,.3);letter-spacing:.5px">NÍVEL 2</span>
-                <span id="heroLevelName" style="color:#A0A890;font-size:.75rem;font-weight:600">Captador</span>
+            <!-- INFO MEMBRO -->
+            <div class="hero-body">
+              <div id="heroName" style="font-size:1.6rem;font-weight:900;color:#EDD97A;line-height:1.1;margin-bottom:6px;letter-spacing:-.5px">Wilton Almeida</div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+                <span id="heroLevelBadge" style="background:linear-gradient(135deg,rgba(245,197,24,.18),rgba(180,140,10,.12));color:#EDD97A;font-size:.72rem;font-weight:900;padding:4px 12px;border-radius:20px;border:1px solid rgba(245,197,24,.35);letter-spacing:.6px">NÍVEL 2</span>
+                <span id="heroLevelName" style="color:#C4B870;font-size:.82rem;font-weight:700;letter-spacing:.3px">Captador</span>
               </div>
-              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
-                <span id="heroXpCurrent" style="font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:900;color:#F5C518">1.500 XP</span>
-                <span id="heroXpRemaining" style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:600;color:#7A786A">faltam 4.500 XP</span>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px">
+                <span id="heroXpCurrent" style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:900;color:#EDD97A">1.500 XP</span>
+                <span id="heroXpRemaining" style="font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:600;color:rgba(180,170,120,.55)">faltam 4.500 XP</span>
               </div>
-              <div class="xp-bar" style="margin-bottom:6px"><div class="xp-fill" id="xpFill" style="width:20%"></div></div>
+              <div class="xp-bar" style="margin-bottom:7px"><div class="xp-fill" id="xpFill" style="width:20%"></div></div>
               <div style="display:flex;justify-content:space-between">
-                <span style="font-size:.6rem;color:#5A584E;font-weight:600">Prospector → Captador</span>
-                <span id="heroNextLevel" style="font-size:.6rem;color:#5A584E;font-weight:600">próximo: Parceiro N3</span>
+                <span style="font-size:.62rem;color:rgba(140,135,100,.6);font-weight:600">Prospector → Captador</span>
+                <span id="heroNextLevel" style="font-size:.62rem;color:rgba(140,135,100,.6);font-weight:600">próximo: Parceiro N3</span>
               </div>
             </div>
           </div>
         </div>
         <span id="heroLevelNum" style="display:none"></span>
-
-        <!-- Resumo Semanal -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <div class="card-icon gold"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-              Resumo Semanal
-            </div>
-          </div>
-          <div class="metrics-grid">
-            <div class="metric-tile"><div class="metric-label">Contatos tentados</div><div class="metric-value" id="mContatos" style="color:#F5C518">47</div></div>
-            <div class="metric-tile"><div class="metric-label">Lig. atendidas</div><div class="metric-value" id="mAtendidas" style="color:#F5C518">23</div></div>
-            <div class="metric-tile"><div class="metric-label">Decisores</div><div class="metric-value" id="mDecisores" style="color:#F5C518">8</div></div>
-            <div class="metric-tile"><div class="metric-label">Reuniões marcadas</div><div class="metric-value" id="mReunioes" style="color:#22C55E">2</div></div>
-          </div>
-          <div style="border-top:1px solid rgba(255,255,255,.06);margin-top:12px;padding-top:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-            <div style="text-align:center">
-              <div style="font-size:.58rem;color:#5A584E;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">XP esta semana</div>
-              <div style="font-family:'JetBrains Mono',monospace;font-size:.92rem;font-weight:800;color:#F5C518">+340 XP</div>
-            </div>
-            <div style="text-align:center;border-left:1px solid rgba(255,255,255,.06);border-right:1px solid rgba(255,255,255,.06)">
-              <div style="font-size:.58rem;color:#5A584E;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Conversão</div>
-              <div style="font-family:'JetBrains Mono',monospace;font-size:.92rem;font-weight:800;color:#A0A890">17%</div>
-            </div>
-            <div style="text-align:center">
-              <div style="font-size:.58rem;color:#5A584E;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Ranking</div>
-              <div style="font-family:'JetBrains Mono',monospace;font-size:.92rem;font-weight:800;color:#A0A890">#11</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- stats ocultos usados pelo JS -->
         <span id="heroRankPos" style="display:none">—</span>
         <span id="heroRankTotal" style="display:none">Ranking</span>
         <span id="metLigacoes" style="display:none">0</span>
         <span id="metDecisores" style="display:none">0</span>
 
-      </div><!-- /dash-center -->
+        <!-- ══ RANKING + ENCONTROS: 2 colunas lado a lado ══ -->
+        <div class="dash-bottom-row">
 
-      <!-- COLUNA DIREITA: ranking + encontros -->
-      <div class="dash-center">
-
-        <div class="card card-goldline">
-          <div class="card-header">
-            <div class="card-title">
-              <div class="card-icon"><svg viewBox="0 0 24 24"><polyline points="18 20 18 10"/><polyline points="12 20 12 4"/><polyline points="6 20 6 14"/></svg></div>
-              Ranking Semanal
+          <!-- Ranking Semanal -->
+          <div class="card card-goldline">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 20 18 10"/><polyline points="12 20 12 4"/><polyline points="6 20 6 14"/></svg></div>
+                Ranking Semanal
+              </div>
+              <span class="card-action" onclick="switchTab('ranking')">completo →</span>
             </div>
-            <span class="card-action" onclick="switchTab('ranking')">completo →</span>
-          </div>
-          <div id="dashRanking">
-  <div style="display:flex;flex-direction:column;gap:6px;padding:4px 0">
-    <!-- 1º lugar -->
-    <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.15)">
-      <span style="font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:900;color:#F5C518;min-width:18px">🥇</span>
-      <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#F5C518,#D4A017);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#1A1A20;flex-shrink:0">RM</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:.78rem;font-weight:700;color:#F0EDE0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Rafael Mendes</div>
-        <div style="font-size:.58rem;color:#F5C518;font-weight:600">🏅 Consultor</div>
-      </div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#F5C518">42.800</div>
+            <div id="dashRanking">
+  <div style="display:flex;flex-direction:column;gap:5px;padding:2px 0">
+    <div style="display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.15)">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:900;color:#F5C518;min-width:18px">🥇</span>
+      <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#F5C518,#D4A017);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#1A1A20;flex-shrink:0">RM</div>
+      <div style="flex:1;min-width:0"><div style="font-size:.75rem;font-weight:700;color:#D4BC62;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Rafael Mendes</div><div style="font-size:.56rem;color:#C4A840;font-weight:600">Consultor</div></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:800;color:#F5C518">42.800</div>
     </div>
-    <!-- 2º -->
-    <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;background:rgba(255,255,255,.03)">
-      <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:900;color:#C0C8D0;min-width:18px">🥈</span>
-      <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#B0B8C8,#8090A0);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#fff;flex-shrink:0">CV</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:.74rem;font-weight:700;color:#C8C6B8">Carla Vasconcelos</div>
-        <div style="font-size:.56rem;color:#7A7890;font-weight:600">⭐ Elite</div>
-      </div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:800;color:#A0A0B0">28.950</div>
+    <div style="display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:10px;background:rgba(255,255,255,.03)">
+      <span style="font-size:.7rem;font-weight:900;color:#C0C8D0;min-width:18px">🥈</span>
+      <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#B0B8C8,#8090A0);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:#fff;flex-shrink:0">CV</div>
+      <div style="flex:1;min-width:0"><div style="font-size:.72rem;font-weight:700;color:#B0A880">Carla Vasconcelos</div><div style="font-size:.54rem;color:#7A7890;font-weight:600">Elite</div></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:800;color:#A0A0B0">28.950</div>
     </div>
-    <!-- 3º -->
-    <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;background:rgba(255,255,255,.03)">
-      <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:900;color:#CD7F32;min-width:18px">🥉</span>
-      <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#CD7F32,#A06020);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#fff;flex-shrink:0">PD</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:.74rem;font-weight:700;color:#C8C6B8">Pedro Drummond</div>
-        <div style="font-size:.56rem;color:#7A7890;font-weight:600">⭐ Elite</div>
-      </div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:800;color:#A0A0B0">22.340</div>
+    <div style="display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:10px;background:rgba(255,255,255,.03)">
+      <span style="font-size:.7rem;font-weight:900;color:#CD7F32;min-width:18px">🥉</span>
+      <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#CD7F32,#A06020);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:#fff;flex-shrink:0">PD</div>
+      <div style="flex:1;min-width:0"><div style="font-size:.72rem;font-weight:700;color:#B0A880">Pedro Drummond</div><div style="font-size:.54rem;color:#7A7890;font-weight:600">Elite</div></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:800;color:#A0A0B0">22.340</div>
     </div>
-    <!-- 4-5 -->
-    <div style="display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:8px;opacity:.7">
-      <span style="font-size:.62rem;color:#5A584E;min-width:18px;font-weight:700">4°</span>
-      <div style="width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.58rem;color:#888;flex-shrink:0">AB</div>
-      <div style="flex:1"><div style="font-size:.7rem;color:#888">Ana Beatriz Lima</div></div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:#666">16.760</div>
+    <div style="display:flex;align-items:center;gap:9px;padding:6px 10px;border-radius:8px;opacity:.65">
+      <span style="font-size:.6rem;color:#5A584E;min-width:18px;font-weight:700">4°</span>
+      <div style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:.55rem;color:#888;flex-shrink:0">AB</div>
+      <div style="flex:1"><div style="font-size:.68rem;color:#888">Ana Beatriz Lima</div></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;color:#666">16.760</div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:8px;opacity:.7">
-      <span style="font-size:.62rem;color:#5A584E;min-width:18px;font-weight:700">5°</span>
-      <div style="width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.58rem;color:#888;flex-shrink:0">MC</div>
-      <div style="flex:1"><div style="font-size:.7rem;color:#888">Marcos Cavalcante</div></div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:#666">12.980</div>
+    <div style="display:flex;align-items:center;gap:9px;padding:6px 10px;border-radius:8px;opacity:.55">
+      <span style="font-size:.6rem;color:#5A584E;min-width:18px;font-weight:700">5°</span>
+      <div style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:.55rem;color:#888;flex-shrink:0">MC</div>
+      <div style="flex:1"><div style="font-size:.68rem;color:#888">Marcos Cavalcante</div></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;color:#666">12.980</div>
     </div>
-    <!-- Você - 11º -->
-    <div style="border-top:1px solid rgba(245,197,24,.1);margin-top:4px;padding-top:8px;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;background:rgba(245,197,24,.04);border:1px solid rgba(245,197,24,.1)">
-      <span style="font-size:.62rem;color:#F5C518;min-width:18px;font-weight:800">11°</span>
-      <div style="width:24px;height:24px;border-radius:50%;background:rgba(245,197,24,.2);display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:800;color:#F5C518;flex-shrink:0">WA</div>
-      <div style="flex:1"><div style="font-size:.72rem;color:#F5C518;font-weight:700">Wilton Almeida <span style="font-size:.55rem;opacity:.7">← você</span></div></div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#F5C518;font-weight:800">1.500</div>
+    <!-- Você -->
+    <div style="border-top:1px solid rgba(245,197,24,.1);margin-top:3px;padding-top:6px;display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:8px;background:rgba(245,197,24,.05);border:1px solid rgba(245,197,24,.12)">
+      <span style="font-size:.6rem;color:#F5C518;min-width:18px;font-weight:800">11°</span>
+      <div style="width:22px;height:22px;border-radius:50%;background:rgba(245,197,24,.2);display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:800;color:#F5C518;flex-shrink:0">WA</div>
+      <div style="flex:1"><div style="font-size:.7rem;color:#D4BC62;font-weight:700">Wilton <span style="font-size:.52rem;opacity:.6">← você</span></div></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:#D4BC62;font-weight:800">1.500</div>
     </div>
   </div>
 </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <div class="card-icon gold"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-              Próximos Encontros
-            </div>
-            <span class="card-action" onclick="switchTab('encontros')">todos →</span>
           </div>
-          <div id="dashMeetings">
-  <div style="display:flex;flex-direction:column;gap:8px;padding:2px 0">
-    <!-- Encontro 1 -->
-    <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:rgba(18,18,20,1);border:1px solid rgba(255,255,255,.1)">
-      <div style="min-width:42px;width:42px;height:42px;border-radius:9px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:900;color:#F5C518;line-height:1">08</div>
-        <div style="font-size:.4rem;font-weight:700;letter-spacing:1px;color:#806A30;text-transform:uppercase">MAR</div>
+
+          <!-- Próximos Encontros -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="card-icon gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+                Próximos Encontros
+              </div>
+              <span class="card-action" onclick="switchTab('encontros')">todos →</span>
+            </div>
+            <div id="dashMeetings">
+  <div style="display:flex;flex-direction:column;gap:7px;padding:2px 0">
+    <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:10px;background:rgba(12,12,14,1);border:1px solid rgba(255,255,255,.09)">
+      <div style="min-width:40px;width:40px;height:40px;border-radius:9px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.14);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:900;color:#F5C518;line-height:1">08</div>
+        <div style="font-size:.38rem;font-weight:700;letter-spacing:.8px;color:#806A30;text-transform:uppercase">MAR</div>
       </div>
       <div style="flex:1;min-width:0">
-        <div style="font-size:.78rem;font-weight:700;color:#E8E6D8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Análise de Ligações — Sessão Semanal</div>
-        <div style="font-size:.64rem;color:#7289DA;font-weight:700;margin-top:2px">🎮 Discord · <span style="color:#22C55E">● Confirmado</span></div>
+        <div style="font-size:.75rem;font-weight:700;color:#C8C0A0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Análise de Ligações — Sessão Semanal</div>
+        <div style="font-size:.6rem;color:#7289DA;font-weight:600;margin-top:2px">🎮 Discord · <span style="color:#22C55E">● Confirmado</span></div>
       </div>
     </div>
-    <!-- Encontro 2 -->
-    <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:rgba(15,15,17,.98);border:1px solid rgba(255,255,255,.07)">
-      <div style="min-width:42px;width:42px;height:42px;border-radius:9px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:900;color:#F5C518;line-height:1">11</div>
-        <div style="font-size:.4rem;font-weight:700;letter-spacing:1px;color:#806A30;text-transform:uppercase">MAR</div>
+    <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:10px;background:rgba(10,10,12,.98);border:1px solid rgba(255,255,255,.06)">
+      <div style="min-width:40px;width:40px;height:40px;border-radius:9px;background:rgba(245,197,24,.06);border:1px solid rgba(245,197,24,.1);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:900;color:#F5C518;line-height:1">11</div>
+        <div style="font-size:.38rem;font-weight:700;letter-spacing:.8px;color:#806A30;text-transform:uppercase">MAR</div>
       </div>
       <div style="flex:1;min-width:0">
-        <div style="font-size:.78rem;font-weight:700;color:#E8E6D8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Call de Alinhamento de Metas — Março</div>
-        <div style="font-size:.64rem;color:#00C853;font-weight:700;margin-top:2px">📹 Google Meet · <span style="color:#22C55E">● Confirmado</span></div>
+        <div style="font-size:.75rem;font-weight:700;color:#C8C0A0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Call de Alinhamento de Metas — Março</div>
+        <div style="font-size:.6rem;color:#00C853;font-weight:600;margin-top:2px">📹 Google Meet · <span style="color:#22C55E">● Confirmado</span></div>
       </div>
     </div>
-    <!-- Encontro 3 - bloqueado -->
-    <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:rgba(13,13,15,.96);border:1px solid rgba(255,255,255,.04);filter:blur(1px) saturate(.2);opacity:.4;position:relative">
-      <div style="min-width:42px;width:42px;height:42px;border-radius:9px;background:rgba(255,255,255,.04);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:900;color:#888;line-height:1">21</div>
-        <div style="font-size:.4rem;font-weight:700;letter-spacing:1px;color:#555;text-transform:uppercase">MAR</div>
+    <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:10px;background:rgba(9,9,11,.95);border:1px solid rgba(255,255,255,.04);filter:blur(1px) saturate(.2);opacity:.38">
+      <div style="min-width:40px;width:40px;height:40px;border-radius:9px;background:rgba(255,255,255,.03);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:900;color:#888;line-height:1">21</div>
+        <div style="font-size:.38rem;font-weight:700;letter-spacing:.8px;color:#555;text-transform:uppercase">MAR</div>
       </div>
       <div style="flex:1;min-width:0">
-        <div style="font-size:.78rem;font-weight:700;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Observação de Reunião ao Vivo</div>
-        <div style="font-size:.62rem;color:#F87171;font-weight:700;margin-top:2px">🔒 Nível 2 necessário</div>
+        <div style="font-size:.75rem;font-weight:700;color:#666">Observação de Reunião ao Vivo</div>
+        <div style="font-size:.6rem;color:#F87171;font-weight:700;margin-top:2px">🔒 Nível 2 necessário</div>
       </div>
     </div>
   </div>
 </div>
+          </div>
+
+        </div><!-- /dash-bottom-row -->
+
+      </div><!-- /dash-col-left -->
+
+      <!-- COLUNA DIREITA: funil de conversão -->
+      <div class="dash-col-right">
+        <div class="funil-card" id="funilDashCard">
+          <div class="funil-card-header">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:30px;height:30px;border-radius:9px;background:rgba(245,197,24,.12);border:1px solid rgba(245,197,24,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F5C518" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+              </div>
+              <div>
+                <div style="font-size:.88rem;font-weight:800;color:#D4BC62;letter-spacing:.2px">Funil de Conversão</div>
+                <div style="font-size:.58rem;color:rgba(180,165,100,.5);font-weight:600;margin-top:1px;text-transform:uppercase;letter-spacing:.8px">Mensal · atualiza com diário</div>
+              </div>
+            </div>
+            <div id="funilPeriodBadge" style="font-size:.62rem;font-weight:700;color:rgba(245,197,24,.6);background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.15);padding:3px 10px;border-radius:20px">Este mês</div>
+          </div>
+
+          <!-- FUNIL VISUAL VERTICAL -->
+          <div class="funil-visual" id="funilVisual">
+            <!-- Steps gerados por JS -->
+            <div class="funil-empty-state">
+              <div style="font-size:2rem;margin-bottom:8px">📊</div>
+              <div style="font-size:.8rem;color:#5A584E;font-weight:600">Preencha o diário para ver seu funil</div>
+            </div>
+          </div>
+
+          <!-- TAXA GERAL -->
+          <div class="funil-taxa-row">
+            <span style="font-size:.72rem;font-weight:700;color:rgba(200,185,120,.7);text-transform:uppercase;letter-spacing:.8px">Taxa geral (Ligação → Reunião)</span>
+            <span id="funilTaxaGeral" style="font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:900;color:#EDD97A">—</span>
+          </div>
         </div>
-
-      </div><!-- /dash-left -->
-
-    
+      </div><!-- /dash-col-right -->
 
     </div>
   </div><!-- /tab-dashboard -->
@@ -1919,23 +2068,32 @@ function renderHero() {
   if (badgeImgEl && lvl.badge) {
     badgeImgEl.src = lvl.badge;
     badgeImgEl.style.display = 'block';
-    document.getElementById('heroBadgeSvg').style.display = 'none';
+    const svgEl = document.getElementById('heroBadgeSvg');
+    if (svgEl) svgEl.style.display = 'none';
   }
+  // Remove emoji se existir
   const badgeEmojiEl = document.getElementById('heroBadgeEmoji');
-  if (badgeEmojiEl) badgeEmojiEl.textContent = lvl.emoji || '';
+  if (badgeEmojiEl) badgeEmojiEl.remove();
 
-  // Nome e nível
+  // Badge level label
+  const badgeLvlEl = document.getElementById('heroBadgeLevel');
+  if (badgeLvlEl) badgeLvlEl.textContent = `NV ${lvl.level} · ${lvl.name}`;
+
+  // Nome
   const nameEl = document.getElementById('heroName');
   if (nameEl) nameEl.textContent = userProfile.name || 'Membro';
 
+  // Level badge
   const lvlBadgeEl = document.getElementById('heroLevelBadge');
-  if (lvlBadgeEl) lvlBadgeEl.textContent = `NÍVEL ${lvl.level}`;
+  if (lvlBadgeEl) {
+    lvlBadgeEl.textContent = `NÍVEL ${lvl.level}`;
+  }
 
   const lvlNameEl = document.getElementById('heroLevelName');
   if (lvlNameEl) lvlNameEl.textContent = lvl.name || '';
 
   // XP bar
-  const barEl = document.getElementById('heroXpBar');
+  const barEl = document.getElementById('xpFill');
   if (barEl) barEl.style.width = pct + '%';
 
   const xpCurEl = document.getElementById('heroXpCurrent');
@@ -1943,13 +2101,85 @@ function renderHero() {
 
   const xpRemEl = document.getElementById('heroXpRemaining');
   if (xpRemEl) xpRemEl.textContent = next ? `faltam ${remaining} XP` : 'Nível máximo';
+
   const nextLvlEl = document.getElementById('heroNextLevel');
   if (nextLvlEl && next) nextLvlEl.textContent = `próximo: ${next.name} N${next.level}`;
+}
 
-  // Cor do nível no hero card
-  const heroCard = document.getElementById('heroCard');
-  if (heroCard && lvl.cor) {
-    heroCard.style.setProperty('--lvl-cor', lvl.cor);
+// ═══ FUNIL DASHBOARD ═══
+async function renderFunilDash() {
+  const el = document.getElementById('funilVisual');
+  if (!el) return;
+
+  const now = new Date();
+  const y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,'0');
+  const lastDay = new Date(y, now.getMonth()+1, 0).getDate();
+  const from = `${y}-${m}-01`;
+  const to   = `${y}-${m}-${String(lastDay).padStart(2,'0')}`;
+
+  let totalLig=0, totalConn=0, totalDec=0, totalReun=0;
+
+  try {
+    const { data: diary } = await sb.from('diary_entries').select('*')
+      .eq('user_id', userSession.user.id)
+      .gte('date', from).lte('date', to);
+    if (diary && diary.length > 0) {
+      diary.forEach(d => {
+        totalLig  += d.contatos_tentados   || 0;
+        totalConn += d.ligacoes_atendidas  || 0;
+        totalDec  += d.conexao_decisor     || 0;
+        totalReun += d.reunioes_marcadas   || 0;
+      });
+    }
+  } catch(e) {
+    // demo fallback
+    totalLig=47; totalConn=23; totalDec=8; totalReun=2;
+  }
+
+  const steps = [
+    { label: 'Ligações Totais',         vol: totalLig,  base: totalLig,   idx: 0 },
+    { label: 'Conexões c/ Atendente',   vol: totalConn, base: totalLig,   idx: 1 },
+    { label: 'Conexões c/ Decisor',     vol: totalDec,  base: totalLig,   idx: 2 },
+    { label: 'Reuniões Agendadas',      vol: totalReun, base: totalLig,   idx: 3 },
+  ];
+
+  const maxVol = totalLig || 1;
+  const badges = ['TOPO','ATEND.','DECISOR','REUNIÃO'];
+  const icons  = ['📞','🤝','🎯','📅'];
+
+  let html = '';
+  steps.forEach((s, i) => {
+    const barPct = Math.min(100, s.vol > 0 ? Math.round((s.vol / maxVol) * 100) : 0);
+    const convPct = i > 0 && steps[i-1].vol > 0 
+      ? ((s.vol / steps[i-1].vol) * 100).toFixed(0) + '%'
+      : (i === 0 ? '100%' : '—');
+
+    html += `<div class="funil-step-new step-${i}">`;
+    html += `<div style="display:flex;align-items:center;gap:6px;padding-top:${i>0?'4px':'0'}">
+      <span class="funil-step-label-badge">${icons[i]} ${badges[i]}</span>
+      ${i > 0 ? `<span style="font-size:.58rem;color:rgba(160,150,100,.5);font-weight:600">→ conv. ${convPct}</span>` : ''}
+    </div>`;
+    html += `<div class="funil-bar-container">`;
+    html += `<span class="funil-bar-label">${s.label}</span>`;
+    html += `<div class="funil-bar-outer">
+      <div class="funil-bar-fill" style="width:${barPct}%">
+        ${barPct > 20 ? `<span class="funil-bar-pct">${barPct}%</span>` : ''}
+      </div>
+    </div>`;
+    html += `<span class="funil-bar-vol">${s.vol.toLocaleString('pt-BR')}</span>`;
+    html += `</div>`;
+    if (i < steps.length - 1) {
+      html += `<div class="funil-connector" style="background:rgba(245,197,24,.25)"></div>`;
+    }
+    html += `</div>`;
+  });
+
+  el.innerHTML = html || '<div class="funil-empty-state"><div style="font-size:2rem;margin-bottom:8px">📊</div><div style="font-size:.8rem;color:#5A584E">Preencha o diário para ver seu funil</div></div>';
+
+  // Taxa geral
+  const taxaEl = document.getElementById('funilTaxaGeral');
+  if (taxaEl) {
+    taxaEl.textContent = totalLig > 0 ? ((totalReun/totalLig)*100).toFixed(1)+'%' : '—';
   }
 }
 
@@ -2627,6 +2857,8 @@ async function loadAll() {
   renderUnlockPreview();
   renderArsenalLocked();
   renderMissoesLocked();
+  renderHero();
+  renderFunilDash();
 }
 
 async function buildDayBar() {
@@ -3029,6 +3261,7 @@ window.salvarDiario = async () => {
   alert('Diário salvo!');
   loadDiario();
   loadDashboard();
+  renderFunilDash();
 };
 
 async function resetMetricasPeriod() {
