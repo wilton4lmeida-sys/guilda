@@ -215,8 +215,8 @@ body::after {
 /* ══ DASHBOARD: coluna esquerda | centro ══ */
 .dash-grid{
   display:grid;
-  grid-template-columns:2fr 3fr;
-  gap:16px;align-items:start;
+  grid-template-columns:minmax(0,62%) minmax(0,38%);
+  gap:20px;align-items:start;
 }
 .dash-left{display:flex;flex-direction:column;gap:16px}   /* agora: info membro + resumo */
 .dash-center{display:flex;flex-direction:column;gap:16px} /* agora: ranking + encontros */
@@ -670,25 +670,31 @@ input[type=date]::-webkit-datetime-edit-fields-wrapper{color:var(--g1)}
         <!-- Hero -->
         <div class="hero">
           <div class="hero-glow-gold"></div>
-          <div class="hero-inner">
-            <div class="hero-badge" id="heroBadge">
-              <div class="badge-svg" id="heroBadgeSvg">
-                <svg viewBox="0 0 28 28" fill="none"><path d="M14 2L3 8v7c0 6 4.3 11.6 11 12.9C20.7 26.6 25 21 25 15V8L14 2z" stroke="#383848" stroke-width="1.5" fill="rgba(55,55,68,.2)"/></svg>
+          <div class="hero-inner" style="display:flex;gap:20px;align-items:center">
+            <!-- Badge grande -->
+            <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px">
+              <img id="heroBadgeImg" src="" alt="badge" style="width:72px;height:72px;object-fit:contain;display:none;filter:drop-shadow(0 0 12px rgba(245,197,24,.3))">
+              <div id="heroBadgeSvg" style="width:72px;height:72px;display:flex;align-items:center;justify-content:center;background:rgba(245,197,24,.08);border-radius:50%;border:2px solid rgba(245,197,24,.2)">
+                <svg width="36" height="36" viewBox="0 0 28 28" fill="none"><path d="M14 2L3 8v7c0 6 4.3 11.6 11 12.9C20.7 26.6 25 21 25 15V8L14 2z" stroke="#F5C518" stroke-width="1.5" fill="rgba(245,197,24,.1)"/></svg>
               </div>
-              <span class="badge-title" id="heroBadgeTitle">Recruta</span>
+              <span id="heroBadgeEmoji" style="font-size:1.1rem">🔰</span>
             </div>
-            <div class="hero-body">
-              <div class="hero-name" id="heroName">Bem-vindo</div>
-              <div class="hero-lvl-row">
-                <span class="hero-lvl-badge" id="heroLevelName">Recruta</span>
-                <span class="hero-lvl-rank" id="heroLevelRank">Nível 0</span>
+            <!-- Info -->
+            <div class="hero-body" style="flex:1;min-width:0">
+              <div id="heroName" style="font-size:1.35rem;font-weight:800;color:#F0EDE0;line-height:1.1;margin-bottom:4px">Wilton Almeida</div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                <span id="heroLevelBadge" style="background:rgba(245,197,24,.15);color:#F5C518;font-size:.65rem;font-weight:800;padding:2px 8px;border-radius:20px;border:1px solid rgba(245,197,24,.3);letter-spacing:.5px">NÍVEL 2</span>
+                <span id="heroLevelName" style="color:#A0A890;font-size:.75rem;font-weight:600">Captador</span>
               </div>
-              <div class="hero-xp-row">
-                <span class="hero-xp-val" id="heroXpCurrent" style="font-size:.88rem;font-weight:800;color:#F5C518;font-family:'JetBrains Mono',monospace">0 XP</span>
-                <span id="heroXpRemaining" style="color:#B8B6A0;font-size:.68rem;font-weight:600;font-family:'JetBrains Mono',monospace">—</span>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+                <span id="heroXpCurrent" style="font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:900;color:#F5C518">1.500 XP</span>
+                <span id="heroXpRemaining" style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:600;color:#7A786A">faltam 4.500 XP</span>
               </div>
-              <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
-              <p id="heroSubtitle"></p>
+              <div class="xp-bar" style="margin-bottom:6px"><div class="xp-fill" id="xpFill" style="width:20%"></div></div>
+              <div style="display:flex;justify-content:space-between">
+                <span style="font-size:.6rem;color:#5A584E;font-weight:600">Prospector → Captador</span>
+                <span id="heroNextLevel" style="font-size:.6rem;color:#5A584E;font-weight:600">próximo: Parceiro N3</span>
+              </div>
             </div>
           </div>
         </div>
@@ -703,10 +709,24 @@ input[type=date]::-webkit-datetime-edit-fields-wrapper{color:var(--g1)}
             </div>
           </div>
           <div class="metrics-grid">
-            <div class="metric-tile"><div class="metric-label">Contatos tentados</div><div class="metric-value" id="mContatos">—</div></div>
-            <div class="metric-tile"><div class="metric-label">Lig. atendidas</div><div class="metric-value" id="mAtendidas">—</div></div>
-            <div class="metric-tile"><div class="metric-label">Decisores</div><div class="metric-value" id="mDecisores">—</div></div>
-            <div class="metric-tile"><div class="metric-label">Reuniões marcadas</div><div class="metric-value" id="mReunioes">—</div></div>
+            <div class="metric-tile"><div class="metric-label">Contatos tentados</div><div class="metric-value" id="mContatos" style="color:#F5C518">47</div></div>
+            <div class="metric-tile"><div class="metric-label">Lig. atendidas</div><div class="metric-value" id="mAtendidas" style="color:#F5C518">23</div></div>
+            <div class="metric-tile"><div class="metric-label">Decisores</div><div class="metric-value" id="mDecisores" style="color:#F5C518">8</div></div>
+            <div class="metric-tile"><div class="metric-label">Reuniões marcadas</div><div class="metric-value" id="mReunioes" style="color:#22C55E">2</div></div>
+          </div>
+          <div style="border-top:1px solid rgba(255,255,255,.06);margin-top:12px;padding-top:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div style="text-align:center">
+              <div style="font-size:.58rem;color:#5A584E;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">XP esta semana</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:.92rem;font-weight:800;color:#F5C518">+340 XP</div>
+            </div>
+            <div style="text-align:center;border-left:1px solid rgba(255,255,255,.06);border-right:1px solid rgba(255,255,255,.06)">
+              <div style="font-size:.58rem;color:#5A584E;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Conversão</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:.92rem;font-weight:800;color:#A0A890">17%</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:.58rem;color:#5A584E;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Ranking</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:.92rem;font-weight:800;color:#A0A890">#11</div>
+            </div>
           </div>
         </div>
 
@@ -729,7 +749,60 @@ input[type=date]::-webkit-datetime-edit-fields-wrapper{color:var(--g1)}
             </div>
             <span class="card-action" onclick="switchTab('ranking')">completo →</span>
           </div>
-          <div id="dashRanking"><div class="empty-state"><div class="empty-state-text">Carregando...</div></div></div>
+          <div id="dashRanking">
+  <div style="display:flex;flex-direction:column;gap:6px;padding:4px 0">
+    <!-- 1º lugar -->
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.15)">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:900;color:#F5C518;min-width:18px">🥇</span>
+      <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#F5C518,#D4A017);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#1A1A20;flex-shrink:0">RM</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#F0EDE0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Rafael Mendes</div>
+        <div style="font-size:.58rem;color:#F5C518;font-weight:600">🏅 Consultor</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#F5C518">42.800</div>
+    </div>
+    <!-- 2º -->
+    <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;background:rgba(255,255,255,.03)">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:900;color:#C0C8D0;min-width:18px">🥈</span>
+      <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#B0B8C8,#8090A0);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#fff;flex-shrink:0">CV</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.74rem;font-weight:700;color:#C8C6B8">Carla Vasconcelos</div>
+        <div style="font-size:.56rem;color:#7A7890;font-weight:600">⭐ Elite</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:800;color:#A0A0B0">28.950</div>
+    </div>
+    <!-- 3º -->
+    <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;background:rgba(255,255,255,.03)">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:900;color:#CD7F32;min-width:18px">🥉</span>
+      <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#CD7F32,#A06020);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#fff;flex-shrink:0">PD</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.74rem;font-weight:700;color:#C8C6B8">Pedro Drummond</div>
+        <div style="font-size:.56rem;color:#7A7890;font-weight:600">⭐ Elite</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:800;color:#A0A0B0">22.340</div>
+    </div>
+    <!-- 4-5 -->
+    <div style="display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:8px;opacity:.7">
+      <span style="font-size:.62rem;color:#5A584E;min-width:18px;font-weight:700">4°</span>
+      <div style="width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.58rem;color:#888;flex-shrink:0">AB</div>
+      <div style="flex:1"><div style="font-size:.7rem;color:#888">Ana Beatriz Lima</div></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:#666">16.760</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:8px;opacity:.7">
+      <span style="font-size:.62rem;color:#5A584E;min-width:18px;font-weight:700">5°</span>
+      <div style="width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.58rem;color:#888;flex-shrink:0">MC</div>
+      <div style="flex:1"><div style="font-size:.7rem;color:#888">Marcos Cavalcante</div></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:#666">12.980</div>
+    </div>
+    <!-- Você - 11º -->
+    <div style="border-top:1px solid rgba(245,197,24,.1);margin-top:4px;padding-top:8px;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;background:rgba(245,197,24,.04);border:1px solid rgba(245,197,24,.1)">
+      <span style="font-size:.62rem;color:#F5C518;min-width:18px;font-weight:800">11°</span>
+      <div style="width:24px;height:24px;border-radius:50%;background:rgba(245,197,24,.2);display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:800;color:#F5C518;flex-shrink:0">WA</div>
+      <div style="flex:1"><div style="font-size:.72rem;color:#F5C518;font-weight:700">Wilton Almeida <span style="font-size:.55rem;opacity:.7">← você</span></div></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#F5C518;font-weight:800">1.500</div>
+    </div>
+  </div>
+</div>
         </div>
 
         <div class="card">
@@ -740,7 +813,43 @@ input[type=date]::-webkit-datetime-edit-fields-wrapper{color:var(--g1)}
             </div>
             <span class="card-action" onclick="switchTab('encontros')">todos →</span>
           </div>
-          <div id="dashMeetings"><div class="empty-state"><div class="empty-state-text">Nenhum encontro</div></div></div>
+          <div id="dashMeetings">
+  <div style="display:flex;flex-direction:column;gap:8px;padding:2px 0">
+    <!-- Encontro 1 -->
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:rgba(18,18,20,1);border:1px solid rgba(255,255,255,.1)">
+      <div style="min-width:42px;width:42px;height:42px;border-radius:9px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:900;color:#F5C518;line-height:1">08</div>
+        <div style="font-size:.4rem;font-weight:700;letter-spacing:1px;color:#806A30;text-transform:uppercase">MAR</div>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#E8E6D8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Análise de Ligações — Sessão Semanal</div>
+        <div style="font-size:.64rem;color:#7289DA;font-weight:700;margin-top:2px">🎮 Discord · <span style="color:#22C55E">● Confirmado</span></div>
+      </div>
+    </div>
+    <!-- Encontro 2 -->
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:rgba(15,15,17,.98);border:1px solid rgba(255,255,255,.07)">
+      <div style="min-width:42px;width:42px;height:42px;border-radius:9px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:900;color:#F5C518;line-height:1">11</div>
+        <div style="font-size:.4rem;font-weight:700;letter-spacing:1px;color:#806A30;text-transform:uppercase">MAR</div>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#E8E6D8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Call de Alinhamento de Metas — Março</div>
+        <div style="font-size:.64rem;color:#00C853;font-weight:700;margin-top:2px">📹 Google Meet · <span style="color:#22C55E">● Confirmado</span></div>
+      </div>
+    </div>
+    <!-- Encontro 3 - bloqueado -->
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:rgba(13,13,15,.96);border:1px solid rgba(255,255,255,.04);filter:blur(1px) saturate(.2);opacity:.4;position:relative">
+      <div style="min-width:42px;width:42px;height:42px;border-radius:9px;background:rgba(255,255,255,.04);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:900;color:#888;line-height:1">21</div>
+        <div style="font-size:.4rem;font-weight:700;letter-spacing:1px;color:#555;text-transform:uppercase">MAR</div>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Observação de Reunião ao Vivo</div>
+        <div style="font-size:.62rem;color:#F87171;font-weight:700;margin-top:2px">🔒 Nível 2 necessário</div>
+      </div>
+    </div>
+  </div>
+</div>
         </div>
 
       </div><!-- /dash-left -->
@@ -754,7 +863,192 @@ input[type=date]::-webkit-datetime-edit-fields-wrapper{color:var(--g1)}
   <div id="tab-arsenal" class="tab-content">
     <div class="page-card">
       <div class="card-header"><div class="card-title"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="M16 16l4 4"/></svg></div>Arsenal de Materiais</div></div>
-      <div id="arsenalTopics"><div class="empty-state"><div class="empty-state-text">Carregando...</div></div></div>
+      <div id="arsenalTopics">
+
+<!-- ═══ TÓPICO: PROSPECÇÃO ═══ -->
+<div style="margin-bottom:16px;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden">
+  <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer;background:rgba(255,255,255,.03);user-select:none">
+    <div style="font-size:1.2rem">🎯</div>
+    <div style="flex:1">
+      <div style="font-size:.9rem;font-weight:800;color:#F0EDE0">Prospecção</div>
+      <div style="font-size:.62rem;color:#5A584E;font-weight:600;margin-top:1px">10 materiais · 4 desbloqueados</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="background:rgba(34,197,94,.1);color:#22C55E;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px;border:1px solid rgba(34,197,94,.2)">4/10</div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5A584E" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </div>
+  <div style="padding:12px 16px;display:flex;flex-direction:column;gap:8px">
+    <!-- Desbloqueados N0-N2 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:border-color .2s" onmouseover="this.style.borderColor='rgba(245,197,24,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
+        <div style="font-size:.65rem;color:#F5C518;font-weight:700;margin-bottom:4px">N0 · FUNDAMENTOS</div>
+        <div style="font-size:.82rem;font-weight:700;color:#E8E6D8;margin-bottom:6px">Introdução ao SPICED</div>
+        <div style="font-size:.62rem;color:#5A584E">PDF · 12 páginas · 45 min</div>
+      </div>
+      <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);cursor:pointer" onmouseover="this.style.borderColor='rgba(245,197,24,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
+        <div style="font-size:.65rem;color:#F5C518;font-weight:700;margin-bottom:4px">N0 · FUNDAMENTOS</div>
+        <div style="font-size:.82rem;font-weight:700;color:#E8E6D8;margin-bottom:6px">Oferta Rugido — Visão Geral</div>
+        <div style="font-size:.62rem;color:#5A584E">Vídeo · 18 min</div>
+      </div>
+      <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);cursor:pointer" onmouseover="this.style.borderColor='rgba(245,197,24,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
+        <div style="font-size:.65rem;color:#F5C518;font-weight:700;margin-bottom:4px">N0 · PRÁTICA</div>
+        <div style="font-size:.82rem;font-weight:700;color:#E8E6D8;margin-bottom:6px">Script Básico de Abordagem</div>
+        <div style="font-size:.62rem;color:#5A584E">PDF · 6 páginas</div>
+      </div>
+      <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);cursor:pointer" onmouseover="this.style.borderColor='rgba(245,197,24,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
+        <div style="font-size:.65rem;color:#A0D890;font-weight:700;margin-bottom:4px">N1 · AVANÇAR</div>
+        <div style="font-size:.82rem;font-weight:700;color:#E8E6D8;margin-bottom:6px">Playbook Completo de Prospecção</div>
+        <div style="font-size:.62rem;color:#5A584E">PDF · 28 páginas · 1h</div>
+      </div>
+    </div>
+    <!-- Bloqueados N2+ -->
+    <div style="position:relative;border-radius:10px;overflow:hidden">
+      <div style="filter:blur(3px) saturate(.15);pointer-events:none;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)">
+          <div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N2 · DADOS</div>
+          <div style="font-size:.82rem;font-weight:700;color:#666;margin-bottom:6px">Listas Enriquecidas com IA</div>
+          <div style="font-size:.62rem;color:#444">Planilha + Tutorial · 2h</div>
+        </div>
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)">
+          <div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N3 · MASTERCLASS</div>
+          <div style="font-size:.82rem;font-weight:700;color:#666;margin-bottom:6px">Cold Call Masterclass</div>
+          <div style="font-size:.62rem;color:#444">Vídeo · 2h30</div>
+        </div>
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)">
+          <div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N3 · FUNIL</div>
+          <div style="font-size:.82rem;font-weight:700;color:#666;margin-bottom:6px">Gestão de Funil Avançado</div>
+          <div style="font-size:.62rem;color:#444">PDF + Templates</div>
+        </div>
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)">
+          <div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N1 · SCRIPT</div>
+          <div style="font-size:.82rem;font-weight:700;color:#666;margin-bottom:6px">Objeções Mapeadas</div>
+          <div style="font-size:.62rem;color:#444">PDF · 20 páginas</div>
+        </div>
+      </div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:rgba(10,10,12,.4);border-radius:10px">
+        <div style="font-size:1.4rem">🔒</div>
+        <div style="font-size:.7rem;font-weight:700;color:#F87171">Chegue ao Nível 2+ para desbloquear</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TÓPICO: FOLLOW-UP ═══ -->
+<div style="margin-bottom:16px;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden">
+  <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer;background:rgba(255,255,255,.03);user-select:none">
+    <div style="font-size:1.2rem">🔁</div>
+    <div style="flex:1">
+      <div style="font-size:.9rem;font-weight:800;color:#F0EDE0">Follow-up</div>
+      <div style="font-size:.62rem;color:#5A584E;font-weight:600;margin-top:1px">8 materiais · 2 desbloqueados</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="background:rgba(96,165,250,.1);color:#60A5FA;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px;border:1px solid rgba(96,165,250,.2)">2/8</div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5A584E" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </div>
+  <div style="padding:12px 16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);cursor:pointer" onmouseover="this.style.borderColor='rgba(96,165,250,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
+        <div style="font-size:.65rem;color:#F5C518;font-weight:700;margin-bottom:4px">N0 · SEQUÊNCIA</div>
+        <div style="font-size:.82rem;font-weight:700;color:#E8E6D8;margin-bottom:6px">Sequência de Follow-up 7 Dias</div>
+        <div style="font-size:.62rem;color:#5A584E">PDF + Templates WhatsApp</div>
+      </div>
+      <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);cursor:pointer" onmouseover="this.style.borderColor='rgba(96,165,250,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
+        <div style="font-size:.65rem;color:#F5C518;font-weight:700;margin-bottom:4px">N0 · COPYWRITING</div>
+        <div style="font-size:.82rem;font-weight:700;color:#E8E6D8;margin-bottom:6px">Mensagens que Geram Resposta</div>
+        <div style="font-size:.62rem;color:#5A584E">PDF · 15 modelos prontos</div>
+      </div>
+    </div>
+    <div style="position:relative;border-radius:10px;overflow:hidden">
+      <div style="filter:blur(3px) saturate(.15);pointer-events:none;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04)"><div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N1 · CADÊNCIA</div><div style="font-size:.82rem;font-weight:700;color:#666">Cadência 30 Dias</div></div>
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04)"><div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N1 · ÁUDIO</div><div style="font-size:.82rem;font-weight:700;color:#666">Follow-up por Áudio</div></div>
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04)"><div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N2 · REATIVAÇÃO</div><div style="font-size:.82rem;font-weight:700;color:#666">Reativação de Leads Frios</div></div>
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04)"><div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N4 · MULTICANAL</div><div style="font-size:.82rem;font-weight:700;color:#666">Sequência Multicanal Premium</div></div>
+      </div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:rgba(10,10,12,.4);border-radius:10px">
+        <div style="font-size:1.2rem">🔒</div>
+        <div style="font-size:.7rem;font-weight:700;color:#F87171">Nível 1+ necessário</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TÓPICO: REUNIÃO ═══ -->
+<div style="margin-bottom:16px;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden">
+  <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer;background:rgba(255,255,255,.03);user-select:none">
+    <div style="font-size:1.2rem">🤝</div>
+    <div style="flex:1">
+      <div style="font-size:.9rem;font-weight:800;color:#F0EDE0">Condução de Reunião</div>
+      <div style="font-size:.62rem;color:#5A584E;font-weight:600;margin-top:1px">9 materiais · 2 desbloqueados</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="background:rgba(167,139,250,.1);color:#A78BFA;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px;border:1px solid rgba(167,139,250,.2)">2/9</div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5A584E" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </div>
+  <div style="padding:12px 16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);cursor:pointer" onmouseover="this.style.borderColor='rgba(167,139,250,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
+        <div style="font-size:.65rem;color:#F5C518;font-weight:700;margin-bottom:4px">N0 · ESTRUTURA</div>
+        <div style="font-size:.82rem;font-weight:700;color:#E8E6D8;margin-bottom:6px">Como Estruturar um Diagnóstico</div>
+        <div style="font-size:.62rem;color:#5A584E">Vídeo · 22 min</div>
+      </div>
+      <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);cursor:pointer" onmouseover="this.style.borderColor='rgba(167,139,250,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
+        <div style="font-size:.65rem;color:#F5C518;font-weight:700;margin-bottom:4px">N0 · CHECKLIST</div>
+        <div style="font-size:.82rem;font-weight:700;color:#E8E6D8;margin-bottom:6px">Checklist Pré-Reunião</div>
+        <div style="font-size:.62rem;color:#5A584E">PDF · 1 página · Imprimir</div>
+      </div>
+    </div>
+    <div style="position:relative;border-radius:10px;overflow:hidden">
+      <div style="filter:blur(3px) saturate(.15);pointer-events:none;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04)"><div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N1 · SPICED</div><div style="font-size:.82rem;font-weight:700;color:#666">SPICED na Reunião</div></div>
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04)"><div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N1 · OBJEÇÕES</div><div style="font-size:.82rem;font-weight:700;color:#666">Objeções em Reunião</div></div>
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04)"><div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N3 · IA</div><div style="font-size:.82rem;font-weight:700;color:#666">Análise de Calls com IA</div></div>
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04)"><div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N4 · PROPOSTA</div><div style="font-size:.82rem;font-weight:700;color:#666">Proposta de Alto Valor</div></div>
+      </div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:rgba(10,10,12,.4);border-radius:10px">
+        <div style="font-size:1.2rem">🔒</div>
+        <div style="font-size:.7rem;font-weight:700;color:#F87171">Nível 1+ necessário</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TÓPICO: AVANÇADO ═══ -->
+<div style="margin-bottom:4px;border:1px solid rgba(245,197,24,.15);border-radius:14px;overflow:hidden">
+  <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer;background:rgba(245,197,24,.04);user-select:none">
+    <div style="font-size:1.2rem">⚡</div>
+    <div style="flex:1">
+      <div style="font-size:.9rem;font-weight:800;color:#F0EDE0">Avançado & Premium</div>
+      <div style="font-size:.62rem;color:#806A30;font-weight:600;margin-top:1px">8 materiais · exclusivo Parceiro N3+</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="background:rgba(245,197,24,.1);color:#F5C518;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px;border:1px solid rgba(245,197,24,.2)">0/8</div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#806A30" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </div>
+  <div style="padding:12px 16px">
+    <div style="position:relative;border-radius:10px;overflow:hidden">
+      <div style="filter:blur(4px) saturate(.1);pointer-events:none;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04)"><div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N3 · MASTERCLASS</div><div style="font-size:.82rem;font-weight:700;color:#666">SPICED Avançado — Todos Módulos</div></div>
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04)"><div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N3 · PLAYBOOK</div><div style="font-size:.82rem;font-weight:700;color:#666">Playbook Alta Conversão</div></div>
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04)"><div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N4 · LISTAS</div><div style="font-size:.82rem;font-weight:700;color:#666">Prospecção por Listas Frias</div></div>
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04)"><div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N5 · PREMIUM</div><div style="font-size:.82rem;font-weight:700;color:#666">Kit Completo do Consultor</div></div>
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04)"><div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N4 · PIPELINE</div><div style="font-size:.82rem;font-weight:700;color:#666">Pipeline Performance</div></div>
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.04)"><div style="font-size:.65rem;color:#888;font-weight:700;margin-bottom:4px">N5 · METODOLOGIA</div><div style="font-size:.82rem;font-weight:700;color:#666">Metodologia de Projetos Premium</div></div>
+      </div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;background:rgba(10,10,12,.5);border-radius:10px">
+        <div style="font-size:2rem">🔒</div>
+        <div style="font-size:.78rem;font-weight:800;color:#F5C518">Seção Premium</div>
+        <div style="font-size:.65rem;color:#F87171;font-weight:600">Chegue ao Nível 3 — Parceiro para desbloquear</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
     </div>
   </div>
 
@@ -762,7 +1056,199 @@ input[type=date]::-webkit-datetime-edit-fields-wrapper{color:var(--g1)}
   <div id="tab-missoes" class="tab-content">
     <div class="page-card">
       <div class="card-header"><div class="card-title"><div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>Missões da Semana</div></div>
-      <div id="missoesList"><div class="empty-state"><div class="empty-state-text">Carregando...</div></div></div>
+      
+      <!-- Filtros de categoria -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+        <button style="padding:5px 14px;border-radius:20px;border:1px solid rgba(34,197,94,.4);background:rgba(34,197,94,.1);color:#22C55E;font-size:.65rem;font-weight:700;cursor:pointer">⚡ Diárias</button>
+        <button style="padding:5px 14px;border-radius:20px;border:1px solid rgba(96,165,250,.4);background:rgba(96,165,250,.1);color:#60A5FA;font-size:.65rem;font-weight:700;cursor:pointer">📅 Semanais</button>
+        <button style="padding:5px 14px;border-radius:20px;border:1px solid rgba(245,197,24,.4);background:rgba(245,197,24,.1);color:#F5C518;font-size:.65rem;font-weight:700;cursor:pointer">🏆 Mensais</button>
+        <span style="margin-left:auto;font-size:.62rem;color:#5A584E;align-self:center">13 missões ativas</span>
+      </div>
+      <div id="missoesList">
+<div style="font-size:.62rem;font-weight:800;color:#5A584E;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;padding-left:4px">⚡ Missões Diárias</div><div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:rgba(34,197,94, .04);border:1px solid rgba(34,197,94, .15);margin-bottom:8px">
+      <div style="width:22px;height:22px;border-radius:50%;border:2px solid #22C55E44;flex-shrink:0;cursor:pointer;background:#22C55E10"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.84rem;font-weight:700;color:#E8E6D8;margin-bottom:3px">10 Ligações usando SPICED</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="background:#22C55E18;color:#22C55E;font-size:.58rem;font-weight:700;padding:1px 6px;border-radius:8px">Prática</span>
+          
+          <span style="font-size:.6rem;color:#5A584E">Registre no diário após completar</span>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:900;color:#F5C518">+30 XP</div>
+        <div style="font-size:.58rem;color:#5A584E;margin-top:2px">Hoje · 23:59</div>
+      </div>
+    </div><div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:rgba(34,197,94, .04);border:1px solid rgba(34,197,94, .15);margin-bottom:8px">
+      <div style="width:22px;height:22px;border-radius:50%;border:2px solid #22C55E44;flex-shrink:0;cursor:pointer;background:#22C55E10"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.84rem;font-weight:700;color:#E8E6D8;margin-bottom:3px">Enviar Report de Áudio Diário</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="background:#60A5FA18;color:#60A5FA;font-size:.58rem;font-weight:700;padding:1px 6px;border-radius:8px">Execução</span>
+          
+          <span style="font-size:.6rem;color:#5A584E">Áudio de até 2min no grupo</span>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:900;color:#F5C518">+20 XP</div>
+        <div style="font-size:.58rem;color:#5A584E;margin-top:2px">Hoje · 23:59</div>
+      </div>
+    </div><div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:rgba(34,197,94, .04);border:1px solid rgba(34,197,94, .15);margin-bottom:8px">
+      <div style="width:22px;height:22px;border-radius:50%;border:2px solid #22C55E44;flex-shrink:0;cursor:pointer;background:#22C55E10"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.84rem;font-weight:700;color:#E8E6D8;margin-bottom:3px">Estudar 1 Módulo do Treinamento</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="background:#A78BFA18;color:#A78BFA;font-size:.58rem;font-weight:700;padding:1px 6px;border-radius:8px">Estudo</span>
+          
+          <span style="font-size:.6rem;color:#5A584E">Arsenal → qualquer módulo desbloqueado</span>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:900;color:#F5C518">+25 XP</div>
+        <div style="font-size:.58rem;color:#5A584E;margin-top:2px">Hoje · 23:59</div>
+      </div>
+    </div><div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:rgba(34,197,94, .04);border:1px solid rgba(34,197,94, .15);margin-bottom:8px">
+      <div style="width:22px;height:22px;border-radius:50%;border:2px solid #22C55E44;flex-shrink:0;cursor:pointer;background:#22C55E10"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.84rem;font-weight:700;color:#E8E6D8;margin-bottom:3px">Preencher Relatório Diário</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="background:#60A5FA18;color:#60A5FA;font-size:.58rem;font-weight:700;padding:1px 6px;border-radius:8px">Execução</span>
+          
+          <span style="font-size:.6rem;color:#5A584E">Aba Diário → campos obrigatórios</span>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:900;color:#F5C518">+15 XP</div>
+        <div style="font-size:.58rem;color:#5A584E;margin-top:2px">Hoje · 23:59</div>
+      </div>
+    </div><div style="height:8px"></div><div style="font-size:.62rem;font-weight:800;color:#5A584E;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;padding-left:4px">📅 Missões Semanais</div><div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:rgba(96,165,250, .04);border:1px solid rgba(96,165,250, .15);margin-bottom:8px">
+      <div style="width:22px;height:22px;border-radius:50%;border:2px solid #60A5FA44;flex-shrink:0;cursor:pointer;background:#60A5FA10"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.84rem;font-weight:700;color:#E8E6D8;margin-bottom:3px">Realizar 50 Ligações na Semana</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="background:#22C55E18;color:#22C55E;font-size:.58rem;font-weight:700;padding:1px 6px;border-radius:8px">Volume</span>
+          <div style="flex:1;background:rgba(255,255,255,.06);border-radius:4px;height:4px;max-width:80px"><div style="width:42%;height:4px;border-radius:4px;background:#22C55E"></div></div>
+          <span style="font-size:.6rem;color:#5A584E">21 de 50 ligações feitas</span>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:900;color:#F5C518">+150 XP</div>
+        <div style="font-size:.58rem;color:#5A584E;margin-top:2px">Dom · 06/03</div>
+      </div>
+    </div><div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:rgba(96,165,250, .04);border:1px solid rgba(96,165,250, .15);margin-bottom:8px">
+      <div style="width:22px;height:22px;border-radius:50%;border:2px solid #60A5FA44;flex-shrink:0;cursor:pointer;background:#60A5FA10"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.84rem;font-weight:700;color:#E8E6D8;margin-bottom:3px">Marcar 3 Reuniões com Decisores</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="background:#F5C51818;color:#F5C518;font-size:.58rem;font-weight:700;padding:1px 6px;border-radius:8px">Resultado</span>
+          <div style="flex:1;background:rgba(255,255,255,.06);border-radius:4px;height:4px;max-width:80px"><div style="width:66%;height:4px;border-radius:4px;background:#F5C518"></div></div>
+          <span style="font-size:.6rem;color:#5A584E">2 de 3 reuniões marcadas</span>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:900;color:#F5C518">+200 XP</div>
+        <div style="font-size:.58rem;color:#5A584E;margin-top:2px">Dom · 06/03</div>
+      </div>
+    </div><div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:rgba(96,165,250, .04);border:1px solid rgba(96,165,250, .15);margin-bottom:8px">
+      <div style="width:22px;height:22px;border-radius:50%;border:2px solid #60A5FA44;flex-shrink:0;cursor:pointer;background:#60A5FA10"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.84rem;font-weight:700;color:#E8E6D8;margin-bottom:3px">Participar de Sessão ao Vivo</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="background:#A78BFA18;color:#A78BFA;font-size:.58rem;font-weight:700;padding:1px 6px;border-radius:8px">Estudo</span>
+          
+          <span style="font-size:.6rem;color:#5A584E">Próximo encontro: 08/03</span>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:900;color:#F5C518">+80 XP</div>
+        <div style="font-size:.58rem;color:#5A584E;margin-top:2px">Dom · 06/03</div>
+      </div>
+    </div><div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:rgba(96,165,250, .04);border:1px solid rgba(96,165,250, .15);margin-bottom:8px">
+      <div style="width:22px;height:22px;border-radius:50%;border:2px solid #60A5FA44;flex-shrink:0;cursor:pointer;background:#60A5FA10"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.84rem;font-weight:700;color:#E8E6D8;margin-bottom:3px">Áudio de Análise Semanal</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="background:#FBB24C18;color:#FBB24C;font-size:.58rem;font-weight:700;padding:1px 6px;border-radius:8px">Análise</span>
+          
+          <span style="font-size:.6rem;color:#5A584E">O que foi bem? O que melhorar?</span>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:900;color:#F5C518">+100 XP</div>
+        <div style="font-size:.58rem;color:#5A584E;margin-top:2px">Dom · 06/03</div>
+      </div>
+    </div><div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:rgba(96,165,250, .04);border:1px solid rgba(96,165,250, .15);margin-bottom:8px">
+      <div style="width:22px;height:22px;border-radius:50%;border:2px solid #60A5FA44;flex-shrink:0;cursor:pointer;background:#60A5FA10"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.84rem;font-weight:700;color:#E8E6D8;margin-bottom:3px">Role-play com Feedback do Líder</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="background:#A78BFA18;color:#A78BFA;font-size:.58rem;font-weight:700;padding:1px 6px;border-radius:8px">Estudo</span>
+          
+          <span style="font-size:.6rem;color:#5A584E">Agendar com mentor via Discord</span>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:900;color:#F5C518">+120 XP</div>
+        <div style="font-size:.58rem;color:#5A584E;margin-top:2px">Dom · 06/03</div>
+      </div>
+    </div><div style="height:8px"></div><div style="font-size:.62rem;font-weight:800;color:#5A584E;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;padding-left:4px">🏆 Missões Mensais</div><div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:rgba(245,197,24, .04);border:1px solid rgba(245,197,24, .15);margin-bottom:8px">
+      <div style="width:22px;height:22px;border-radius:50%;border:2px solid #F5C51844;flex-shrink:0;cursor:pointer;background:#F5C51810"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.84rem;font-weight:700;color:#E8E6D8;margin-bottom:3px">7 Dias seguidos com Checklist</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="background:#F5C51818;color:#F5C518;font-size:.58rem;font-weight:700;padding:1px 6px;border-radius:8px">Consistência</span>
+          <div style="flex:1;background:rgba(255,255,255,.06);border-radius:4px;height:4px;max-width:80px"><div style="width:57%;height:4px;border-radius:4px;background:#F5C518"></div></div>
+          <span style="font-size:.6rem;color:#5A584E">4 de 7 dias completos</span>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:900;color:#F5C518">+300 XP</div>
+        <div style="font-size:.58rem;color:#5A584E;margin-top:2px">31/03</div>
+      </div>
+    </div><div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:rgba(245,197,24, .04);border:1px solid rgba(245,197,24, .15);margin-bottom:8px">
+      <div style="width:22px;height:22px;border-radius:50%;border:2px solid #F5C51844;flex-shrink:0;cursor:pointer;background:#F5C51810"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.84rem;font-weight:700;color:#E8E6D8;margin-bottom:3px">2 Vendas Concluídas em Março</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="background:#22C55E18;color:#22C55E;font-size:.58rem;font-weight:700;padding:1px 6px;border-radius:8px">Milestone</span>
+          <div style="flex:1;background:rgba(255,255,255,.06);border-radius:4px;height:4px;max-width:80px"><div style="width:0%;height:4px;border-radius:4px;background:#22C55E"></div></div>
+          <span style="font-size:.6rem;color:#5A584E">0 de 2 vendas</span>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:900;color:#F5C518">+500 XP</div>
+        <div style="font-size:.58rem;color:#5A584E;margin-top:2px">31/03</div>
+      </div>
+    </div><div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:rgba(245,197,24, .04);border:1px solid rgba(245,197,24, .15);margin-bottom:8px">
+      <div style="width:22px;height:22px;border-radius:50%;border:2px solid #F5C51844;flex-shrink:0;cursor:pointer;background:#F5C51810"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.84rem;font-weight:700;color:#E8E6D8;margin-bottom:3px">Criar Script Personalizado</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="background:#A78BFA18;color:#A78BFA;font-size:.58rem;font-weight:700;padding:1px 6px;border-radius:8px">Estudo</span>
+          
+          <span style="font-size:.6rem;color:#5A584E">Baseado no SPICED + seu nicho</span>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:900;color:#F5C518">+150 XP</div>
+        <div style="font-size:.58rem;color:#5A584E;margin-top:2px">31/03</div>
+      </div>
+    </div><div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:rgba(245,197,24, .04);border:1px solid rgba(245,197,24, .15);margin-bottom:8px">
+      <div style="width:22px;height:22px;border-radius:50%;border:2px solid #F5C51844;flex-shrink:0;cursor:pointer;background:#F5C51810"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.84rem;font-weight:700;color:#E8E6D8;margin-bottom:3px">Atingir Meta de XP do Mês</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="background:#F5C51818;color:#F5C518;font-size:.58rem;font-weight:700;padding:1px 6px;border-radius:8px">Consistência</span>
+          <div style="flex:1;background:rgba(255,255,255,.06);border-radius:4px;height:4px;max-width:80px"><div style="width:30%;height:4px;border-radius:4px;background:#F5C518"></div></div>
+          <span style="font-size:.6rem;color:#5A584E">450 de 1.500 XP</span>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:900;color:#F5C518">+250 XP</div>
+        <div style="font-size:.58rem;color:#5A584E;margin-top:2px">31/03</div>
+      </div>
+    </div>
+      </div>
     </div>
   </div>
 
@@ -775,7 +1261,187 @@ input[type=date]::-webkit-datetime-edit-fields-wrapper{color:var(--g1)}
           Calendário de Encontros
         </div>
       </div>
-      <div id="encontrosList"><div class="empty-state"><div class="empty-state-text">Carregando...</div></div></div>
+      <div id="encontrosList" style="display:flex;flex-direction:column;gap:10px"><div style="display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border-radius:14px;background:rgba(18,18,20,1);border:1px solid rgba(255,255,255,.1);position:relative;">
+  <div style="min-width:50px;width:50px;height:50px;border-radius:12px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:900;color:#F5C518;line-height:1">08</div>
+    <div style="font-size:.42rem;font-weight:800;letter-spacing:1px;color:#806A30;text-transform:uppercase">MAR</div>
+  </div>
+  <div style="flex:1;min-width:0">
+    <div style="font-size:.88rem;font-weight:800;color:#E8E6D8;margin-bottom:5px;line-height:1.3">Análise de Ligações — Sessão Semanal</div>
+    <div style="font-size:.65rem;color:#7A7870;margin-bottom:8px;line-height:1.4">Análise ao vivo de ligações reais da semana. Todos participam.</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:.7rem;font-weight:700;color:#7289DA">🎮 Discord</span>
+      <span style="font-size:.62rem;color:#22C55E;font-weight:700">● Confirmado</span>
+      
+    </div>
+  </div>
+  
+</div><div style="display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border-radius:14px;background:rgba(15,15,17,.98);border:1px solid rgba(255,255,255,.07);position:relative;">
+  <div style="min-width:50px;width:50px;height:50px;border-radius:12px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:900;color:#F5C518;line-height:1">11</div>
+    <div style="font-size:.42rem;font-weight:800;letter-spacing:1px;color:#806A30;text-transform:uppercase">MAR</div>
+  </div>
+  <div style="flex:1;min-width:0">
+    <div style="font-size:.88rem;font-weight:800;color:#E8E6D8;margin-bottom:5px;line-height:1.3">Call de Alinhamento de Metas — Março</div>
+    <div style="font-size:.65rem;color:#7A7870;margin-bottom:8px;line-height:1.4">Revisão das metas e foco da semana com toda a equipe.</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:.7rem;font-weight:700;color:#00C853">📹 Google Meet</span>
+      <span style="font-size:.62rem;color:#22C55E;font-weight:700">● Confirmado</span>
+      
+    </div>
+  </div>
+  
+</div><div style="display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border-radius:14px;background:rgba(13,13,15,.96);border:1px solid rgba(255,255,255,.055);position:relative;">
+  <div style="min-width:50px;width:50px;height:50px;border-radius:12px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:900;color:#F5C518;line-height:1">13</div>
+    <div style="font-size:.42rem;font-weight:800;letter-spacing:1px;color:#806A30;text-transform:uppercase">MAR</div>
+  </div>
+  <div style="flex:1;min-width:0">
+    <div style="font-size:.88rem;font-weight:800;color:#E8E6D8;margin-bottom:5px;line-height:1.3">Sala Privada c/ Léo — Dúvidas Captador</div>
+    <div style="font-size:.65rem;color:#7A7870;margin-bottom:8px;line-height:1.4">Sessão exclusiva para tirar dúvidas com o mentor principal.</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:.7rem;font-weight:700;color:#7289DA">🎮 Discord</span>
+      <span style="font-size:.62rem;color:#22C55E;font-weight:700">● Confirmado</span>
+      
+    </div>
+  </div>
+  
+</div><div style="display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border-radius:14px;background:rgba(11,11,13,.94);border:1px solid rgba(255,255,255,.04);position:relative;">
+  <div style="min-width:50px;width:50px;height:50px;border-radius:12px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:900;color:#F5C518;line-height:1">18</div>
+    <div style="font-size:.42rem;font-weight:800;letter-spacing:1px;color:#806A30;text-transform:uppercase">MAR</div>
+  </div>
+  <div style="flex:1;min-width:0">
+    <div style="font-size:.88rem;font-weight:800;color:#E8E6D8;margin-bottom:5px;line-height:1.3">Treinamento SPICED — Módulo 2: Implicação</div>
+    <div style="font-size:.65rem;color:#7A7870;margin-bottom:8px;line-height:1.4">Módulo gravado sobre perguntas de implicação. Acesso livre.</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:.7rem;font-weight:700;color:#FF4444">▶️ YouTube</span>
+      <span style="font-size:.62rem;color:#22C55E;font-weight:700">● Confirmado</span>
+      
+    </div>
+  </div>
+  
+</div><div style="display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border-radius:14px;background:rgba(18,18,20,1);border:1px solid rgba(255,255,255,.1);position:relative;">
+  <div style="min-width:50px;width:50px;height:50px;border-radius:12px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:900;color:#F5C518;line-height:1">21</div>
+    <div style="font-size:.42rem;font-weight:800;letter-spacing:1px;color:#806A30;text-transform:uppercase">MAR</div>
+  </div>
+  <div style="flex:1;min-width:0">
+    <div style="font-size:.88rem;font-weight:800;color:#E8E6D8;margin-bottom:5px;line-height:1.3">Observação de Reunião ao Vivo</div>
+    <div style="font-size:.65rem;color:#7A7870;margin-bottom:8px;line-height:1.4">Veja uma reunião real acontecer. Exclusivo Captador+.</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:.7rem;font-weight:700;color:#00C853">📹 Google Meet</span>
+      
+      
+    </div>
+  </div>
+  
+</div><div style="display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border-radius:14px;background:rgba(15,15,17,.98);border:1px solid rgba(255,255,255,.07);position:relative;">
+  <div style="min-width:50px;width:50px;height:50px;border-radius:12px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:900;color:#F5C518;line-height:1">24</div>
+    <div style="font-size:.42rem;font-weight:800;letter-spacing:1px;color:#806A30;text-transform:uppercase">MAR</div>
+  </div>
+  <div style="flex:1;min-width:0">
+    <div style="font-size:.88rem;font-weight:800;color:#E8E6D8;margin-bottom:5px;line-height:1.3">Workshop CRM Rugido — Onboarding Completo</div>
+    <div style="font-size:.65rem;color:#7A7870;margin-bottom:8px;line-height:1.4">Como usar o CRM do Rugido para maximizar resultados.</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:.7rem;font-weight:700;color:#7289DA">🎮 Discord</span>
+      
+      
+    </div>
+  </div>
+  
+</div><div style="display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border-radius:14px;background:rgba(13,13,15,.96);border:1px solid rgba(255,255,255,.055);position:relative;filter:blur(1.5px) saturate(.2);opacity:.45;pointer-events:none;">
+  <div style="min-width:50px;width:50px;height:50px;border-radius:12px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:900;color:#F5C518;line-height:1">02</div>
+    <div style="font-size:.42rem;font-weight:800;letter-spacing:1px;color:#806A30;text-transform:uppercase">ABR</div>
+  </div>
+  <div style="flex:1;min-width:0">
+    <div style="font-size:.88rem;font-weight:800;color:#E8E6D8;margin-bottom:5px;line-height:1.3">Análise de Calls com IA — Turma Parceiro</div>
+    <div style="font-size:.65rem;color:#7A7870;margin-bottom:8px;line-height:1.4">IA analisa suas ligações e dá feedback. Parceiro+.</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:.7rem;font-weight:700;color:#FF4444">▶️ YouTube</span>
+      
+      <span style="font-size:.62rem;color:#806A30;font-weight:600">🔒 Exclusivo Nível 3+</span>
+    </div>
+  </div>
+  <div style="position:absolute;top:8px;right:10px;background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);border-radius:8px;padding:2px 8px;font-size:.62rem;font-weight:800;color:#F87171">🔒 Nível 3+</div>
+</div><div style="display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border-radius:14px;background:rgba(11,11,13,.94);border:1px solid rgba(255,255,255,.04);position:relative;filter:blur(1.5px) saturate(.2);opacity:.45;pointer-events:none;">
+  <div style="min-width:50px;width:50px;height:50px;border-radius:12px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:900;color:#F5C518;line-height:1">08</div>
+    <div style="font-size:.42rem;font-weight:800;letter-spacing:1px;color:#806A30;text-transform:uppercase">ABR</div>
+  </div>
+  <div style="flex:1;min-width:0">
+    <div style="font-size:.88rem;font-weight:800;color:#E8E6D8;margin-bottom:5px;line-height:1.3">Call 1:1 Estratégia c/ Liderança</div>
+    <div style="font-size:.65rem;color:#7A7870;margin-bottom:8px;line-height:1.4">Sessão estratégica individual com liderança da Guilda.</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:.7rem;font-weight:700;color:#00C853">📹 Google Meet</span>
+      
+      <span style="font-size:.62rem;color:#806A30;font-weight:600">🔒 Exclusivo Nível 3+</span>
+    </div>
+  </div>
+  <div style="position:absolute;top:8px;right:10px;background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);border-radius:8px;padding:2px 8px;font-size:.62rem;font-weight:800;color:#F87171">🔒 Nível 3+</div>
+</div><div style="display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border-radius:14px;background:rgba(18,18,20,1);border:1px solid rgba(255,255,255,.1);position:relative;filter:blur(1.5px) saturate(.2);opacity:.45;pointer-events:none;">
+  <div style="min-width:50px;width:50px;height:50px;border-radius:12px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:900;color:#F5C518;line-height:1">15</div>
+    <div style="font-size:.42rem;font-weight:800;letter-spacing:1px;color:#806A30;text-transform:uppercase">ABR</div>
+  </div>
+  <div style="flex:1;min-width:0">
+    <div style="font-size:.88rem;font-weight:800;color:#E8E6D8;margin-bottom:5px;line-height:1.3">Revisão de Pipeline — Sessão Elite</div>
+    <div style="font-size:.65rem;color:#7A7870;margin-bottom:8px;line-height:1.4">Análise profunda do funil de vendas com a turma Elite.</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:.7rem;font-weight:700;color:#7289DA">🎮 Discord</span>
+      
+      <span style="font-size:.62rem;color:#806A30;font-weight:600">🔒 Exclusivo Nível 4+</span>
+    </div>
+  </div>
+  <div style="position:absolute;top:8px;right:10px;background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);border-radius:8px;padding:2px 8px;font-size:.62rem;font-weight:800;color:#F87171">🔒 Nível 4+</div>
+</div><div style="display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border-radius:14px;background:rgba(15,15,17,.98);border:1px solid rgba(255,255,255,.07);position:relative;filter:blur(1.5px) saturate(.2);opacity:.45;pointer-events:none;">
+  <div style="min-width:50px;width:50px;height:50px;border-radius:12px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:900;color:#F5C518;line-height:1">22</div>
+    <div style="font-size:.42rem;font-weight:800;letter-spacing:1px;color:#806A30;text-transform:uppercase">ABR</div>
+  </div>
+  <div style="flex:1;min-width:0">
+    <div style="font-size:.88rem;font-weight:800;color:#E8E6D8;margin-bottom:5px;line-height:1.3">Mentoria com Lucas Félix — Estratégia Pessoal</div>
+    <div style="font-size:.65rem;color:#7A7870;margin-bottom:8px;line-height:1.4">Mentoria individual com o fundador. Muito exclusiva. Consultor+.</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:.7rem;font-weight:700;color:#00C853">📹 Google Meet</span>
+      
+      <span style="font-size:.62rem;color:#806A30;font-weight:600">🔒 Exclusivo Nível 5+</span>
+    </div>
+  </div>
+  <div style="position:absolute;top:8px;right:10px;background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);border-radius:8px;padding:2px 8px;font-size:.62rem;font-weight:800;color:#F87171">🔒 Nível 5+</div>
+</div><div style="display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border-radius:14px;background:rgba(13,13,15,.96);border:1px solid rgba(255,255,255,.055);position:relative;filter:blur(1.5px) saturate(.2);opacity:.45;pointer-events:none;">
+  <div style="min-width:50px;width:50px;height:50px;border-radius:12px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:900;color:#F5C518;line-height:1">05</div>
+    <div style="font-size:.42rem;font-weight:800;letter-spacing:1px;color:#806A30;text-transform:uppercase">MAI</div>
+  </div>
+  <div style="flex:1;min-width:0">
+    <div style="font-size:.88rem;font-weight:800;color:#E8E6D8;margin-bottom:5px;line-height:1.3">Workshop Projetos Premium — Consultores</div>
+    <div style="font-size:.65rem;color:#7A7870;margin-bottom:8px;line-height:1.4">Como estruturar projetos premium e escalar receita.</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:.7rem;font-weight:700;color:#FF4444">▶️ YouTube</span>
+      
+      <span style="font-size:.62rem;color:#806A30;font-weight:600">🔒 Exclusivo Nível 5+</span>
+    </div>
+  </div>
+  <div style="position:absolute;top:8px;right:10px;background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);border-radius:8px;padding:2px 8px;font-size:.62rem;font-weight:800;color:#F87171">🔒 Nível 5+</div>
+</div><div style="display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border-radius:14px;background:rgba(11,11,13,.94);border:1px solid rgba(255,255,255,.04);position:relative;filter:blur(1.5px) saturate(.2);opacity:.45;pointer-events:none;">
+  <div style="min-width:50px;width:50px;height:50px;border-radius:12px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:900;color:#F5C518;line-height:1">20</div>
+    <div style="font-size:.42rem;font-weight:800;letter-spacing:1px;color:#806A30;text-transform:uppercase">MAI</div>
+  </div>
+  <div style="flex:1;min-width:0">
+    <div style="font-size:.88rem;font-weight:800;color:#E8E6D8;margin-bottom:5px;line-height:1.3">Encontro de Franqueados — Apresentação</div>
+    <div style="font-size:.65rem;color:#7A7870;margin-bottom:8px;line-height:1.4">Evento especial restrito a Franqueados e Sócios.</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:.7rem;font-weight:700;color:#7289DA">🎮 Discord</span>
+      
+      <span style="font-size:.62rem;color:#806A30;font-weight:600">🔒 Exclusivo Nível 6+</span>
+    </div>
+  </div>
+  <div style="position:absolute;top:8px;right:10px;background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);border-radius:8px;padding:2px 8px;font-size:.62rem;font-weight:800;color:#F87171">🔒 Nível 6+</div>
+</div></div>
     </div>
   </div>
 
@@ -897,7 +1563,183 @@ input[type=date]::-webkit-datetime-edit-fields-wrapper{color:var(--g1)}
             Ranking de Membros
           </div>
         </div>
-        <div id="rankingWrapper"></div>
+        <div id="rankingWrapper" style="display:flex;flex-direction:column;gap:0"><div style="display:flex;align-items:flex-end;justify-content:center;gap:12px;padding:24px 0 32px;margin-bottom:8px"><div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+      <div style="font-size:1.1rem">⭐</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#C0C8D0,#C0C8D088);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:900;color:#1A1A20;box-shadow:0 0 20px #C0C8D040">CV</div>
+      <div style="font-size:.7rem;font-weight:800;color:#B0B0C0;text-align:center;max-width:80px;line-height:1.2">Carla</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:800;color:#C0C8D0">28,950</div>
+      <div style="background:#C0C8D022;border:1px solid #C0C8D055;border-radius:6px;padding:2px 10px;height:80px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;width:64px">
+        <span style="font-size:1.2rem;font-weight:900;color:#C0C8D0">2°</span>
+      </div>
+    </div><div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+      <div style="font-size:1.1rem">🏅</div>
+      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#F5C518,#F5C51888);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:900;color:#1A1A20;box-shadow:0 0 20px #F5C51840">RM</div>
+      <div style="font-size:.78rem;font-weight:800;color:#F0EDE0;text-align:center;max-width:80px;line-height:1.2">Rafael</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:800;color:#F5C518">42,800</div>
+      <div style="background:#F5C51822;border:1px solid #F5C51855;border-radius:6px;padding:2px 10px;height:110px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;width:64px">
+        <span style="font-size:1.2rem;font-weight:900;color:#F5C518">1°</span>
+      </div>
+    </div><div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+      <div style="font-size:1.1rem">⭐</div>
+      <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#CD7F32,#CD7F3288);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:900;color:#1A1A20;box-shadow:0 0 20px #CD7F3240">PD</div>
+      <div style="font-size:.7rem;font-weight:800;color:#B0B0C0;text-align:center;max-width:80px;line-height:1.2">Pedro</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:800;color:#CD7F32">22,340</div>
+      <div style="background:#CD7F3222;border:1px solid #CD7F3255;border-radius:6px;padding:2px 10px;height:65px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;width:64px">
+        <span style="font-size:1.2rem;font-weight:900;color:#CD7F32">3°</span>
+      </div>
+    </div></div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:1">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">4°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">AB</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#C0BEB0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Ana Beatriz Lima</div>
+        <div style="font-size:.58rem;color:#F5C518;font-weight:600">⭐ Elite</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#A0A0B0">16,760</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:1">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">5°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">MC</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#C0BEB0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Marcos Cavalcante</div>
+        <div style="font-size:.58rem;color:#A78BFA;font-weight:600">💎 Parceiro</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#A0A0B0">12,980</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:.6">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">6°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">JF</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Julia Ferreira</div>
+        <div style="font-size:.58rem;color:#A78BFA;font-weight:600">💎 Parceiro</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#A0A0B0">9,100</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:.6">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">7°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">BC</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Bruno Castelo</div>
+        <div style="font-size:.58rem;color:#A78BFA;font-weight:600">💎 Parceiro</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#A0A0B0">7,320</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:.6">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">8°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">TR</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Tiago Rezende</div>
+        <div style="font-size:.58rem;color:#A78BFA;font-weight:600">💎 Parceiro</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#A0A0B0">5,800</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:.6">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">9°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">LM</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Larissa Monteiro</div>
+        <div style="font-size:.58rem;color:#5B8FD6;font-weight:600">🔷 Captador</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#A0A0B0">4,200</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:.6">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">10°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">RA</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Rodrigo Andrade</div>
+        <div style="font-size:.58rem;color:#5B8FD6;font-weight:600">🔷 Captador</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#A0A0B0">3,600</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:.4">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">11°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">FR</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Fernanda Rocha</div>
+        <div style="font-size:.58rem;color:#5B8FD6;font-weight:600">🔷 Captador</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#909090">2,100</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:.4">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">12°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">GN</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Gustavo Neves</div>
+        <div style="font-size:.58rem;color:#5B8FD6;font-weight:600">🔷 Captador</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#909090">1,800</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(245,197,24,.06);border:1px solid rgba(245,197,24,.2);margin-bottom:4px;opacity:.4">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">13°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">WA</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#F5C518;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Wilton Almeida <span style="font-size:.6rem;opacity:.7">← você</span></div>
+        <div style="font-size:.58rem;color:#5B8FD6;font-weight:600">🔷 Captador</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#F5C518">1,500</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:.4">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">14°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">PS</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Patrícia Salgado</div>
+        <div style="font-size:.58rem;color:#7EC8E3;font-weight:600">⚡ Prospector</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#909090">1,200</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:.4">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">15°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">DC</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Diego Carvalho</div>
+        <div style="font-size:.58rem;color:#7EC8E3;font-weight:600">⚡ Prospector</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#909090">950</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:.4">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">16°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">RF</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Renata Figueira</div>
+        <div style="font-size:.58rem;color:#7EC8E3;font-weight:600">⚡ Prospector</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#909090">820</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:.4">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">17°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">HC</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Henrique Costa</div>
+        <div style="font-size:.58rem;color:#7EC8E3;font-weight:600">⚡ Prospector</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#909090">700</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:.4">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">18°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">SP</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Simone Prado</div>
+        <div style="font-size:.58rem;color:#8A8A9A;font-weight:600">🔰 Candidato</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#909090">580</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:.4">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">19°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">LS</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Leandro Santana</div>
+        <div style="font-size:.58rem;color:#8A8A9A;font-weight:600">🔰 Candidato</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#909090">420</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:.4">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">20°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">CB</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Camila Batista</div>
+        <div style="font-size:.58rem;color:#8A8A9A;font-weight:600">🔰 Candidato</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#909090">310</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:.4">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">21°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">TO</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Thiago Oliveira</div>
+        <div style="font-size:.58rem;color:#8A8A9A;font-weight:600">🔰 Candidato</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#909090">200</div>
+    </div><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:4px;opacity:.4">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;color:#5A584E;min-width:22px;text-align:right">22°</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#888;flex-shrink:0">AR</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:700;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Amanda Ribeiro</div>
+        <div style="font-size:.58rem;color:#8A8A9A;font-weight:600">🔰 Candidato</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;color:#909090">100</div>
+    </div></div>
         <table class="table" style="display:none">
           <thead><tr><th>#</th><th>Membro</th><th>Nível</th><th>XP</th></tr></thead>
           <tbody id="rankingTable"></tbody>
@@ -915,7 +1757,7 @@ input[type=date]::-webkit-datetime-edit-fields-wrapper{color:var(--g1)}
           </div>
           <div style="font-size:.72rem;color:var(--t3)">Seu XP atual: <strong id="badgesYourXP" style="color:#F5C518">—</strong></div>
         </div>
-        <div id="badgesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px"></div>
+        <div id="badgesGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start"></div>
       </div>
     </div>
   </div>
@@ -1073,21 +1915,24 @@ function renderHero() {
   const remaining = next ? (next.min - xp).toLocaleString('pt-BR') : '—';
 
   // Badge
-  const badgeEl = document.getElementById('heroBadge');
-  if (badgeEl && lvl.badge) {
-    badgeEl.src = lvl.badge;
-    badgeEl.style.display = 'block';
+  const badgeImgEl = document.getElementById('heroBadgeImg');
+  if (badgeImgEl && lvl.badge) {
+    badgeImgEl.src = lvl.badge;
+    badgeImgEl.style.display = 'block';
+    document.getElementById('heroBadgeSvg').style.display = 'none';
   }
+  const badgeEmojiEl = document.getElementById('heroBadgeEmoji');
+  if (badgeEmojiEl) badgeEmojiEl.textContent = lvl.emoji || '';
 
   // Nome e nível
   const nameEl = document.getElementById('heroName');
   if (nameEl) nameEl.textContent = userProfile.name || 'Membro';
 
-  const lvlEl = document.getElementById('heroLevel');
-  if (lvlEl) lvlEl.textContent = `Nível ${lvl.level} — ${lvl.name}`;
+  const lvlBadgeEl = document.getElementById('heroLevelBadge');
+  if (lvlBadgeEl) lvlBadgeEl.textContent = `NÍVEL ${lvl.level}`;
 
-  const emojiEl = document.getElementById('heroEmoji');
-  if (emojiEl) emojiEl.textContent = lvl.emoji || '';
+  const lvlNameEl = document.getElementById('heroLevelName');
+  if (lvlNameEl) lvlNameEl.textContent = lvl.name || '';
 
   // XP bar
   const barEl = document.getElementById('heroXpBar');
@@ -1098,6 +1943,8 @@ function renderHero() {
 
   const xpRemEl = document.getElementById('heroXpRemaining');
   if (xpRemEl) xpRemEl.textContent = next ? `faltam ${remaining} XP` : 'Nível máximo';
+  const nextLvlEl = document.getElementById('heroNextLevel');
+  if (nextLvlEl && next) nextLvlEl.textContent = `próximo: ${next.name} N${next.level}`;
 
   // Cor do nível no hero card
   const heroCard = document.getElementById('heroCard');
