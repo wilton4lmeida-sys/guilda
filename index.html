@@ -4,37 +4,77 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GUILDA — Login</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-primary: #0a0a0c;
-  --bg-card: #16161b;
-  --gold: #c9a84c;
-  --gold-light: #e0c76e;
-  --gold-dim: #8a7235;
-  --text-primary: #f0ece4;
-  --text-secondary: #8a8a95;
-  --border: rgba(255,255,255,0.06);
+  --g1: #F5C518;
+  --g2: #D4A017;
+  --g3: #B8860B;
+  --t1: #F0EEDD;
+  --t2: #C8C4B0;
+  --t3: #7A7868;
+  --red: #F87171;
+  --r: 18px;
+  --rs: 12px;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box }
+html { font-size: 17px; }
+
 body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--t1);
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  background: #06050a;
 }
-body::before {
-  content: '';
+
+/* ── FUNDO GRADIENTE MAIS PRESENTE ── */
+.bg-layer {
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 90% 70% at 0% 0%, rgba(210,155,5,.18) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 60% at 100% 100%, rgba(110,60,180,.22) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 50% 50%, rgba(30,20,50,.5) 0%, transparent 70%),
+    linear-gradient(150deg, #0c0a14 0%, #06050a 40%, #0e0a18 100%);
+}
+
+/* orb dourado topo esq — mais visível */
+.orb-gold {
   position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 1;
+  width: 900px; height: 600px;
+  top: -300px; left: -300px;
+  background: radial-gradient(ellipse, rgba(245,190,10,.16) 0%, transparent 60%);
+  filter: blur(50px);
+  pointer-events: none; z-index: 1;
 }
+
+/* orb roxo baixo dir — mais visível */
+.orb-purple {
+  position: fixed;
+  width: 900px; height: 600px;
+  bottom: -300px; right: -300px;
+  background: radial-gradient(ellipse, rgba(120,60,200,.2) 0%, transparent 60%);
+  filter: blur(60px);
+  pointer-events: none; z-index: 1;
+}
+
+/* orb gold centro suave */
+.orb-mid {
+  position: fixed;
+  width: 500px; height: 400px;
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  background: radial-gradient(ellipse, rgba(200,140,0,.06) 0%, transparent 65%);
+  filter: blur(60px);
+  pointer-events: none; z-index: 1;
+}
+
+/* ── CONTAINER ── */
 .container {
   position: relative;
   z-index: 2;
@@ -42,215 +82,251 @@ body::before {
   max-width: 420px;
   padding: 24px;
 }
+
+/* ── LOGO ── */
 .logo {
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 0;
 }
-.logo h1 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 3.5rem;
-  letter-spacing: 8px;
-  color: var(--gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin-bottom: 8px;
+
+.logo-img {
+  width: 86px;
+  height: 86px;
+  object-fit: contain;
+  animation: logoGlow 3.5s ease-in-out infinite alternate;
 }
-.shield-icon {
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/%3E%3C/svg%3E") center/contain no-repeat;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/%3E%3C/svg%3E") center/contain no-repeat;
+
+@keyframes logoGlow {
+  from { filter: drop-shadow(0 0 8px rgba(245,197,24,.4)) drop-shadow(0 0 20px rgba(245,197,24,.2)); }
+  to   { filter: drop-shadow(0 0 18px rgba(245,197,24,.7)) drop-shadow(0 0 40px rgba(245,197,24,.35)); }
 }
-.subtitle {
-  font-size: 0.75rem;
-  letter-spacing: 3px;
-  color: var(--text-secondary);
-  text-transform: uppercase;
+
+/* ── WELCOME ── */
+.welcome {
+  text-align: center;
+  margin-bottom: 22px;
 }
+
+.welcome-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #F0EEDD;
+  letter-spacing: .5px;
+  line-height: 1.3;
+  text-shadow: 0 0 40px rgba(245,197,24,.25), 0 2px 12px rgba(0,0,0,.6);
+}
+
+.welcome-title span {
+  color: var(--g1);
+}
+
+/* ── CARD — mais contrastado ── */
 .card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 40px 32px;
+  background: rgba(16,14,24,.92);
+  backdrop-filter: blur(32px);
+  border: 1px solid rgba(245,197,24,.18);
+  border-radius: var(--r);
+  padding: 38px 34px;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(245,197,24,.07),
+    0 32px 80px rgba(0,0,0,.65),
+    inset 0 1px 0 rgba(255,255,255,.06);
 }
-.form-group {
-  margin-bottom: 24px;
+
+/* gold top line mais brilhante */
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 14px; right: 14px; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--g1) 30%, #FFD740 50%, var(--g2) 70%, transparent);
+  border-radius: 2px;
 }
+
+/* glow dourado difuso embaixo da top line */
+.card::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 80px;
+  background: linear-gradient(180deg, rgba(245,197,24,.06) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.card-eyebrow {
+  font-size: .78rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: .3px;
+  color: rgba(176,174,158,.65);
+  margin-bottom: 28px;
+  text-align: center;
+  position: relative; z-index: 1;
+}
+
+/* ── FORM ── */
+.form-group { margin-bottom: 22px; position: relative; z-index: 1; }
+
 label {
   display: block;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  margin-bottom: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: rgba(200,196,176,.75);
+  margin-bottom: 9px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.4px;
 }
+
 input {
   width: 100%;
-  padding: 14px 16px;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text-primary);
-  font-size: 0.95rem;
-  font-family: 'DM Sans', sans-serif;
-  transition: all 0.2s;
+  padding: 15px 18px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: var(--rs);
+  color: #F4F0E4;
+  font-size: 0.92rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: all 0.25s;
 }
+
 input:focus {
   outline: none;
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+  border-color: rgba(245,197,24,.6);
+  box-shadow: 0 0 0 3px rgba(245,197,24,.12), inset 0 0 0 1px rgba(245,197,24,.1);
+  background: rgba(245,197,24,.04);
 }
+
+input::placeholder { color: rgba(120,118,104,.7); }
+
+/* ── BUTTON ── */
 .btn {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+  background: linear-gradient(135deg, #FFD740 0%, #F5C518 30%, #D4A017 65%, #B8860B 100%);
   border: none;
-  border-radius: 8px;
-  color: var(--bg-primary);
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 2px;
+  border-radius: var(--rs);
+  color: #07060a;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
   cursor: pointer;
   transition: all 0.3s;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  margin-top: 12px;
+  box-shadow:
+    0 4px 20px rgba(245,197,24,.3),
+    0 1px 0 rgba(255,255,255,.2) inset;
+  position: relative; z-index: 1;
 }
+
 .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(201,168,76,0.3);
+  box-shadow: 0 10px 36px rgba(245,197,24,.45);
+  background: linear-gradient(135deg, #FFE060 0%, #F5C518 30%, #D4A017 65%, #B8860B 100%);
 }
-.btn:active {
-  transform: translateY(0);
-}
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* ── ERROR ── */
 .error {
-  background: rgba(248,113,113,0.1);
-  border: 1px solid rgba(248,113,113,0.3);
-  color: #f87171;
+  background: rgba(248,113,113,.1);
+  border: 1px solid rgba(248,113,113,.25);
+  color: var(--red);
   padding: 12px 16px;
-  border-radius: 8px;
-  font-size: 0.85rem;
+  border-radius: var(--rs);
+  font-size: 0.8rem;
+  font-weight: 500;
   margin-bottom: 20px;
   display: none;
+  position: relative; z-index: 1;
 }
-.error.show {
-  display: block;
-}
+.error.show { display: block; }
+
+/* ── FOOTER ── */
 .footer {
   text-align: center;
-  margin-top: 32px;
-  font-size: 0.75rem;
-  color: var(--text-secondary);
+  margin-top: 26px;
+  font-size: 0.68rem;
+  color: rgba(180,170,140,.65);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 </style>
 </head>
 <body>
 
+<div class="bg-layer"></div>
+<div class="orb-gold"></div>
+<div class="orb-purple"></div>
+<div class="orb-mid"></div>
+
 <div class="container">
-  <div class="logo">
-    <h1>
-      <div class="shield-icon"></div>
-      GUILDA
-    </h1>
-    <div class="subtitle">Sistema de Evolução BDR</div>
+  <div class="logo" style="display:none;margin:0">
+    <img class="logo-img" src="data:image/png;base64,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" alt="GUILDA" />
+  </div>
+
+  <div class="welcome">
+    <div class="welcome-title">Bem-vindo de volta à <span>Guilda</span></div>
   </div>
 
   <div class="card">
+    <div class="card-eyebrow">Informe seu login e senha para ter acesso</div>
     <div id="error" class="error"></div>
-    
+
     <form id="loginForm">
       <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" id="email" required autocomplete="email">
+        <input type="email" id="email" placeholder="seu email" required autocomplete="email">
       </div>
-      
       <div class="form-group">
         <label for="password">Senha</label>
-        <input type="password" id="password" required autocomplete="current-password">
+        <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
       </div>
-      
       <button type="submit" class="btn" id="submitBtn">Entrar</button>
     </form>
   </div>
 
-  <div class="footer">
-    Grupo Rugido · 2026
-  </div>
+  <div class="footer">Grupo Rugido · 2026</div>
 </div>
 
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
 const SUPABASE_URL = 'https://rsittecjptwozwxlnfvy.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzaXR0ZWNqcHR3b3p3eGxuZnZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2Nzc5MTQsImV4cCI6MjA4ODI1MzkxNH0.E0wFpLYcAAzLXqMUWGFHMmTBjC0dB6zC9XJsl5caji8';
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Check if already logged in
 async function checkSession() {
   try {
     const { data: { session } } = await sb.auth.getSession();
     if (session) {
       const { data: profile } = await sb.from('profiles').select('role').eq('id', session.user.id).single();
-      
-      if (profile) {
-        if (profile.role === 'admin') {
-          window.location.href = 'painel-mestre.html';
-        } else {
-          window.location.href = 'dashboard.html';
-        }
-      }
+      if (profile) window.location.href = profile.role === 'admin' ? 'painel-mestre.html' : 'dashboard.html';
     }
-  } catch (err) {
-    console.error('Check session error:', err);
-  }
+  } catch(e) {}
 }
-
 checkSession();
 
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
   const errorDiv = document.getElementById('error');
   const submitBtn = document.getElementById('submitBtn');
-  
   errorDiv.classList.remove('show');
   submitBtn.disabled = true;
   submitBtn.textContent = 'Entrando...';
-  
   try {
     const { data, error } = await sb.auth.signInWithPassword({ email, password });
-    
     if (error) throw error;
-    
-    // Get profile with role
     const { data: profile } = await sb.from('profiles').select('role').eq('id', data.user.id).single();
-    
-    // Redirect based on role
-    if (profile && profile.role === 'admin') {
-      window.location.href = 'painel-mestre.html';
-    } else {
-      window.location.href = 'dashboard.html';
-    }
-    
+    window.location.href = (profile && profile.role === 'admin') ? 'painel-mestre.html' : 'dashboard.html';
   } catch (err) {
-    errorDiv.textContent = err.message === 'Invalid login credentials' 
-      ? 'Email ou senha incorretos' 
-      : err.message;
+    errorDiv.textContent = err.message === 'Invalid login credentials' ? 'Email ou senha incorretos' : err.message;
     errorDiv.classList.add('show');
     submitBtn.disabled = false;
     submitBtn.textContent = 'Entrar';
   }
 });
 </script>
-
 </body>
 </html>
