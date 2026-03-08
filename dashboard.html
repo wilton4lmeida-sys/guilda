@@ -1442,41 +1442,7 @@ input[type=date]:focus {
               <span class="card-action" onclick="switchTab('encontros')">todos →</span>
             </div>
             <div id="dashMeetings">
-              <div style="display:flex;flex-direction:column;gap:8px;padding:2px 0">
-                <div style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;background:rgba(16,14,22,1);border:1px solid rgba(255,255,255,.09)">
-                  <div style="min-width:42px;width:42px;height:42px;border-radius:9px;background:rgba(232,184,75,.07);border:1px solid rgba(232,184,75,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
-                    <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:900;color:var(--g1);line-height:1">08</div>
-                    <div style="font-size:.4rem;font-weight:700;letter-spacing:1px;color:var(--g3);text-transform:uppercase">MAR</div>
-                  </div>
-                  <div style="flex:1;min-width:0">
-                    <div style="font-size:.94rem;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Análise de Ligações — Sessão Semanal</div>
-                    <div style="font-size:.96rem;color:#7289DA;font-weight:700;margin-top:2px">Discord · <span style="color:var(--green)">● Confirmado</span></div>
-                  </div>
-                  <a href="#" onclick="return false" style="flex-shrink:0;padding:5px 11px;background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.25);border-radius:7px;color:var(--g1);font-size:.92rem;font-weight:800;text-decoration:none;white-space:nowrap" onmouseover="this.style.background='rgba(232,184,75,.2)'" onmouseout="this.style.background='rgba(232,184,75,.1)'">Entrar</a>
-                </div>
-                <div style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;background:rgba(12,10,18,.98);border:1px solid rgba(255,255,255,.06)">
-                  <div style="min-width:42px;width:42px;height:42px;border-radius:9px;background:rgba(232,184,75,.06);border:1px solid rgba(232,184,75,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
-                    <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:900;color:var(--g1);line-height:1">11</div>
-                    <div style="font-size:.4rem;font-weight:700;letter-spacing:1px;color:var(--g3);text-transform:uppercase">MAR</div>
-                  </div>
-                  <div style="flex:1;min-width:0">
-                    <div style="font-size:.94rem;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Call de Alinhamento — Março</div>
-                    <div style="font-size:.96rem;color:#22C55E;font-weight:700;margin-top:2px">Google Meet · <span style="color:var(--green)">● Confirmado</span></div>
-                  </div>
-                  <a href="#" onclick="return false" style="flex-shrink:0;padding:5px 11px;background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.25);border-radius:7px;color:var(--g1);font-size:.92rem;font-weight:800;text-decoration:none;white-space:nowrap" onmouseover="this.style.background='rgba(232,184,75,.2)'" onmouseout="this.style.background='rgba(232,184,75,.1)'">Entrar</a>
-                </div>
-                <div style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;background:rgba(10,9,16,.95);border:1px solid rgba(255,255,255,.05);opacity:.75">
-                  <div style="min-width:42px;width:42px;height:42px;border-radius:9px;background:rgba(232,184,75,.04);border:1px solid rgba(232,184,75,.09);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
-                    <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:900;color:var(--g1);line-height:1;opacity:.7">15</div>
-                    <div style="font-size:.4rem;font-weight:700;letter-spacing:1px;color:var(--g3);text-transform:uppercase">MAR</div>
-                  </div>
-                  <div style="flex:1;min-width:0">
-                    <div style="font-size:.94rem;font-weight:600;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Script de Prospecção — Workshop</div>
-                    <div style="font-size:.96rem;color:var(--t3);margin-top:2px">Discord · Em breve</div>
-                  </div>
-                  <span style="flex-shrink:0;padding:5px 11px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:7px;color:var(--t3);font-size:.92rem;font-weight:700;white-space:nowrap">Entrar</span>
-                </div>
-              </div>
+              <div class="empty-state"><div class="empty-state-text">Carregando encontros...</div></div>
             </div>
           </div>
 
@@ -2921,7 +2887,12 @@ async function loadEncontros() {
   } catch (e) {
     console.warn('Encontros fallback:', e);
   }
-  if (meetings.length === 0) meetings = demoMeetings;
+  const dashEl = document.getElementById('dashMeetings');
+  if (meetings.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-state-text">Nenhum encontro agendado</div></div>';
+    if (dashEl) dashEl.innerHTML = '<div class="empty-state"><div class="empty-state-text">Nenhum encontro agendado</div></div>';
+    return;
+  }
 
   const userLevel = getLevelInfo(userProfile?.xp || 0).level;
   const encColors = [
@@ -2979,6 +2950,30 @@ async function loadEncontros() {
   });
   
   el.innerHTML = html;
+
+  // Populate dashboard card with first 3 upcoming meetings
+  if (dashEl) {
+    let dashHtml = '<div style="display:flex;flex-direction:column;gap:8px;padding:2px 0">';
+    meetings.slice(0, 3).forEach((m, i) => {
+      const d = new Date(m.date + 'T12:00:00');
+      const day = d.getDate().toString().padStart(2,'0');
+      const month = d.toLocaleDateString('pt-BR', {month:'short'}).replace('.','').toUpperCase();
+      const pColor = platformColors[m.location] || '#888';
+      const opacity = i === 0 ? '1' : i === 1 ? '1' : '.75';
+      dashHtml += `<div style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;background:rgba(16,14,22,1);border:1px solid rgba(255,255,255,.09);opacity:${opacity}">
+        <div style="min-width:42px;width:42px;height:42px;border-radius:9px;background:rgba(232,184,75,.07);border:1px solid rgba(232,184,75,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:900;color:var(--g1);line-height:1">${day}</div>
+          <div style="font-size:.4rem;font-weight:700;letter-spacing:1px;color:var(--g3);text-transform:uppercase">${month}</div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.94rem;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.title}</div>
+          <div style="font-size:.96rem;color:${pColor};font-weight:700;margin-top:2px">${m.location}${m.confirmed ? ' · <span style="color:var(--green)">● Confirmado</span>' : ''}</div>
+        </div>
+      </div>`;
+    });
+    dashHtml += '</div>';
+    dashEl.innerHTML = dashHtml;
+  }
 }
 
 
@@ -3924,7 +3919,7 @@ async function loadMissoes() {
   // Dash preview
   const dashContainer = document.getElementById('dashMissions');
   let dashHtml = '';
-  (finalMissions || []).slice(0,4).forEach(m => {
+  (missions || []).slice(0,4).forEach(m => {
     dashHtml += `<div class="mission-item">`;
     dashHtml += `<div class="mission-dot active"></div>`;
     dashHtml += `<div class="mission-info"><div class="mission-title">${m.title}</div><div class="mission-desc">${m.description || ''}</div></div>`;
@@ -3933,7 +3928,7 @@ async function loadMissoes() {
   if (dashContainer) dashContainer.innerHTML = dashHtml || '<div class="empty-state"><div class="empty-state-text">Nenhuma missão ativa</div></div>';
 
   const badge = document.getElementById('badgeMissoes');
-  if (badge && finalMissions && finalMissions.length > 0) { badge.style.display='flex'; badge.textContent=finalMissions.length; }
+  if (badge && missions && missions.length > 0) { badge.style.display='flex'; badge.textContent=missions.length; }
 }
 
 
