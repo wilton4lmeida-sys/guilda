@@ -113,17 +113,22 @@ function renderHero() {
   if (!userProfile) return;
   const xp = userProfile.xp || 0;
   const lvl = getLevelInfo(xp);
+  const badgeIndex = Math.min(Math.max((lvl.level || 1) - 1, 0), BADGE_IMGS.length - 1);
+  const resolvedBadge = lvl.badge || BADGE_IMGS[badgeIndex] || BADGE_IMGS[1] || '';
   const next = getNextLevel(lvl.level);
   const pct = next ? Math.min(100, Math.round(((xp - lvl.min) / (next.min - lvl.min)) * 100)) : 100;
   const remaining = next ? (next.min - xp).toLocaleString('pt-BR') : '—';
 
   // Badge
   const badgeImgEl = document.getElementById('heroBadgeImg');
-  if (badgeImgEl && lvl.badge) {
-    badgeImgEl.src = lvl.badge;
+  if (badgeImgEl && resolvedBadge) {
+    badgeImgEl.src = resolvedBadge;
     badgeImgEl.style.display = 'block';
     const svgEl = document.getElementById('heroBadgeSvg');
     if (svgEl) svgEl.style.display = 'none';
+  } else if (resolvedBadge) {
+    const svgImgEl = document.querySelector('#heroBadgeSvg img');
+    if (svgImgEl) svgImgEl.src = resolvedBadge;
   }
   // Remove emoji se existir
   const badgeEmojiEl = document.getElementById('heroBadgeEmoji');
@@ -131,9 +136,9 @@ function renderHero() {
 
   // Badge level label
   const meBadgeImgEl = document.getElementById('dashMeBadgeImg');
-  if (meBadgeImgEl && lvl.badge) meBadgeImgEl.src = lvl.badge;
+  if (meBadgeImgEl && resolvedBadge) meBadgeImgEl.src = resolvedBadge;
   document.querySelectorAll('img[data-badge-slot="true"]').forEach((el, i) => {
-    const badge = BADGE_IMGS[Math.min(i + 1, BADGE_IMGS.length - 1)] || lvl.badge;
+    const badge = BADGE_IMGS[Math.min(i + 1, BADGE_IMGS.length - 1)] || resolvedBadge;
     if (badge) el.src = badge;
   });
 
