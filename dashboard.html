@@ -2663,7 +2663,7 @@ const LEVELS = [
 
 
 // ═══════════════════════════════════════
-// DEMO DATA
+// FALLBACK DATA (usado quando Supabase retorna vazio)
 // ═══════════════════════════════════════
 const demoMeetings = [
   {id:1,  title:'Análise de Ligações — Sessão Semanal',         date:'2026-03-08', location:'Discord',     confirmed:true},
@@ -2818,8 +2818,7 @@ async function renderFunilDash() {
       });
     }
   } catch(e) {
-    // demo fallback
-    totalLig=47; totalConn=23; totalDec=8; totalReun=2;
+    totalLig=0; totalConn=0; totalDec=0; totalReun=0;
   }
 
   const steps = [
@@ -2867,14 +2866,26 @@ async function renderFunilDash() {
   if (taxaEl) {
     taxaEl.textContent = totalLig > 0 ? ((totalReun/totalLig)*100).toFixed(1)+'%' : '—';
   }
+
+  // Atualizar card dashFunil com mesmos dados
+  if (typeof renderDashFunil === 'function') {
+    renderDashFunil(totalLig, totalConn, totalDec, totalReun);
+  }
 }
 
 // ═══════════════════════════════════════
 // RANKING
 // ═══════════════════════════════════════
-function loadRanking() {
-  const list = demoProfiles.slice().sort((a, b) => b.xp - a.xp);
-  const myId = userProfile?.id || 'demo-11';
+async function loadRanking() {
+  let list = [];
+  try {
+    const { data: profiles } = await sb.from('profiles').select('id, name, xp').eq('role', 'member').order('xp', { ascending: false });
+    list = (profiles && profiles.length > 0) ? profiles : demoProfiles.slice().sort((a, b) => b.xp - a.xp);
+  } catch (e) {
+    console.warn('Ranking fallback:', e);
+    list = demoProfiles.slice().sort((a, b) => b.xp - a.xp);
+  }
+  const myId = userProfile?.id || userSession?.user?.id;
   
   // Sub-aba membros
   const el = document.getElementById('rankMembersList');
@@ -2898,9 +2909,19 @@ function loadRanking() {
 // ═══════════════════════════════════════
 // ENCONTROS
 // ═══════════════════════════════════════
-function loadEncontros() {
+async function loadEncontros() {
   const el = document.getElementById('encontrosLista') || document.getElementById('encontrosList');
   if (!el) return;
+
+  let meetings = [];
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const { data } = await sb.from('meetings').select('*').eq('user_id', userSession?.user?.id).gte('date', today).in('status', ['agendado']).order('date', { ascending: true });
+    meetings = data || [];
+  } catch (e) {
+    console.warn('Encontros fallback:', e);
+  }
+  if (meetings.length === 0) meetings = demoMeetings;
 
   const userLevel = getLevelInfo(userProfile?.xp || 0).level;
   const encColors = [
@@ -2913,8 +2934,9 @@ function loadEncontros() {
   const platformIcons  = { 'Discord':'🎮', 'YouTube':'▶️', 'Google Meet':'📹' };
 
   let html = '';
-  demoMeetings.forEach((m, i) => {
-    const locked = m.minLevel && userLevel < m.minLevel;
+  meetings.forEach((m, i) => {
+    const minLvl = m.min_level ?? m.minLevel ?? 0;
+    const locked = minLvl > 0 && userLevel < minLvl;
     const clr = encColors[i % encColors.length];
     const d = new Date(m.date + 'T12:00:00');
     const day = d.getDate().toString().padStart(2,'0');
@@ -2950,7 +2972,7 @@ function loadEncontros() {
     html += `</div>`;
 
     if (locked) {
-      html += `<div style="position:absolute;top:8px;right:10px;font-size:.7rem;font-weight:700;color:#F87171">🔒 Nível ${m.minLevel}</div>`;
+      html += `<div style="position:absolute;top:8px;right:10px;font-size:.7rem;font-weight:700;color:#F87171">🔒 Nível ${minLvl}</div>`;
     }
 
     html += `</div>`;
@@ -2980,8 +3002,7 @@ async function checkSession() {
     const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
     if (!profile) { window.location.href = 'index.html'; return false; }
     if (profile.role === 'admin') { window.location.href = 'painel-mestre.html'; return false; }
-    // DEMO: sobrescrever XP para apresentação (1500 XP = Nível 2 Captador)
-    userProfile = {...profile, xp: profile.xp || 1500, name: profile.name || 'Wilton Almeida'};
+    userProfile = {...profile, xp: profile.xp ?? 0, name: profile.name || 'Membro'};
     userSession = session;
     return true;
   } catch(e) {
@@ -3796,9 +3817,7 @@ async function loadArsenal() {
       aulas = d1;
     }
   } catch(e) { console.error('Arsenal exception:', e); }
-  // Usar demo se Supabase vazio
   if (!aulas || aulas.length === 0) { aulas = demoAulas; }
-  console.log('Arsenal rows:', aulas?.length, aulas);
   const { data: progresses } = await sb.from('material_progress').select('*').eq('user_id', userSession.user.id);
   materialProgress = {};
   if (progresses) progresses.forEach(p => { materialProgress[p.material_id] = p; });
@@ -3843,8 +3862,19 @@ async function loadArsenal() {
 }
 
 async function loadMissoes() {
-  const today = new Date();
-  const { data: missions } = await sb.from('missions').select('*').lte('week_start', today.toISOString().split('T')[0]).gte('week_end', today.toISOString().split('T')[0]);
+  const today = new Date().toISOString().split('T')[0];
+  let missions = [];
+  try {
+    const { data } = await sb.from('missions').select('*').eq('active', true);
+    missions = (data || []).filter(m => {
+      if (!m.week_start && !m.week_end) return true;
+      if (m.week_start && m.week_end) return m.week_start <= today && m.week_end >= today;
+      if (m.week_start) return m.week_start <= today;
+      return m.week_end >= today;
+    });
+  } catch (e) {
+    console.warn('Missões fallback:', e);
+  }
   const container = document.getElementById('missoesList');
   const userLvlM = getLevelInfo(userProfile?.xp || 0).level;
   const demoMissions = [
@@ -3865,7 +3895,6 @@ async function loadMissoes() {
     { id:12, title:'Submeter Script Personalizado',   description:'Adapte o script padrão ao seu estilo, submeta ao líder e implemente o feedback recebido.',            xp_reward:150, category:'Mensal',  tipo:'Estudo',     active:true },
     { id:13, title:'Atingir Meta de XP do Mês',       description:'Acumule o XP necessário para o próximo milestone de nível. Calculado com base no seu nível atual.',  xp_reward:400, category:'Mensal',  tipo:'Performance',active:true },
   ];
-  // Usar demo se supabase vazio
   const finalMissions = (missions && missions.length > 0) ? missions : demoMissions;
   if (!finalMissions || finalMissions.length === 0) {
     container.innerHTML = '<div class="empty-state"><div class="empty-state-text">Nenhuma missão ativa</div></div>';
@@ -3914,16 +3943,16 @@ async function loadMissoes() {
   // Dash preview
   const dashContainer = document.getElementById('dashMissions');
   let dashHtml = '';
-  missions.slice(0,4).forEach(m => {
+  (finalMissions || []).slice(0,4).forEach(m => {
     dashHtml += `<div class="mission-item">`;
     dashHtml += `<div class="mission-dot active"></div>`;
     dashHtml += `<div class="mission-info"><div class="mission-title">${m.title}</div><div class="mission-desc">${m.description || ''}</div></div>`;
     dashHtml += `<div class="mission-xp">+${m.xp_reward} XP</div></div>`;
   });
-  dashContainer.innerHTML = dashHtml || '<div class="empty-state"><div class="empty-state-text">Nenhuma missão ativa</div></div>';
+  if (dashContainer) dashContainer.innerHTML = dashHtml || '<div class="empty-state"><div class="empty-state-text">Nenhuma missão ativa</div></div>';
 
   const badge = document.getElementById('badgeMissoes');
-  if (missions.length > 0) { badge.style.display='flex'; badge.textContent=missions.length; }
+  if (badge && finalMissions && finalMissions.length > 0) { badge.style.display='flex'; badge.textContent=finalMissions.length; }
 }
 
 
@@ -4116,10 +4145,7 @@ function filterMissoes(cat, btn) {
   if (btn) { btn.style.background='rgba(232,184,75,.12)';btn.style.color='var(--g1)';btn.style.borderColor='rgba(232,184,75,.4)'; }
 }
 
-// ══ Render demo funil on load ══
-document.addEventListener('DOMContentLoaded', () => {
-  renderDashFunil(47, 23, 8, 2);
-});
+// Funil usa dados reais via renderFunilDash (chamado em loadAll)
 
 
 
