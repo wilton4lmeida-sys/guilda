@@ -2882,7 +2882,7 @@ async function loadEncontros() {
   let meetings = [];
   try {
     const today = new Date().toISOString().split('T')[0];
-    const { data } = await sb.from('meetings').select('*').eq('user_id', userSession?.user?.id).gte('date', today).in('status', ['agendado']).order('date', { ascending: true });
+    const { data } = await sb.from('meetings').select('*').gte('date', today).order('date', { ascending: true });
     meetings = data || [];
   } catch (e) {
     console.warn('Encontros fallback:', e);
