@@ -3877,31 +3877,12 @@ async function loadMissoes() {
   }
   const container = document.getElementById('missoesList');
   const userLvlM = getLevelInfo(userProfile?.xp || 0).level;
-  const demoMissions = [
-    // DIÁRIAS
-    { id:1,  title:'10 Ligações com SPICED',         description:'Realize no mínimo 10 ligações aplicando o framework SPICED. Registre no diário ao final do dia.',         xp_reward:30,  category:'Diária',  tipo:'Prática',    active:true },
-    { id:2,  title:'Report de Áudio Diário',          description:'Grave e envie o áudio de report: o que fez, o que vai fazer, principais obstáculos.',                  xp_reward:20,  category:'Diária',  tipo:'Execução',   active:true },
-    { id:3,  title:'Estudo Diário — 1 Módulo',        description:'Assista um módulo do Arsenal e registre 3 aprendizados no diário.',                                    xp_reward:25,  category:'Diária',  tipo:'Estudo',     active:true },
-    { id:4,  title:'Preencher Relatório do Dia',      description:'Preencha o diário com todas as métricas: ligações, conexões, decisores, reuniões marcadas.',           xp_reward:15,  category:'Diária',  tipo:'Execução',   active:true },
-    // SEMANAIS
-    { id:5,  title:'50 Ligações na Semana',           description:'Meta de volume semanal. Cada ligação precisa estar registrada no diário com data e resultado.',         xp_reward:150, category:'Semanal', tipo:'Volume',     active:true },
-    { id:6,  title:'3 Reuniões Marcadas',             description:'Marque 3 reuniões válidas e validadas pelo líder. Registre data, horário e empresa no diário.',        xp_reward:200, category:'Semanal', tipo:'Resultado',  active:true },
-    { id:7,  title:'Enviar Áudio de Análise Semanal', description:'Grave um áudio analisando suas 3 melhores ligações da semana. O que funcionou? O que melhorar?',      xp_reward:100, category:'Semanal', tipo:'Análise',    active:true },
-    { id:8,  title:'Role-play com Feedback',          description:'Realize um role-play de ligação e envie para avaliação do líder. Mínimo 5 minutos de gravação.',      xp_reward:120, category:'Semanal', tipo:'Estudo',     active:true },
-    { id:9,  title:'Assistir Sessão ao Vivo',         description:'Participe de uma das sessões semanais ao vivo (Discord ou YouTube) e envie seu principal aprendizado.',xp_reward:80,  category:'Semanal', tipo:'Estudo',     active:true },
-    // MENSAIS
-    { id:10, title:'Meta de 7 Dias de Checklist',     description:'Complete o checklist diário por 7 dias consecutivos sem falhar em nenhum item.',                      xp_reward:300, category:'Mensal',  tipo:'Consistência',active:true },
-    { id:11, title:'2 Vendas Acumuladas — Milestone', description:'Gere 2 vendas validadas para avançar ao Nível 1 — Prospector. Marco histórico.',                      xp_reward:500, category:'Mensal',  tipo:'Milestone',  active:true },
-    { id:12, title:'Submeter Script Personalizado',   description:'Adapte o script padrão ao seu estilo, submeta ao líder e implemente o feedback recebido.',            xp_reward:150, category:'Mensal',  tipo:'Estudo',     active:true },
-    { id:13, title:'Atingir Meta de XP do Mês',       description:'Acumule o XP necessário para o próximo milestone de nível. Calculado com base no seu nível atual.',  xp_reward:400, category:'Mensal',  tipo:'Performance',active:true },
-  ];
-  const finalMissions = (missions && missions.length > 0) ? missions : demoMissions;
-  if (!finalMissions || finalMissions.length === 0) {
+  if (!missions || missions.length === 0) {
     container.innerHTML = '<div class="empty-state"><div class="empty-state-text">Nenhuma missão ativa</div></div>';
     return;
   }
   let html = '';
-  finalMissions.forEach(m => {
+  missions.forEach(m => {
     // Cores por categoria
     const catColors = {
       'Diária':{'bg':'rgba(96,165,250,.1)','c':'#93C5FD','brd':'rgba(96,165,250,.2)'},
