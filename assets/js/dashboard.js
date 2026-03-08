@@ -130,6 +130,13 @@ function renderHero() {
   if (badgeEmojiEl) badgeEmojiEl.remove();
 
   // Badge level label
+  const meBadgeImgEl = document.getElementById('dashMeBadgeImg');
+  if (meBadgeImgEl && lvl.badge) meBadgeImgEl.src = lvl.badge;
+  document.querySelectorAll('img[data-badge-slot="true"]').forEach((el, i) => {
+    const badge = BADGE_IMGS[Math.min(i + 1, BADGE_IMGS.length - 1)] || lvl.badge;
+    if (badge) el.src = badge;
+  });
+
   const badgeLvlEl = document.getElementById('heroBadgeLevel');
   if (badgeLvlEl) badgeLvlEl.textContent = `NV ${lvl.level} · ${lvl.name}`;
 
@@ -1696,3 +1703,5 @@ window.loadDiarioFiltered = async function() {
   html += '</tbody></table>';
   container.innerHTML = html;
 };
+
+
