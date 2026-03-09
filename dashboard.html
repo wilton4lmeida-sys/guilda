@@ -2537,15 +2537,15 @@ const BADGE_IMGS = [
 
 
 
-// Visual-only properties per level (not stored in DB)
+// Visual-only properties per level — XP thresholds são a fonte de verdade no código
 const LEVEL_VISUAL = {
-  1: { cor:'#C8A87A', badge:BADGE_IMGS[1], vendasMes:'~1/mês',    vendas:2  },
-  2: { cor:'#A0A0B8', badge:BADGE_IMGS[2], vendasMes:'~1.6/mês',  vendas:6  },
-  3: { cor:'#D4A017', badge:BADGE_IMGS[3], vendasMes:'~2.4/mês',  vendas:15 },
-  4: { cor:'#60CFFF', badge:BADGE_IMGS[4], vendasMes:'~3.6/mês',  vendas:15 },
-  5: { cor:'#F5C518', badge:BADGE_IMGS[5], vendasMes:'Variável',   vendas:0  },
-  6: { cor:'#FF9A3C', badge:BADGE_IMGS[6], vendasMes:'R$300k/mês', vendas:0 },
-  7: { cor:'#FF5C9A', badge:BADGE_IMGS[7], vendasMes:'Global',     vendas:0  },
+  1: { cor:'#C8A87A', badge:BADGE_IMGS[1], vendasMes:'~1/mês',    vendas:2,  min_xp:0,     max_xp:1000  },
+  2: { cor:'#A0A0B8', badge:BADGE_IMGS[2], vendasMes:'~1.6/mês',  vendas:6,  min_xp:1001,  max_xp:5000  },
+  3: { cor:'#D4A017', badge:BADGE_IMGS[3], vendasMes:'~2.4/mês',  vendas:15, min_xp:5001,  max_xp:15000 },
+  4: { cor:'#60CFFF', badge:BADGE_IMGS[4], vendasMes:'~3.6/mês',  vendas:15, min_xp:15001, max_xp:30000 },
+  5: { cor:'#F5C518', badge:BADGE_IMGS[5], vendasMes:'Variável',   vendas:0,  min_xp:30001, max_xp:50000 },
+  6: { cor:'#FF9A3C', badge:BADGE_IMGS[6], vendasMes:'R$300k/mês', vendas:0, min_xp:50001, max_xp:999999},
+  7: { cor:'#FF5C9A', badge:BADGE_IMGS[7], vendasMes:'Global',     vendas:0,  min_xp:999999,max_xp:9999999},
 };
 
 let LEVELS = [];
@@ -2558,10 +2558,10 @@ async function loadLevels() {
         const vis = LEVEL_VISUAL[l.level] || {};
         return {
           level:    l.level,
-          name:     l.name,
-          emoji:    l.emoji,
-          min:      l.min_xp  ?? 9999999,
-          max:      l.max_xp  ?? 9999999,
+          name:     l.name     || vis.name || `Nível ${l.level}`,
+          emoji:    l.emoji    || '🏅',
+          min:      l.min_xp   ?? vis.min_xp ?? 0,
+          max:      l.max_xp   ?? vis.max_xp ?? 9999999,
           comissao: l.commission_info || '—',
           meta:     l.meta_text || '—',
           cor:      vis.cor    || '#888',
@@ -2573,6 +2573,22 @@ async function loadLevels() {
     }
   } catch(e) {
     console.error('Erro ao carregar levels:', e);
+  }
+  // Fallback completo: se Supabase não retornou nada, usa os dados hardcoded
+  if (!LEVELS || LEVELS.length === 0) {
+    LEVELS = Object.entries(LEVEL_VISUAL).map(([lvl, vis]) => ({
+      level:    Number(lvl),
+      name:     ['','Prospector','Captador','Parceiro','Elite','Consultor','Franqueado','Sócio'][lvl] || `Nível ${lvl}`,
+      emoji:    ['','🥉','🥈','🥇','💎','⭐','👑','🌟'][lvl] || '🏅',
+      min:      vis.min_xp,
+      max:      vis.max_xp,
+      comissao: '—',
+      meta:     '—',
+      cor:      vis.cor,
+      badge:    vis.badge,
+      vendasMes:vis.vendasMes,
+      vendas:   vis.vendas,
+    }));
   }
 }
 
@@ -2952,8 +2968,14 @@ async function loadEncontros() {
 
 
 function getLevelInfo(xp) {
-  if (!LEVELS || LEVELS.length === 0) return { level:1, name:'Prospector', emoji:'🥉', min:0, max:999, comissao:'7%', meta:'2 vendas acumuladas', cor:'#C8A87A', badge:null, vendasMes:'~1/mês', vendas:2 };
-  return LEVELS.find(l => xp >= l.min && xp <= l.max) || LEVELS[0];
+  if (!LEVELS || LEVELS.length === 0) {
+    // Fallback usando LEVEL_VISUAL com XP thresholds hardcoded
+    const entry = Object.entries(LEVEL_VISUAL).reverse().find(([, v]) => xp >= v.min_xp);
+    const lvl = entry ? Number(entry[0]) : 1;
+    const vis = LEVEL_VISUAL[lvl] || LEVEL_VISUAL[1];
+    return { level:lvl, name:['','Prospector','Captador','Parceiro','Elite','Consultor','Franqueado','Sócio'][lvl]||`Nível ${lvl}`, emoji:'🏅', min:vis.min_xp, max:vis.max_xp, comissao:'—', meta:'—', cor:vis.cor, badge:vis.badge, vendasMes:vis.vendasMes, vendas:vis.vendas };
+  }
+  return LEVELS.find(l => xp >= l.min && xp <= l.max) || LEVELS[LEVELS.length - 1];
 }
 function getNextLevel(currentLevel) {
   return LEVELS.find(l => l.level === currentLevel + 1);
