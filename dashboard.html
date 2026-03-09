@@ -3634,19 +3634,21 @@ async function loadProfile() {
   // Sidebar
   const initials = (userProfile.name || userProfile.email || '??').slice(0,2).toUpperCase();
   const avatarEl = document.getElementById('sidebarAvatar');
-  avatarEl.innerHTML = `<div class="profile-avatar-dot"></div><span>${initials}</span>`;
-  document.getElementById('sidebarName').textContent = userProfile.name || 'Sem nome';
-  document.getElementById('sidebarLevel').textContent = `Nível ${lvl.level} — ${lvl.name}`;
+  if (avatarEl) avatarEl.innerHTML = `<div class="profile-avatar-dot"></div><span>${initials}</span>`;
+  const sidebarName = document.getElementById('sidebarName'); if (sidebarName) sidebarName.textContent = userProfile.name || 'Sem nome';
+  const sidebarLevel = document.getElementById('sidebarLevel'); if (sidebarLevel) sidebarLevel.textContent = `Nível ${lvl.level} — ${lvl.name}`;
 
   // Topbar
-  document.getElementById('topbarXP').textContent = userProfile.xp.toLocaleString('pt-BR') + ' XP';
+  const topbarXP = document.getElementById('topbarXP'); if (topbarXP) topbarXP.textContent = userProfile.xp.toLocaleString('pt-BR') + ' XP';
 
   // Hero
   const firstName = (userProfile.name || 'Membro').split(' ')[0];
   const lastName = (userProfile.name || '').split(' ').slice(1).join(' ');
-  document.getElementById('heroName').innerHTML = firstName + (lastName ? ` <span style="background:var(--grd-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${lastName}</span>` : '');
-  const _n = document.getElementById('heroLevelNum'); if(_n) _n.textContent = lvl.level;
-  document.getElementById('heroLevelRank').textContent = `Nível ${lvl.level} de ${LEVELS.length - 1}`;
+  const heroNameEl = document.getElementById('heroName');
+  if (heroNameEl) heroNameEl.innerHTML = firstName + (lastName ? ` <span style="background:var(--grd-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${lastName}</span>` : '');
+  const _n = document.getElementById('heroLevelNum'); if (_n) _n.textContent = lvl.level;
+  const heroLevelBadge = document.getElementById('heroLevelBadge'); if (heroLevelBadge) heroLevelBadge.textContent = `NÍVEL ${lvl.level}`;
+  const heroLevelRank = document.getElementById('heroLevelRank'); if (heroLevelRank) heroLevelRank.textContent = `Nível ${lvl.level} de ${LEVELS.length}`;
   (function(){
     const svgEl = document.getElementById('heroBadgeSvg');
     const tEl = document.getElementById('heroBadgeTitle');
@@ -3668,10 +3670,10 @@ async function loadProfile() {
   const xpNeeded = (nextLvl ? nextLvl.min : lvl.max) - lvl.min;
   const pct = Math.min((xpInLevel / xpNeeded) * 100, 100);
   const remaining = nextLvl ? (nextLvl.min - userProfile.xp) : 0;
-  document.getElementById('heroXpCurrent').textContent = `${userProfile.xp.toLocaleString('pt-BR')} / ${(nextLvl ? nextLvl.min : lvl.max).toLocaleString('pt-BR')} XP`;
-  document.getElementById('heroXpRemaining').textContent = nextLvl ? `Faltam ${remaining.toLocaleString('pt-BR')} XP para ${nextLvl.name}` : 'Nível máximo!';
-  setTimeout(() => { document.getElementById('xpFill').style.width = pct + '%'; }, 300);
-  document.getElementById('heroSubtitle').textContent = userProfile.xp === 0
+  const xpCurEl = document.getElementById('heroXpCurrent'); if (xpCurEl) xpCurEl.textContent = `${userProfile.xp.toLocaleString('pt-BR')} / ${(nextLvl ? nextLvl.min : lvl.max).toLocaleString('pt-BR')} XP`;
+  const xpRemEl = document.getElementById('heroXpRemaining'); if (xpRemEl) xpRemEl.textContent = nextLvl ? `Faltam ${remaining.toLocaleString('pt-BR')} XP para ${nextLvl.name}` : 'Nível máximo!';
+  const xpFillEl = document.getElementById('xpFill'); if (xpFillEl) setTimeout(() => { xpFillEl.style.width = pct + '%'; }, 300);
+  const subtitleEl = document.getElementById('heroSubtitle'); if (subtitleEl) subtitleEl.textContent = userProfile.xp === 0
     ? 'Comece preenchendo seu diário e completando missões para ganhar XP.'
     : 'Continue evoluindo. Cada missão te aproxima do próximo nível.';
   // Comissão e próximo nível
