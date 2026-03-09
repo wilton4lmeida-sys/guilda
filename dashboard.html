@@ -1319,7 +1319,7 @@ input[type=date]:focus {
                 <div class="xp-fill" id="xpFill" style="width:20%;background:linear-gradient(90deg,#3D3258,#C99A2E 60%,#E8B84B)"></div>
               </div>
               <div style="display:flex;justify-content:space-between">
-                <span style="font-size:.6rem;color:var(--t3);font-weight:600">Recruta → Captador</span>
+                <span id="heroLevelRank" style="font-size:.6rem;color:var(--t3);font-weight:600">Recruta → Captador</span>
                 <span id="heroNextLevel" style="font-size:.6rem;color:var(--t3);font-weight:600">próximo: Parceiro N3 · 6.000 XP</span>
               </div>
             </div>
@@ -2894,7 +2894,6 @@ async function loadEncontros() {
     return;
   }
 
-  const userLevel = getLevelInfo(userProfile?.xp || 0).level;
   const encColors = [
     {bg:'rgba(18,18,20,1)',    brd:'rgba(255,255,255,.1)',   accent:'rgba(255,255,255,.15)'},
     {bg:'rgba(15,15,17,.98)',  brd:'rgba(255,255,255,.07)',  accent:'rgba(255,255,255,.1)'},
@@ -2906,8 +2905,6 @@ async function loadEncontros() {
 
   let html = '';
   meetings.forEach((m, i) => {
-    const minLvl = m.min_level ?? m.minLevel ?? 0;
-    const locked = minLvl > 0 && userLevel < minLvl;
     const clr = encColors[i % encColors.length];
     const d = new Date(m.date + 'T12:00:00');
     const day = d.getDate().toString().padStart(2,'0');
@@ -2920,9 +2917,8 @@ async function loadEncontros() {
       border-radius:14px;padding:16px 18px;
       display:flex;align-items:center;gap:16px;
       margin-bottom:10px;position:relative;
-      ${locked ? 'filter:blur(1.5px) saturate(.2);pointer-events:none;opacity:.45;' : ''}
     ">`;
-    
+
     // Data box
     html += `<div style="
       min-width:48px;width:48px;height:48px;border-radius:10px;
@@ -2941,10 +2937,6 @@ async function loadEncontros() {
       ${m.confirmed ? '<span style="font-size:.92rem;color:#22C55E;font-weight:600">● Confirmado</span>' : ''}
     </div>`;
     html += `</div>`;
-
-    if (locked) {
-      html += `<div style="position:absolute;top:8px;right:10px;font-size:.7rem;font-weight:700;color:#F87171">🔒 Nível ${minLvl}</div>`;
-    }
 
     html += `</div>`;
   });
