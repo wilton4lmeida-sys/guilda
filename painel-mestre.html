@@ -648,11 +648,11 @@ body::before {
       <button class="modal-close" onclick="closeModal('modalMassa')">×</button>
     </div>
     <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:12px">
-      Uma linha por membro, no formato <strong style="color:var(--text-primary)">usuario:senha</strong>. O nível padrão é N1.
+      Uma linha por membro, no formato <strong style="color:var(--text-primary)">nome:usuario:senha</strong> ou <strong style="color:var(--text-primary)">usuario:senha</strong>. Nível padrão N1.
     </p>
     <div class="form-group">
       <label class="form-label">Lista de Membros</label>
-      <textarea id="massaLista" class="form-input" rows="10" style="resize:vertical;font-family:monospace;font-size:0.82rem" placeholder="joaosilva:senha123&#10;mariaoliv:senha456&#10;pedromendes:senha789"></textarea>
+      <textarea id="massaLista" class="form-input" rows="10" style="resize:vertical;font-family:monospace;font-size:0.82rem" placeholder="João Silva:joao.silva:senha123&#10;Maria Souza:maria.souza:senha456"></textarea>
     </div>
     <div id="massaLog" style="font-size:0.75rem;max-height:120px;overflow-y:auto;background:rgba(0,0,0,.3);border-radius:8px;padding:8px;display:none;margin-bottom:12px;font-family:monospace;color:var(--text-muted)"></div>
     <button class="btn btn-gold" id="btnCriarMassa" style="width:100%" onclick="criarEmMassa()">Criar Todos</button>
@@ -1144,11 +1144,14 @@ window.criarEmMassa = async () => {
   btn.textContent = 'Criando...';
   let ok = 0, fail = 0;
   for (const linha of linhas) {
-    const [usuario, senha] = linha.split(':').map(s => s.trim());
+    const partes = linha.split(':').map(s => s.trim());
+    let nome, usuario, senha;
+    if (partes.length >= 3) { [nome, usuario, ...rest] = partes; senha = rest.join(':'); }
+    else { [usuario, ...rest] = partes; senha = rest.join(':'); nome = usuario; }
     if (!usuario || !senha) { log.innerHTML += `<div style="color:#f87">⚠ linha inválida: ${linha}</div>`; fail++; continue; }
     try {
-      await signUpUser(usuario, senha, usuario, 1, 'ativo');
-      log.innerHTML += `<div style="color:#6f6">✓ ${usuario}</div>`;
+      await signUpUser(usuario, senha, nome, 1, 'ativo');
+      log.innerHTML += `<div style="color:#6f6">✓ ${nome} (${usuario})</div>`;
       ok++;
     } catch(e) {
       log.innerHTML += `<div style="color:#f87">✗ ${usuario}: ${e.message}</div>`;
