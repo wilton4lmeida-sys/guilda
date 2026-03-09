@@ -430,6 +430,7 @@ body::before {
         <div class="card-header">
           <div class="card-title">👥 Gestão de Membros</div>
           <button class="btn btn-gold btn-sm" onclick="openModal('modalMembro')">+ Adicionar Membro</button>
+          <button class="btn btn-sm btn-outline" style="margin-left:8px" onclick="openModal('modalMassa')">+ Criar em Massa</button>
         </div>
         
         <table class="table">
@@ -609,8 +610,8 @@ body::before {
       <input class="form-input" id="membroNome">
     </div>
     <div class="form-group">
-      <label class="form-label">Email</label>
-      <input class="form-input" type="email" id="membroEmail">
+      <label class="form-label">Usuário</label>
+      <input class="form-input" type="text" id="membroEmail" placeholder="ex: joaosilva (sem espaços)">
     </div>
     <div class="form-group">
       <label class="form-label">Senha</label>
@@ -636,9 +637,25 @@ body::before {
       </div>
     </div>
     <button class="btn btn-gold" id="btnCriarMembro" style="width:100%;margin-top:8px;" onclick="criarMembro()">Criar Membro</button>
-    <p style="font-size:0.75rem;color:var(--text-muted);margin-top:12px;text-align:center;">
-      Aguarde 60 segundos entre cada criação (limite do Supabase)
+  </div>
+</div>
+
+<!-- MODAL: CRIAR EM MASSA -->
+<div id="modalMassa" class="modal" onclick="if(event.target===this)closeModal('modalMassa')">
+  <div class="modal-box" style="max-width:520px">
+    <div class="modal-header">
+      <div class="modal-title">📋 Criar Membros em Massa</div>
+      <button class="modal-close" onclick="closeModal('modalMassa')">×</button>
+    </div>
+    <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:12px">
+      Uma linha por membro, no formato <strong style="color:var(--text-primary)">usuario:senha</strong>. O nível padrão é N1.
     </p>
+    <div class="form-group">
+      <label class="form-label">Lista de Membros</label>
+      <textarea id="massaLista" class="form-input" rows="10" style="resize:vertical;font-family:monospace;font-size:0.82rem" placeholder="joaosilva:senha123&#10;mariaoliv:senha456&#10;pedromendes:senha789"></textarea>
+    </div>
+    <div id="massaLog" style="font-size:0.75rem;max-height:120px;overflow-y:auto;background:rgba(0,0,0,.3);border-radius:8px;padding:8px;display:none;margin-bottom:12px;font-family:monospace;color:var(--text-muted)"></div>
+    <button class="btn btn-gold" id="btnCriarMassa" style="width:100%" onclick="criarEmMassa()">Criar Todos</button>
   </div>
 </div>
 
@@ -655,8 +672,8 @@ body::before {
       <input class="form-input" id="editMembroNome">
     </div>
     <div class="form-group">
-      <label class="form-label">Email</label>
-      <input class="form-input" type="email" id="editMembroEmail">
+      <label class="form-label">Usuário</label>
+      <input class="form-input" type="text" id="editMembroEmail" placeholder="ex: joaosilva">
     </div>
     <div class="grid-2">
       <div class="form-group">
@@ -951,7 +968,7 @@ async function loadMembros() {
           </div>
           <div>
             <div style="font-weight:500;">${m.name || 'Sem nome'}</div>
-            <div style="font-size:0.7rem;color:var(--text-muted);">${m.email || ''}</div>
+            <div style="font-size:0.7rem;color:var(--text-muted);">${fromFakeEmail(m.email) || ''}</div>
           </div>
         </div>
       </td>
@@ -1066,77 +1083,88 @@ async function loadRanking() {
 }
 
 // CRUD - Membro
-let cooldownActive = false;
-let cooldownTime = 60;
+const toFakeEmail = u => u.trim().toLowerCase().replace(/\s+/g,'') + '@guilda.local';
+const fromFakeEmail = e => (e || '').replace(/@guilda\.local$/, '');
+
+async function signUpUser(username, senha, nome, nivel, status) {
+  const email = toFakeEmail(username);
+  const { data: authData, error } = await sb.auth.signUp({
+    email,
+    password: senha,
+    options: { data: { name: nome } }
+  });
+  if (error) throw error;
+  await sb.from('profiles').update({
+    name: nome || username,
+    email: username,
+    level: parseInt(nivel) || 1,
+    status: status || 'ativo',
+    xp: 0
+  }).eq('id', authData.user.id);
+  return authData;
+}
 
 window.criarMembro = async () => {
   const nome = document.getElementById('membroNome').value;
-  const email = document.getElementById('membroEmail').value;
+  const username = document.getElementById('membroEmail').value;
   const senha = document.getElementById('membroSenha').value;
   const nivel = document.getElementById('membroNivel').value;
   const status = document.getElementById('membroStatus').value;
   const btn = document.getElementById('btnCriarMembro');
-  
-  if (!nome || !email || !senha) return alert('Preencha todos os campos');
-  
-  if (cooldownActive) {
-    alert(`Aguarde ${cooldownTime} segundos antes de criar outro membro.`);
-    return;
-  }
-  
+
+  if (!nome || !username || !senha) return alert('Preencha todos os campos');
+
   btn.disabled = true;
   btn.textContent = 'Criando...';
-  
+
   try {
-    const { data: authData, error } = await sb.auth.signUp({ 
-      email, 
-      password: senha,
-      options: { 
-        data: { name: nome },
-        emailRedirectTo: window.location.origin
-      }
-    });
-    if (error) throw error;
-    
-    await sb.from('profiles').update({
-      name: nome,
-      level: parseInt(nivel),
-      status: status,
-      xp: 0
-    }).eq('id', authData.user.id);
-    
+    await signUpUser(username, senha, nome, nivel, status);
     closeModal('modalMembro');
     loadMembros();
     alert('Membro criado com sucesso!');
     document.getElementById('membroNome').value = '';
     document.getElementById('membroEmail').value = '';
     document.getElementById('membroSenha').value = '';
-    
-    // Ativa cooldown
-    cooldownActive = true;
-    cooldownTime = 60;
-    const interval = setInterval(() => {
-      cooldownTime--;
-      btn.textContent = `Aguarde ${cooldownTime}s`;
-      if (cooldownTime <= 0) {
-        clearInterval(interval);
-        cooldownActive = false;
-        btn.textContent = 'Criar Membro';
-        btn.disabled = false;
-      }
-    }, 1000);
-    
   } catch (err) {
     alert('Erro: ' + err.message);
+  } finally {
     btn.textContent = 'Criar Membro';
     btn.disabled = false;
   }
 };
 
+window.criarEmMassa = async () => {
+  const linhas = document.getElementById('massaLista').value.trim().split('\n').filter(l => l.trim());
+  if (!linhas.length) return alert('Adicione ao menos um membro');
+  const btn = document.getElementById('btnCriarMassa');
+  const log = document.getElementById('massaLog');
+  log.style.display = 'block';
+  log.innerHTML = '';
+  btn.disabled = true;
+  btn.textContent = 'Criando...';
+  let ok = 0, fail = 0;
+  for (const linha of linhas) {
+    const [usuario, senha] = linha.split(':').map(s => s.trim());
+    if (!usuario || !senha) { log.innerHTML += `<div style="color:#f87">⚠ linha inválida: ${linha}</div>`; fail++; continue; }
+    try {
+      await signUpUser(usuario, senha, usuario, 1, 'ativo');
+      log.innerHTML += `<div style="color:#6f6">✓ ${usuario}</div>`;
+      ok++;
+    } catch(e) {
+      log.innerHTML += `<div style="color:#f87">✗ ${usuario}: ${e.message}</div>`;
+      fail++;
+    }
+    log.scrollTop = log.scrollHeight;
+    await new Promise(r => setTimeout(r, 600));
+  }
+  btn.textContent = `Concluído (${ok} ok, ${fail} erros)`;
+  loadMembros();
+};
+
 window.editarMembro = (membro) => {
   document.getElementById('editMembroId').value = membro.id;
   document.getElementById('editMembroNome').value = membro.name || '';
-  document.getElementById('editMembroEmail').value = membro.email || '';
+  document.getElementById('editMembroEmail').value = fromFakeEmail(membro.email) || '';
   document.getElementById('editMembroNivel').value = membro.level || 0;
   document.getElementById('editMembroXP').value = membro.xp || 0;
   document.getElementById('editMembroStatus').value = membro.status || 'ativo';
@@ -1146,16 +1174,16 @@ window.editarMembro = (membro) => {
 window.salvarEdicaoMembro = async () => {
   const id = document.getElementById('editMembroId').value;
   const nome = document.getElementById('editMembroNome').value;
-  const email = document.getElementById('editMembroEmail').value;
+  const username = document.getElementById('editMembroEmail').value.trim().toLowerCase();
   const nivel = document.getElementById('editMembroNivel').value;
   const xp = document.getElementById('editMembroXP').value;
   const status = document.getElementById('editMembroStatus').value;
   const novaSenha = document.getElementById('editMembroSenha').value;
-  
+
   // Atualiza profile
   const { error } = await sb.from('profiles').update({
     name: nome,
-    email: email,
+    email: username,
     level: parseInt(nivel),
     xp: parseInt(xp),
     status: status
