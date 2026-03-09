@@ -2148,14 +2148,18 @@ input[type=date]:focus {
     <div class="page-card" style="margin-bottom:14px;padding:16px 20px">
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
         <div style="font-size:.82rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--t3);font-weight:700;flex-shrink:0">Período</div>
-        <div style="display:flex;align-items:center;gap:6px;flex:1;max-width:400px">
-          <input type="date" id="metricasFrom" class="form-input" style="flex:1;min-width:130px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="date-picker-wrap date-picker-sm" onclick="openCal('metricasFrom','metricasFromDisplay',this,event)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span id="metricasFromDisplay" class="date-picker-display">dd/mm/aaaa</span>
+            <input type="date" id="metricasFrom">
+          </div>
           <span style="color:var(--t3);font-weight:600;font-size:.82rem">até</span>
-          <input type="date" id="metricasTo" class="form-input" style="flex:1;min-width:130px">
-        </div>
-        <div style="display:flex;gap:6px;flex-shrink:0">
-          <button class="btn btn-gold btn-sm" onclick="loadMetricas()" style="height:40px">Filtrar</button>
-          <button class="btn btn-outline btn-sm" onclick="resetMetricasPeriod()" style="height:40px">Este mês</button>
+          <div class="date-picker-wrap date-picker-sm" onclick="openCal('metricasTo','metricasToDisplay',this,event)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span id="metricasToDisplay" class="date-picker-display">dd/mm/aaaa</span>
+            <input type="date" id="metricasTo">
+          </div>
         </div>
         <div style="flex:1;min-width:100px;text-align:right">
           <span style="font-size:.7rem;color:var(--t3);font-weight:500" id="metricasPeriodLabel">Carregando...</span>
@@ -3691,6 +3695,7 @@ function syncDateDisplay(inputId, displayId) {
     if (inp) inp.value = iso;
     if (disp) disp.textContent = iso.split('-').reverse().join('/');
     el.style.display = 'none';
+    if (state.inputId === 'metricasFrom' || state.inputId === 'metricasTo') loadMetricas();
   };
 })();
 
@@ -3719,8 +3724,12 @@ async function resetMetricasPeriod() {
   const now = new Date();
   const y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,'0');
   const lastDay = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
-  document.getElementById('metricasFrom').value = `${y}-${m}-01`;
-  document.getElementById('metricasTo').value   = `${y}-${m}-${String(lastDay).padStart(2,'0')}`;
+  const fromISO = `${y}-${m}-01`;
+  const toISO   = `${y}-${m}-${String(lastDay).padStart(2,'0')}`;
+  document.getElementById('metricasFrom').value = fromISO;
+  document.getElementById('metricasTo').value   = toISO;
+  syncDateDisplay('metricasFrom', 'metricasFromDisplay');
+  syncDateDisplay('metricasTo',   'metricasToDisplay');
   await loadMetricas();
 }
 
