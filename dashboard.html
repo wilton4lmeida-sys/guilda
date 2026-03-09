@@ -2463,56 +2463,10 @@ async function renderFunilDash() {
     totalLig=0; totalConn=0; totalDec=0; totalReun=0;
   }
 
-  const steps = [
-    { label: 'Ligações Totais',         vol: totalLig,  base: totalLig,   idx: 0 },
-    { label: 'Conexões c/ Atendente',   vol: totalConn, base: totalLig,   idx: 1 },
-    { label: 'Conexões c/ Decisor',     vol: totalDec,  base: totalLig,   idx: 2 },
-    { label: 'Reuniões Agendadas',      vol: totalReun, base: totalLig,   idx: 3 },
-  ];
-
-  const maxVol = totalLig || 1;
-  const badges = ['TOPO','ATEND.','DECISOR','REUNIÃO'];
-  const icons  = ['📞','🤝','🎯','📅'];
-
-  let html = '';
-  steps.forEach((s, i) => {
-    const barPct = Math.min(100, s.vol > 0 ? Math.round((s.vol / maxVol) * 100) : 0);
-    const convPct = i > 0 && steps[i-1].vol > 0 
-      ? ((s.vol / steps[i-1].vol) * 100).toFixed(0) + '%'
-      : (i === 0 ? '100%' : '—');
-
-    html += `<div class="funil-step-new step-${i}">`;
-    html += `<div style="display:flex;align-items:center;gap:6px;padding-top:${i>0?'4px':'0'}">
-      <span class="funil-step-label-badge">${icons[i]} ${badges[i]}</span>
-      ${i > 0 ? `<span style="font-size:.94rem;color:rgba(160,150,100,.5);font-weight:600">→ conv. ${convPct}</span>` : ''}
-    </div>`;
-    html += `<div class="funil-bar-container">`;
-    html += `<span class="funil-bar-label">${s.label}</span>`;
-    html += `<div class="funil-bar-outer">
-      <div class="funil-bar-fill" style="width:${barPct}%">
-        ${barPct > 20 ? `<span class="funil-bar-pct">${barPct}%</span>` : ''}
-      </div>
-    </div>`;
-    html += `<span class="funil-bar-vol">${s.vol.toLocaleString('pt-BR')}</span>`;
-    html += `</div>`;
-    if (i < steps.length - 1) {
-      html += `<div class="funil-connector" style="background:rgba(245,197,24,.25)"></div>`;
-    }
-    html += `</div>`;
-  });
-
-  el.innerHTML = html || '<div class="funil-empty-state"><div style="font-size:2rem;margin-bottom:8px">📊</div><div style="font-size:.8rem;color:#5A584E">Preencha o diário para ver seu funil</div></div>';
-
-  // Taxa geral
   const taxaEl = document.getElementById('funilTaxaGeral');
-  if (taxaEl) {
-    taxaEl.textContent = totalLig > 0 ? ((totalReun/totalLig)*100).toFixed(1)+'%' : '—';
-  }
+  if (taxaEl) taxaEl.textContent = totalLig > 0 ? ((totalReun/totalLig)*100).toFixed(1)+'%' : '—';
 
-  // Atualizar card dashFunil com mesmos dados
-  if (typeof renderDashFunil === 'function') {
-    renderDashFunil(totalLig, totalConn, totalDec, totalReun);
-  }
+  renderDashFunil(totalLig, totalConn, totalDec, totalReun);
 }
 
 // ═══════════════════════════════════════
