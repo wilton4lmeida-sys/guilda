@@ -3619,7 +3619,7 @@ function syncDateDisplay(inputId, displayId) {
   const DAYS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
   let state = { month:0, year:0, inputId:null, displayId:null };
   let rng = { active:false, fromId:null, toId:null, dispId:null, step:'start', hover:null };
-  let el = null;
+  let el = null, grid = null, hint = null;
 
   function build() {
     if (el) return;
@@ -3635,6 +3635,30 @@ function syncDateDisplay(inputId, displayId) {
       <div class="cal-range-hint" id="calRangeHint" style="display:none"></div>
     </div>`;
     document.body.appendChild(el);
+    grid = el.querySelector('#calGrid');
+    hint = el.querySelector('#calRangeHint');
+
+    // Event delegation — no inline handlers that cause re-render loops
+    grid.addEventListener('click', function(e) {
+      const day = e.target.closest('[data-iso]');
+      if (!day) return;
+      e.stopPropagation();
+      calPick(day.dataset.iso);
+    });
+    grid.addEventListener('mouseover', function(e) {
+      if (!rng.active || rng.step !== 'end') return;
+      const day = e.target.closest('[data-iso]');
+      const iso = day ? day.dataset.iso : null;
+      if (iso === rng.hover) return;
+      rng.hover = iso;
+      applyClasses();
+    });
+    grid.addEventListener('mouseleave', function() {
+      if (!rng.active || rng.step !== 'end') return;
+      rng.hover = null;
+      applyClasses();
+    });
+
     document.addEventListener('click', function(e){
       if (el.style.display !== 'none' && !el.contains(e.target) && !e.target.closest('.date-picker-wrap')) {
         el.style.display = 'none';
@@ -3671,7 +3695,6 @@ function syncDateDisplay(inputId, displayId) {
     if (ev) ev.stopPropagation();
     build();
     rng = { active:true, fromId, toId, dispId, step:'start', hover:null };
-    state.inputId = fromId;
     const fromInp = document.getElementById(fromId);
     if (fromInp && fromInp.value) { const [y,m] = fromInp.value.split('-'); state.year=+y; state.month=+m-1; }
     else { const n = new Date(); state.month=n.getMonth(); state.year=n.getFullYear(); }
@@ -3682,54 +3705,55 @@ function syncDateDisplay(inputId, displayId) {
   window.calPrev = function(ev) { if(ev) ev.stopPropagation(); state.month--; if(state.month<0){state.month=11;state.year--;} renderCal(); };
   window.calNext = function(ev) { if(ev) ev.stopPropagation(); state.month++; if(state.month>11){state.month=0;state.year++;} renderCal(); };
 
+  // Build DOM once; applyClasses() updates styles without rebuilding
   function renderCal() {
     document.getElementById('calMonthLabel').textContent = MONTHS[state.month] + ' ' + state.year;
-    const hint = document.getElementById('calRangeHint');
-    const fromVal = rng.active ? (document.getElementById(rng.fromId)?.value||'') : (document.getElementById(state.inputId)?.value||'');
-    const toVal   = rng.active ? (document.getElementById(rng.toId)?.value||'')   : '';
-    const today = new Date().toISOString().split('T')[0];
     const first = new Date(state.year, state.month, 1).getDay();
     const total = new Date(state.year, state.month+1, 0).getDate();
     const prevTotal = new Date(state.year, state.month, 0).getDate();
-
-    if (rng.active) {
-      hint.style.display = 'block';
-      hint.textContent = rng.step === 'start' ? 'Clique para definir o início do período' : 'Agora clique para definir o fim do período';
-    } else { hint.style.display = 'none'; }
-
     let h = DAYS.map(d => `<div class="cal-day-name">${d}</div>`).join('');
     for (let i = first-1; i >= 0; i--) h += `<div class="cal-day other-month">${prevTotal-i}</div>`;
     for (let d = 1; d <= total; d++) {
       const iso = state.year+'-'+String(state.month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
-      let cls = 'cal-day';
-      if (rng.active) {
-        const effTo = rng.step==='end' && rng.hover && rng.hover>=fromVal ? rng.hover : toVal;
-        if      (iso === fromVal)                       cls += ' range-start';
-        else if (effTo && iso === effTo)                cls += ' range-end';
-        else if (fromVal && effTo && iso>fromVal && iso<effTo) cls += ' in-range';
-        else if (iso === today)                         cls += ' today';
-      } else {
-        if (iso === fromVal) cls += ' selected';
-        if (iso === today)   cls += ' today';
-      }
-      const hov = rng.active && rng.step==='end' ? `onmouseenter="calHov('${iso}')" onmouseleave="calHov(null)"` : '';
-      h += `<div class="${cls}" onclick="calPick('${iso}',event)" ${hov}>${d}</div>`;
+      h += `<div class="cal-day" data-iso="${iso}">${d}</div>`;
     }
     const rem = (7-((first+total)%7))%7;
     for (let d = 1; d <= rem; d++) h += `<div class="cal-day other-month">${d}</div>`;
-    document.getElementById('calGrid').innerHTML = h;
+    grid.innerHTML = h;
+    applyClasses();
+    if (rng.active) {
+      hint.style.display = 'block';
+      hint.textContent = rng.step === 'start' ? 'Selecione o início do período' : 'Selecione o fim do período';
+    } else { hint.style.display = 'none'; }
   }
 
-  window.calHov = function(iso) { rng.hover = iso; renderCal(); };
+  function applyClasses() {
+    const today = new Date().toISOString().split('T')[0];
+    const fromVal = rng.active ? (document.getElementById(rng.fromId)?.value||'') : (document.getElementById(state.inputId)?.value||'');
+    const toVal   = rng.active ? (document.getElementById(rng.toId)?.value||'') : '';
+    const effTo   = rng.active && rng.step==='end' && rng.hover ? rng.hover : toVal;
+    grid.querySelectorAll('[data-iso]').forEach(cell => {
+      const iso = cell.dataset.iso;
+      cell.className = 'cal-day';
+      if (iso === today) cell.classList.add('today');
+      if (rng.active) {
+        if (iso === fromVal)                                      cell.classList.add('range-start');
+        else if (effTo && iso === effTo)                          cell.classList.add('range-end');
+        else if (fromVal && effTo && iso > fromVal && iso < effTo) cell.classList.add('in-range');
+      } else {
+        if (iso === fromVal) cell.classList.add('selected');
+      }
+    });
+  }
 
-  window.calPick = function(iso, ev) {
-    if (ev) ev.stopPropagation();
+  function calPick(iso) {
     if (rng.active) {
       if (rng.step === 'start') {
         document.getElementById(rng.fromId).value = iso;
         document.getElementById(rng.toId).value = '';
         rng.step = 'end'; rng.hover = null;
-        renderCal();
+        hint.textContent = 'Selecione o fim do período';
+        applyClasses();
       } else {
         const fromISO = document.getElementById(rng.fromId)?.value || iso;
         const [s, e] = iso < fromISO ? [iso, fromISO] : [fromISO, iso];
@@ -3748,7 +3772,7 @@ function syncDateDisplay(inputId, displayId) {
       if (disp) disp.textContent = iso.split('-').reverse().join('/');
       el.style.display = 'none';
     }
-  };
+  }
 })();
 
 window.salvarDiario = async () => {
