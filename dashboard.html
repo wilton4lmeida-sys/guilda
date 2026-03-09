@@ -1216,14 +1216,30 @@ input[type=date]:focus {
   opacity: .7;
 }
 .insignia-card.mystery {
-  background: linear-gradient(150deg, rgba(10,8,16,.98), rgba(5,4,8,.95));
-  border-color: rgba(255,255,255,.04);
+  background: linear-gradient(150deg, rgba(18,12,28,.98), rgba(10,8,20,.95));
+  border-color: rgba(245,197,24,.3);
+  box-shadow: 0 0 20px rgba(245,197,24,.08), inset 0 1px 0 rgba(245,197,24,.06);
+  opacity: 1;
+  filter: none;
+}
+.insignia-card.mystery:hover {
+  border-color: rgba(245,197,24,.5);
+  box-shadow: 0 0 32px rgba(245,197,24,.14), inset 0 1px 0 rgba(245,197,24,.1);
+}
+.insignia-card.mystery.lvl7 {
+  border-color: rgba(180,120,255,.35);
+  box-shadow: 0 0 20px rgba(180,120,255,.1), inset 0 1px 0 rgba(180,120,255,.07);
+}
+.insignia-card.mystery.lvl7:hover {
+  border-color: rgba(180,120,255,.55);
+  box-shadow: 0 0 32px rgba(180,120,255,.18), inset 0 1px 0 rgba(180,120,255,.12);
 }
 .insignia-card.mystery::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(245,197,24,.03), transparent 70%);
+  background: radial-gradient(circle at 50% 30%, rgba(245,197,24,.05), transparent 70%);
+  pointer-events: none;
 }
 
 </style>
@@ -4046,18 +4062,23 @@ function renderBadgesGridEnhanced() {
     
     let cardClass = 'insignia-card';
     if (isCurrent) cardClass += ' current';
-    else if (!isUnlocked) cardClass += ' locked';
-    if (isMystery && !isUnlocked) cardClass += ' mystery';
+    else if (!isUnlocked && !isMystery) cardClass += ' locked';
+    if (isMystery && !isUnlocked) { cardClass += ' mystery'; if (lvl === 7) cardClass += ' lvl7'; }
     
     html += `<div class="${cardClass}" style="padding:${isMystery && !isUnlocked ? '24px 16px' : '20px 16px'}">`;
     
     if (isMystery && !isUnlocked) {
-      // Mystery levels - no badge, just mystery
-      html += `<div style="font-size:2.8rem;margin-bottom:10px;filter:blur(0.5px)">?</div>`;
-      html += `<div style="font-size:.82rem;font-weight:800;color:rgba(245,197,24,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px">NÍVEL ${lvl}</div>`;
-      html += `<div style="font-size:.78rem;font-weight:700;color:rgba(255,255,255,.2)">${info.name}</div>`;
-      html += `<div style="margin-top:12px;padding:10px;border-radius:8px;background:rgba(245,197,24,.03);border:1px solid rgba(245,197,24,.06)">`;
-      html += `<div style="font-size:.68rem;color:rgba(245,197,24,.3);font-weight:600;font-style:italic">Desbloqueie os níveis anteriores para descobrir...</div>`;
+      // Premium top-tier levels — show icon, name, commission and meta info
+      const glowColor = lvl === 7 ? 'rgba(180,120,255,.6)' : 'rgba(245,197,24,.6)';
+      const glowColorSoft = lvl === 7 ? 'rgba(180,120,255,.12)' : 'rgba(245,197,24,.1)';
+      const borderColor = lvl === 7 ? 'rgba(180,120,255,.45)' : 'rgba(245,197,24,.45)';
+      const labelColor = lvl === 7 ? 'rgba(180,120,255,.9)' : 'rgba(245,197,24,.9)';
+      html += `<div style="font-size:3.4rem;margin-bottom:10px;filter:drop-shadow(0 0 14px ${glowColor});line-height:1">${info.emoji}</div>`;
+      html += `<div style="font-size:.72rem;font-weight:800;color:${labelColor};text-transform:uppercase;letter-spacing:2px;margin-bottom:5px">NÍVEL ${lvl}</div>`;
+      html += `<div style="font-size:.92rem;font-weight:900;color:#fff;letter-spacing:.5px;margin-bottom:12px">${info.name}</div>`;
+      html += `<div style="padding:10px 12px;border-radius:10px;background:${glowColorSoft};border:1px solid ${borderColor};text-align:left;display:flex;flex-direction:column;gap:7px">`;
+      html += `<div style="display:flex;align-items:flex-start;gap:6px"><span style="font-size:.68rem;font-weight:700;color:${labelColor};text-transform:uppercase;letter-spacing:1px;white-space:nowrap;min-width:60px">Comissão</span><span style="font-size:.72rem;color:rgba(255,255,255,.8);font-weight:600">${info.comissao}</span></div>`;
+      html += `<div style="display:flex;align-items:flex-start;gap:6px"><span style="font-size:.68rem;font-weight:700;color:${labelColor};text-transform:uppercase;letter-spacing:1px;white-space:nowrap;min-width:60px">Meta</span><span style="font-size:.72rem;color:rgba(255,255,255,.8);font-weight:600">${info.meta}</span></div>`;
       html += `</div>`;
     } else {
       // Normal levels
