@@ -3819,9 +3819,10 @@ async function loadMetricas() {
   if (fromVal) query = query.gte('date', fromVal);
   if (toVal)   query = query.lte('date', toVal);
 
+  const fmtISO = iso => iso ? iso.split('-').reverse().join('/') : '';
   const periodLabel = document.getElementById('metricasPeriodLabel');
   if (periodLabel) {
-    periodLabel.textContent = fromVal && toVal ? `${fromVal} → ${toVal}` : fromVal ? `A partir de ${fromVal}` : toVal ? `Até ${toVal}` : 'Todos os registros';
+    periodLabel.textContent = fromVal && toVal ? `${fmtISO(fromVal)} → ${fmtISO(toVal)}` : fromVal ? `A partir de ${fmtISO(fromVal)}` : toVal ? `Até ${fmtISO(toVal)}` : 'Todos os registros';
   }
 
   const { data: diary } = await query;
@@ -3829,6 +3830,8 @@ async function loadMetricas() {
     ['metricasTotalContatos','metricasTotalAtendidas','metricasTotalDecisores','metricasTotalReunioes'].forEach(id => { document.getElementById(id).textContent='0'; });
     document.getElementById('metricasTaxaConversao').textContent='0%';
     document.getElementById('metricasTotalXP').textContent=userProfile.xp;
+    const funnelEl = document.getElementById('metricasFunil');
+    if (funnelEl) funnelEl.innerHTML = '<div class="empty-state"><div class="empty-state-text">Nenhum dado no período selecionado</div></div>';
     return;
   }
   let totalContatos=0, totalAtendidas=0, totalDecisores=0, totalReunioes=0;
