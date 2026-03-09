@@ -2996,6 +2996,7 @@ async function loadEncontros() {
 
 
 function getLevelInfo(xp) {
+  if (!LEVELS || LEVELS.length === 0) return { level:1, name:'Prospector', emoji:'🥉', min:0, max:999, comissao:'7%', meta:'2 vendas acumuladas', cor:'#C8A87A', badge:null, vendasMes:'~1/mês', vendas:2 };
   return LEVELS.find(l => xp >= l.min && xp <= l.max) || LEVELS[0];
 }
 function getNextLevel(currentLevel) {
@@ -3674,14 +3675,14 @@ async function loadProfile() {
     ? 'Comece preenchendo seu diário e completando missões para ganhar XP.'
     : 'Continue evoluindo. Cada missão te aproxima do próximo nível.';
   // Comissão e próximo nível
-  const lvlData2 = LEVELS[lvl.level] || LEVELS[0];
-  const nextLvl2 = LEVELS[Math.min(lvl.level+1, LEVELS.length-1)];
+  const lvlData2 = lvl;
+  const nextLvl2 = getNextLevel(lvl.level);
   const xpLeft2  = Math.max(0, (nextLvl2?.min||0) - (userProfile.xp||0));
   let commHtml = '<div class="hero-commission">';
   commHtml += '<div style="flex:1"><div class="hero-commission-label">Sua Comissão</div>';
   commHtml += '<div class="hero-commission-val">'+lvlData2.comissao+'</div>';
   commHtml += '<div class="hero-commission-sub">'+lvlData2.vendasMes+'</div></div>';
-  if (lvl.level < 7) {
+  if (nextLvl2) {
     commHtml += '<div style="text-align:right;border-left:1px solid rgba(245,197,24,.15);padding-left:14px">';
     commHtml += '<div class="hero-commission-label">Próximo Nível</div>';
     commHtml += '<div style="font-size:.94rem;font-weight:700;color:#A0A0B0">'+nextLvl2.emoji+' '+nextLvl2.name+'</div>';
