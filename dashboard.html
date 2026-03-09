@@ -1306,10 +1306,9 @@ input[type=date]:focus {
 
             <!-- Info -->
             <div style="flex:1;min-width:0">
-              <div id="heroName" style="font-size:1.6rem;font-weight:800;color:var(--g1);line-height:1.15;margin-bottom:7px;text-shadow:0 0 40px rgba(232,184,75,.22)">Wilton Almeida</div>
+              <div id="heroName" style="font-size:1.6rem;font-weight:800;color:var(--g1);line-height:1.15;margin-bottom:7px;text-shadow:0 0 40px rgba(232,184,75,.22)"></div>
               <div style="display:flex;align-items:center;gap:8px;margin-bottom:13px;flex-wrap:wrap">
-                <span id="heroLevelBadge" style="background:rgba(232,184,75,.12);color:var(--g1);font-size:.96rem;font-weight:800;padding:3px 10px;border-radius:var(--rp);border:1px solid rgba(232,184,75,.3);letter-spacing:.5px">NÍVEL 2</span>
-                <span id="heroLevelName" style="color:var(--t2);font-size:.8rem;font-weight:600">Captador</span>
+                <span id="heroLevelBadge" style="background:rgba(232,184,75,.12);color:var(--g1);font-size:.96rem;font-weight:800;padding:3px 10px;border-radius:var(--rp);border:1px solid rgba(232,184,75,.3);letter-spacing:.5px"></span>
               </div>
               <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px">
                 <span id="heroXpCurrent" style="font-family:'JetBrains Mono',monospace;font-size:.92rem;font-weight:900;color:var(--g1)">1.500 / 6.000 XP</span>
@@ -2616,15 +2615,44 @@ const BADGE_IMGS = [
 
 
 
-const LEVELS = [
-  { level:1, name:'Prospector', emoji:'🥉', min:0,      max:1000,      comissao:'7%',                        vendasMes:'~1/mês',   meta:'2 vendas acumuladas',                          vendas:2,  cor:'#C8A87A', badge:BADGE_IMGS[1] },
-  { level:2, name:'Captador',   emoji:'🥈', min:1001,   max:5000,      comissao:'9%',                        vendasMes:'~1.6/mês', meta:'6 vendas acumuladas',                          vendas:6,  cor:'#A0A0B8', badge:BADGE_IMGS[2] },
-  { level:3, name:'Parceiro',   emoji:'🥇', min:5001,   max:15000,     comissao:'9% + Bônus',                vendasMes:'~2.4/mês', meta:'15 vendas acumuladas',                         vendas:15, cor:'#D4A017', badge:BADGE_IMGS[3] },
-  { level:4, name:'Elite',      emoji:'💎', min:15001,  max:30000,     comissao:'12%',                       vendasMes:'~3.6/mês', meta:'Média >15 vendas/mês',                         vendas:15, cor:'#60CFFF', badge:BADGE_IMGS[4] },
-  { level:5, name:'Consultor',  emoji:'⭐', min:30001,  max:999999,    comissao:'15% + comissão + projetos', vendasMes:'Variável',  meta:'Histórico + aprovação liderança',               vendas:0,  cor:'#F5C518', badge:BADGE_IMGS[5] },
-  { level:6, name:'Franqueado', emoji:'👑', min:1000000, max:9999999,  comissao:'Lucro operação',            vendasMes:'R$300k/mês',meta:'Todos os milestones cumpridos.',                vendas:0,  cor:'#FF9A3C', badge:BADGE_IMGS[6] },
-  { level:7, name:'Sócio',      emoji:'🏛️', min:10000000,max:99999999, comissao:'Lucro do Ecossistema',     vendasMes:'Global',    meta:'Todos os milestones cumpridos. Só com convite.',vendas:0,  cor:'#FF5C9A', badge:BADGE_IMGS[7] },
-];
+// Visual-only properties per level (not stored in DB)
+const LEVEL_VISUAL = {
+  1: { cor:'#C8A87A', badge:BADGE_IMGS[1], vendasMes:'~1/mês',    vendas:2  },
+  2: { cor:'#A0A0B8', badge:BADGE_IMGS[2], vendasMes:'~1.6/mês',  vendas:6  },
+  3: { cor:'#D4A017', badge:BADGE_IMGS[3], vendasMes:'~2.4/mês',  vendas:15 },
+  4: { cor:'#60CFFF', badge:BADGE_IMGS[4], vendasMes:'~3.6/mês',  vendas:15 },
+  5: { cor:'#F5C518', badge:BADGE_IMGS[5], vendasMes:'Variável',   vendas:0  },
+  6: { cor:'#FF9A3C', badge:BADGE_IMGS[6], vendasMes:'R$300k/mês', vendas:0 },
+  7: { cor:'#FF5C9A', badge:BADGE_IMGS[7], vendasMes:'Global',     vendas:0  },
+};
+
+let LEVELS = [];
+
+async function loadLevels() {
+  try {
+    const { data } = await sb.from('levels').select('*').order('level', { ascending: true });
+    if (data && data.length > 0) {
+      LEVELS = data.map(l => {
+        const vis = LEVEL_VISUAL[l.level] || {};
+        return {
+          level:    l.level,
+          name:     l.name,
+          emoji:    l.emoji,
+          min:      l.min_xp  ?? 9999999,
+          max:      l.max_xp  ?? 9999999,
+          comissao: l.commission_info || '—',
+          meta:     l.meta_text || '—',
+          cor:      vis.cor    || '#888',
+          badge:    vis.badge  || null,
+          vendasMes:vis.vendasMes || '—',
+          vendas:   vis.vendas ?? 0,
+        };
+      });
+    }
+  } catch(e) {
+    console.error('Erro ao carregar levels:', e);
+  }
+}
 
 
 // ═══════════════════════════════════════
@@ -2740,8 +2768,6 @@ function renderHero() {
     lvlBadgeEl.textContent = `NÍVEL ${lvl.level}`;
   }
 
-  const lvlNameEl = document.getElementById('heroLevelName');
-  if (lvlNameEl) lvlNameEl.textContent = lvl.name || '';
 
   // XP bar
   const barEl = document.getElementById('xpFill');
@@ -3547,6 +3573,7 @@ window.submitQuiz = async () => {
 };
 
 async function loadAll() {
+  await loadLevels();
   await Promise.all([loadProfile(), loadDashboard(), loadArsenal(), loadMissoes(), loadEncontros(), loadRanking()]);
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('diarioData').value = today;
@@ -3618,56 +3645,21 @@ async function loadProfile() {
   const lastName = (userProfile.name || '').split(' ').slice(1).join(' ');
   document.getElementById('heroName').innerHTML = firstName + (lastName ? ` <span style="background:var(--grd-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${lastName}</span>` : '');
   const _n = document.getElementById('heroLevelNum'); if(_n) _n.textContent = lvl.level;
-  document.getElementById('heroLevelName').textContent = lvl.name;
   document.getElementById('heroLevelRank').textContent = `Nível ${lvl.level} de ${LEVELS.length - 1}`;
   (function(){
-    const cfg=[
-      {s:'#383848',f:'rgba(55,55,68,.2)',l:'Recruta',x:''},
-      {s:'#707080',f:'rgba(80,80,95,.2)',l:'Soldado',x:'<line x1="14" y1="8" x2="14" y2="16" stroke-width="1.5"/><line x1="10" y1="12" x2="18" y2="12" stroke-width="1.5"/>'},
-      {s:'#6A6A7A',f:'rgba(90,90,105,.25)',l:'Cavaleiro',x:'<polygon points="14,7 15.5,11 20,11 16.5,13.5 17.8,18 14,15.5 10.2,18 11.5,13.5 8,11 12.5,11" stroke-width="1" fill="rgba(90,90,105,.4)"/>'},
-      {s:'#FFB800',f:'rgba(255,184,0,.2)',l:'Capitão',x:'<polygon points="14,6 15.8,10.5 20.5,10.5 16.7,13.3 18.2,18 14,15.2 9.8,18 11.3,13.3 7.5,10.5 12.2,10.5" stroke-width="1.2" fill="rgba(255,184,0,.45)"/>'},
-      {s:'#F5C518',f:'rgba(245,197,24,.25)',l:'Lorde',x:'<polygon points="14,5 16.2,10 21.5,10 17.3,13.3 18.8,18.5 14,15.5 9.2,18.5 10.7,13.3 6.5,10 11.8,10" stroke-width="1.2" fill="rgba(245,197,24,.55)"/><circle cx="14" cy="14" r="2" fill="rgba(245,197,24,.75)"/>'}
-    ];
-    const c=cfg[Math.min(lvl.level,cfg.length-1)];
-    const lvlFull = LEVELS[lvl.level] || LEVELS[0];
-    const svgEl=document.getElementById('heroBadgeSvg');
-    const tEl=document.getElementById('heroBadgeTitle');
-    // Usar badge real se disponível
-    const badgeImg = BADGE_IMGS[Math.min(lvl.level, 5)];
-    if(svgEl){
-      if(badgeImg){
-        svgEl.style.background='transparent';
-        svgEl.style.border='none';
-        svgEl.innerHTML='<img src="'+badgeImg+'" style="width:80px;height:80px;object-fit:contain;filter:drop-shadow(0 0 16px rgba(232,184,75,.4))" alt="'+lvlFull.name+'">';
-      } else {
-        svgEl.innerHTML='<svg viewBox="0 0 28 28" fill="none"><path d="M14 2L3 8v7c0 6 4.3 11.6 11 12.9C20.7 26.6 25 21 25 15V8L14 2z" stroke="'+c.s+'" stroke-width="1.5" fill="'+c.f+'"/>'+c.x+'</svg>';
-      }
-    }
-    if(tEl)tEl.textContent=lvlFull.name;
-  })();
-
-  // Insígnia dinâmica
-  (function() {
-    const cfg = [
-      { stroke:'#4A1BA8', fill:'rgba(74,27,168,.18)',   label:'Recruta',   extra:'' },
-      { stroke:'#5B6CF5', fill:'rgba(91,108,245,.18)',  label:'Soldado',   extra:'<line x1="14" y1="8" x2="14" y2="16" stroke-width="1.5"/><line x1="10" y1="12" x2="18" y2="12" stroke-width="1.5"/>' },
-      { stroke:'#7B2FFF', fill:'rgba(70,70,85,.22)',  label:'Cavaleiro', extra:'<polygon points="14,7 15.5,11 20,11 16.5,13.5 17.8,18 14,15.5 10.2,18 11.5,13.5 8,11 12.5,11" stroke-width="1" fill="rgba(70,70,85,.4)"/>' },
-      { stroke:'#FFB800', fill:'rgba(255,184,0,.18)',   label:'Capitão',   extra:'<polygon points="14,6 15.8,10.5 20.5,10.5 16.7,13.3 18.2,18 14,15.2 9.8,18 11.3,13.3 7.5,10.5 12.2,10.5" stroke-width="1.2" fill="rgba(255,184,0,.45)"/>' },
-      { stroke:'#F5C518', fill:'rgba(245,197,24,.22)',  label:'Lorde',     extra:'<polygon points="14,5 16.2,10 21.5,10 17.3,13.3 18.8,18.5 14,15.5 9.2,18.5 10.7,13.3 6.5,10 11.8,10" stroke-width="1.2" fill="rgba(245,197,24,.52)"/><circle cx="14" cy="14" r="2" fill="rgba(245,197,24,.7)"/>' }
-    ];
-    const c = cfg[Math.min(lvl.level, cfg.length-1)];
     const svgEl = document.getElementById('heroBadgeSvg');
-    const titleEl = document.getElementById('heroBadgeTitle');
-    const bImg2 = BADGE_IMGS[Math.min(lvl.level,5)];
-    if(svgEl) {
-      if(bImg2){
-        svgEl.style.background='transparent';svgEl.style.border='none';
-        svgEl.innerHTML=`<img src="${bImg2}" style="width:80px;height:80px;object-fit:contain;filter:drop-shadow(0 0 16px rgba(232,184,75,.4))" alt="${c.label}">`;
+    const tEl = document.getElementById('heroBadgeTitle');
+    const badgeImg = lvl.badge || null;
+    if (svgEl) {
+      if (badgeImg) {
+        svgEl.style.background = 'transparent';
+        svgEl.style.border = 'none';
+        svgEl.innerHTML = `<img src="${badgeImg}" style="width:80px;height:80px;object-fit:contain;filter:drop-shadow(0 0 16px rgba(232,184,75,.4))" alt="${lvl.name}">`;
       } else {
-        svgEl.innerHTML=`<svg viewBox="0 0 28 28" fill="none"><path d="M14 2L3 8v7c0 6 4.3 11.6 11 12.9C20.7 26.6 25 21 25 15V8L14 2z" stroke="${c.stroke}" stroke-width="1.5" fill="${c.fill}"/>${c.extra}</svg>`;
+        svgEl.innerHTML = `<svg viewBox="0 0 28 28" fill="none"><path d="M14 2L3 8v7c0 6 4.3 11.6 11 12.9C20.7 26.6 25 21 25 15V8L14 2z" stroke="${lvl.cor||'#888'}" stroke-width="1.5" fill="${lvl.cor||'#888'}22"/></svg>`;
       }
     }
-    if(titleEl) titleEl.textContent = c.label;
+    if (tEl) tEl.textContent = lvl.name;
   })();
 
   // XP bar
