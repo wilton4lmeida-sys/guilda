@@ -3599,7 +3599,7 @@ async function loadDiario() {
   }
   let html = '<table class="table"><thead><tr><th>Data</th><th>Lig. Totais</th><th>Cx. Atendente</th><th>Cx. Decisor</th><th>Marcadas</th><th>Realizadas</th></tr></thead><tbody>';
   diary.forEach(d => {
-    html += `<tr><td>${new Date(d.date).toLocaleDateString('pt-BR')}</td><td>${d.contatos_tentados}</td><td>${d.ligacoes_atendidas}</td><td>${d.conexao_decisor}</td><td>${d.reunioes_marcadas}</td><td>${d.reunioes_realizadas||0}</td></tr>`;
+    html += `<tr><td>${new Date(d.date+'T12:00:00').toLocaleDateString('pt-BR')}</td><td>${d.contatos_tentados}</td><td>${d.ligacoes_atendidas}</td><td>${d.conexao_decisor}</td><td>${d.reunioes_marcadas}</td><td>${d.reunioes_realizadas||0}</td></tr>`;
   });
   html += '</tbody></table>';
   container.innerHTML = html;
