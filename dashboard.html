@@ -2576,8 +2576,16 @@ async function loadEncontros() {
     {bg:'rgba(13,13,15,.96)',  brd:'rgba(255,255,255,.055)', accent:'rgba(255,255,255,.08)'},
     {bg:'rgba(11,11,13,.94)',  brd:'rgba(255,255,255,.04)',  accent:'rgba(255,255,255,.06)'},
   ];
-  const platformColors = { 'Discord':'#7289DA', 'YouTube':'#FF4444', 'Google Meet':'#00C853' };
-  const platformIcons  = { 'Discord':'🎮', 'YouTube':'▶️', 'Google Meet':'📹' };
+  function detectPlatform(loc) {
+    if (!loc) return { color:'#888', icon:'📌', name:'Local' };
+    const l = loc.toLowerCase();
+    if (l.includes('discord'))      return { color:'#7289DA', icon:'🎮',  name:'Discord' };
+    if (l.includes('youtube') || l.includes('youtu.be')) return { color:'#FF4444', icon:'▶️', name:'YouTube' };
+    if (l.includes('meet.google'))  return { color:'#00C853', icon:'📹',  name:'Google Meet' };
+    if (l.includes('zoom'))         return { color:'#2D8CFF', icon:'💻',  name:'Zoom' };
+    if (l.startsWith('http'))       return { color:'#888',    icon:'🔗',  name:'Link' };
+    return { color:'#888', icon:'📌', name: loc };
+  }
 
   let html = '';
   meetings.forEach((m, i) => {
@@ -2585,8 +2593,8 @@ async function loadEncontros() {
     const d = new Date(m.date + 'T12:00:00');
     const day = d.getDate().toString().padStart(2,'0');
     const month = d.toLocaleDateString('pt-BR', {month:'short'}).replace('.','').toUpperCase();
-    const pColor = platformColors[m.location] || '#888';
-    const pIcon  = platformIcons[m.location] || '📌';
+    const plat = detectPlatform(m.location);
+    const isLink = m.location && m.location.startsWith('http');
 
     html += `<div style="
       background:${clr.bg};border:1px solid ${clr.brd};
@@ -2608,11 +2616,24 @@ async function loadEncontros() {
     // Info
     html += `<div style="flex:1;min-width:0">`;
     html += `<div style="font-size:.96rem;font-weight:700;color:#E8E6D8;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.title}</div>`;
-    html += `<div style="display:flex;align-items:center;gap:6px">
-      <span style="font-size:.96rem;font-weight:700;color:${pColor}">${pIcon} ${m.location}</span>
-      ${m.confirmed ? '<span style="font-size:.92rem;color:#22C55E;font-weight:600">● Confirmado</span>' : ''}
+    html += `<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+      <span style="font-size:.88rem;font-weight:700;color:${plat.color}">${plat.icon} ${plat.name}</span>
+      ${m.time ? `<span style="font-size:.82rem;color:#888">· ${m.time}</span>` : ''}
+      ${m.confirmed ? '<span style="font-size:.82rem;color:#22C55E;font-weight:600">● Confirmado</span>' : ''}
     </div>`;
     html += `</div>`;
+
+    // Botão participar
+    if (isLink) {
+      html += `<a href="${m.location}" target="_blank" rel="noopener" style="
+        flex-shrink:0;padding:8px 14px;border-radius:8px;
+        background:rgba(245,197,24,.12);border:1px solid rgba(245,197,24,.25);
+        color:#F5C518;font-size:.8rem;font-weight:700;text-decoration:none;
+        white-space:nowrap;transition:background .2s;
+      " onmouseover="this.style.background='rgba(245,197,24,.22)'" onmouseout="this.style.background='rgba(245,197,24,.12)'">
+        Participar →
+      </a>`;
+    }
 
     html += `</div>`;
   });
@@ -2626,8 +2647,9 @@ async function loadEncontros() {
       const d = new Date(m.date + 'T12:00:00');
       const day = d.getDate().toString().padStart(2,'0');
       const month = d.toLocaleDateString('pt-BR', {month:'short'}).replace('.','').toUpperCase();
-      const pColor = platformColors[m.location] || '#888';
+      const plat = detectPlatform(m.location);
       const opacity = i === 0 ? '1' : i === 1 ? '1' : '.75';
+      const isLink = m.location && m.location.startsWith('http');
       dashHtml += `<div style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;background:rgba(16,14,22,1);border:1px solid rgba(255,255,255,.09);opacity:${opacity}">
         <div style="min-width:42px;width:42px;height:42px;border-radius:9px;background:rgba(232,184,75,.07);border:1px solid rgba(232,184,75,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
           <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:900;color:var(--g1);line-height:1">${day}</div>
@@ -2635,8 +2657,11 @@ async function loadEncontros() {
         </div>
         <div style="flex:1;min-width:0">
           <div style="font-size:.94rem;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.title}</div>
-          <div style="font-size:.96rem;color:${pColor};font-weight:700;margin-top:2px">${m.location}${m.confirmed ? ' · <span style="color:var(--green)">● Confirmado</span>' : ''}</div>
+          <div style="font-size:.8rem;color:${plat.color};font-weight:700;margin-top:2px">
+            ${plat.icon} ${plat.name}${m.time ? ` · <span style="color:#888">${m.time}</span>` : ''}${m.confirmed ? ' · <span style="color:var(--green)">● Confirmado</span>' : ''}
+          </div>
         </div>
+        ${isLink ? `<a href="${m.location}" target="_blank" rel="noopener" style="flex-shrink:0;padding:6px 10px;border-radius:7px;background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.2);color:#F5C518;font-size:.75rem;font-weight:700;text-decoration:none;white-space:nowrap">→</a>` : ''}
       </div>`;
     });
     dashHtml += '</div>';
@@ -3313,7 +3338,7 @@ async function loadProfile() {
   const firstName = (userProfile.name || 'Membro').split(' ')[0];
   const lastName = (userProfile.name || '').split(' ').slice(1).join(' ');
   const heroNameEl = document.getElementById('heroName');
-  if (heroNameEl) heroNameEl.innerHTML = firstName + (lastName ? ` <span style="background:var(--grd-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${lastName}</span>` : '');
+  if (heroNameEl) heroNameEl.innerHTML = firstName + (lastName ? ` <span style="color:#FFFFFF">${lastName}</span>` : '');
   const _n = document.getElementById('heroLevelNum'); if (_n) _n.textContent = lvl.level;
   const heroLevelBadge = document.getElementById('heroLevelBadge'); if (heroLevelBadge) heroLevelBadge.textContent = `NÍVEL ${lvl.level}`;
   const heroLevelRank = document.getElementById('heroLevelRank'); if (heroLevelRank) heroLevelRank.textContent = `Nível ${lvl.level} de ${LEVELS.length}`;
