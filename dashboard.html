@@ -506,6 +506,10 @@ body::after {
 .cal-day.today{border-color:rgba(245,197,24,.35);color:var(--g1)}
 .cal-day.selected{background:rgba(245,197,24,.22);color:var(--g1);font-weight:800;border-color:rgba(245,197,24,.5)}
 .cal-day.other-month{color:#3D3850;cursor:default;pointer-events:none}
+.cal-day.range-start,.cal-day.range-end{background:rgba(245,197,24,.25);color:var(--g1);font-weight:800;border-color:rgba(245,197,24,.55)}
+.cal-day.range-start{border-radius:8px 0 0 8px}.cal-day.range-end{border-radius:0 8px 8px 0}
+.cal-day.in-range{background:rgba(245,197,24,.08);border-radius:0;border-color:transparent}
+.cal-range-hint{font-size:.7rem;color:var(--t3);text-align:center;margin-top:12px;padding-top:10px;border-top:1px solid rgba(245,197,24,.1);font-weight:600;letter-spacing:.3px}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 
@@ -2148,18 +2152,11 @@ input[type=date]:focus {
     <div class="page-card" style="margin-bottom:14px;padding:16px 20px">
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
         <div style="font-size:.82rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--t3);font-weight:700;flex-shrink:0">Período</div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <div class="date-picker-wrap date-picker-sm" onclick="openCal('metricasFrom','metricasFromDisplay',this,event)">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span id="metricasFromDisplay" class="date-picker-display">dd/mm/aaaa</span>
-            <input type="date" id="metricasFrom">
-          </div>
-          <span style="color:var(--t3);font-weight:600;font-size:.82rem">até</span>
-          <div class="date-picker-wrap date-picker-sm" onclick="openCal('metricasTo','metricasToDisplay',this,event)">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span id="metricasToDisplay" class="date-picker-display">dd/mm/aaaa</span>
-            <input type="date" id="metricasTo">
-          </div>
+        <div class="date-picker-wrap date-picker-sm" onclick="openCalRange('metricasFrom','metricasTo','metricasRangeDisplay',this,event)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="metricasRangeDisplay" class="date-picker-display">Selecionar período</span>
+          <input type="date" id="metricasFrom">
+          <input type="date" id="metricasTo">
         </div>
         <div style="flex:1;min-width:100px;text-align:right">
           <span style="font-size:.7rem;color:var(--t3);font-weight:500" id="metricasPeriodLabel">Carregando...</span>
@@ -3621,6 +3618,7 @@ function syncDateDisplay(inputId, displayId) {
   const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   const DAYS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
   let state = { month:0, year:0, inputId:null, displayId:null };
+  let rng = { active:false, fromId:null, toId:null, dispId:null, step:'start', hover:null };
   let el = null;
 
   function build() {
@@ -3634,27 +3632,18 @@ function syncDateDisplay(inputId, displayId) {
         <button class="cal-nav" onclick="calNext(event)">&#8250;</button>
       </div>
       <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-range-hint" id="calRangeHint" style="display:none"></div>
     </div>`;
     document.body.appendChild(el);
     document.addEventListener('click', function(e){
       if (el.style.display !== 'none' && !el.contains(e.target) && !e.target.closest('.date-picker-wrap')) {
         el.style.display = 'none';
+        rng.active = false;
       }
     }, true);
   }
 
-  window.openCal = function(inputId, displayId, trigger, ev) {
-    if (ev) ev.stopPropagation();
-    build();
-    state.inputId = inputId;
-    state.displayId = displayId;
-    const inp = document.getElementById(inputId);
-    if (inp && inp.value) {
-      const [y, m] = inp.value.split('-');
-      state.year = +y; state.month = +m - 1;
-    } else {
-      const n = new Date(); state.month = n.getMonth(); state.year = n.getFullYear();
-    }
+  function position(trigger) {
     const rect = trigger.getBoundingClientRect();
     el.style.display = 'block';
     el.style.top = (rect.bottom + 6) + 'px';
@@ -3663,6 +3652,30 @@ function syncDateDisplay(inputId, displayId) {
       const er = el.getBoundingClientRect();
       if (er.right > window.innerWidth - 8) el.style.left = (window.innerWidth - er.width - 8) + 'px';
     });
+  }
+
+  window.openCal = function(inputId, displayId, trigger, ev) {
+    if (ev) ev.stopPropagation();
+    build();
+    rng.active = false;
+    state.inputId = inputId;
+    state.displayId = displayId;
+    const inp = document.getElementById(inputId);
+    if (inp && inp.value) { const [y,m] = inp.value.split('-'); state.year=+y; state.month=+m-1; }
+    else { const n = new Date(); state.month=n.getMonth(); state.year=n.getFullYear(); }
+    position(trigger);
+    renderCal();
+  };
+
+  window.openCalRange = function(fromId, toId, dispId, trigger, ev) {
+    if (ev) ev.stopPropagation();
+    build();
+    rng = { active:true, fromId, toId, dispId, step:'start', hover:null };
+    state.inputId = fromId;
+    const fromInp = document.getElementById(fromId);
+    if (fromInp && fromInp.value) { const [y,m] = fromInp.value.split('-'); state.year=+y; state.month=+m-1; }
+    else { const n = new Date(); state.month=n.getMonth(); state.year=n.getFullYear(); }
+    position(trigger);
     renderCal();
   };
 
@@ -3671,31 +3684,70 @@ function syncDateDisplay(inputId, displayId) {
 
   function renderCal() {
     document.getElementById('calMonthLabel').textContent = MONTHS[state.month] + ' ' + state.year;
-    const inp = document.getElementById(state.inputId);
-    const sel = inp ? inp.value : '';
+    const hint = document.getElementById('calRangeHint');
+    const fromVal = rng.active ? (document.getElementById(rng.fromId)?.value||'') : (document.getElementById(state.inputId)?.value||'');
+    const toVal   = rng.active ? (document.getElementById(rng.toId)?.value||'')   : '';
     const today = new Date().toISOString().split('T')[0];
     const first = new Date(state.year, state.month, 1).getDay();
-    const total = new Date(state.year, state.month + 1, 0).getDate();
+    const total = new Date(state.year, state.month+1, 0).getDate();
     const prevTotal = new Date(state.year, state.month, 0).getDate();
+
+    if (rng.active) {
+      hint.style.display = 'block';
+      hint.textContent = rng.step === 'start' ? 'Clique para definir o início do período' : 'Agora clique para definir o fim do período';
+    } else { hint.style.display = 'none'; }
+
     let h = DAYS.map(d => `<div class="cal-day-name">${d}</div>`).join('');
-    for (let i = first - 1; i >= 0; i--) h += `<div class="cal-day other-month">${prevTotal - i}</div>`;
+    for (let i = first-1; i >= 0; i--) h += `<div class="cal-day other-month">${prevTotal-i}</div>`;
     for (let d = 1; d <= total; d++) {
-      const iso = state.year + '-' + String(state.month + 1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
-      h += `<div class="cal-day${iso===today?' today':''}${iso===sel?' selected':''}" onclick="calPick('${iso}',event)">${d}</div>`;
+      const iso = state.year+'-'+String(state.month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+      let cls = 'cal-day';
+      if (rng.active) {
+        const effTo = rng.step==='end' && rng.hover && rng.hover>=fromVal ? rng.hover : toVal;
+        if      (iso === fromVal)                       cls += ' range-start';
+        else if (effTo && iso === effTo)                cls += ' range-end';
+        else if (fromVal && effTo && iso>fromVal && iso<effTo) cls += ' in-range';
+        else if (iso === today)                         cls += ' today';
+      } else {
+        if (iso === fromVal) cls += ' selected';
+        if (iso === today)   cls += ' today';
+      }
+      const hov = rng.active && rng.step==='end' ? `onmouseenter="calHov('${iso}')" onmouseleave="calHov(null)"` : '';
+      h += `<div class="${cls}" onclick="calPick('${iso}',event)" ${hov}>${d}</div>`;
     }
-    const rem = (7 - ((first + total) % 7)) % 7;
+    const rem = (7-((first+total)%7))%7;
     for (let d = 1; d <= rem; d++) h += `<div class="cal-day other-month">${d}</div>`;
     document.getElementById('calGrid').innerHTML = h;
   }
 
+  window.calHov = function(iso) { rng.hover = iso; renderCal(); };
+
   window.calPick = function(iso, ev) {
     if (ev) ev.stopPropagation();
-    const inp = document.getElementById(state.inputId);
-    const disp = document.getElementById(state.displayId);
-    if (inp) inp.value = iso;
-    if (disp) disp.textContent = iso.split('-').reverse().join('/');
-    el.style.display = 'none';
-    if (state.inputId === 'metricasFrom' || state.inputId === 'metricasTo') loadMetricas();
+    if (rng.active) {
+      if (rng.step === 'start') {
+        document.getElementById(rng.fromId).value = iso;
+        document.getElementById(rng.toId).value = '';
+        rng.step = 'end'; rng.hover = null;
+        renderCal();
+      } else {
+        const fromISO = document.getElementById(rng.fromId)?.value || iso;
+        const [s, e] = iso < fromISO ? [iso, fromISO] : [fromISO, iso];
+        document.getElementById(rng.fromId).value = s;
+        document.getElementById(rng.toId).value   = e;
+        const disp = document.getElementById(rng.dispId);
+        if (disp) disp.textContent = s.split('-').reverse().join('/') + ' – ' + e.split('-').reverse().join('/');
+        el.style.display = 'none';
+        rng.active = false;
+        loadMetricas();
+      }
+    } else {
+      const inp  = document.getElementById(state.inputId);
+      const disp = document.getElementById(state.displayId);
+      if (inp)  inp.value = iso;
+      if (disp) disp.textContent = iso.split('-').reverse().join('/');
+      el.style.display = 'none';
+    }
   };
 })();
 
@@ -3728,8 +3780,8 @@ async function resetMetricasPeriod() {
   const toISO   = `${y}-${m}-${String(lastDay).padStart(2,'0')}`;
   document.getElementById('metricasFrom').value = fromISO;
   document.getElementById('metricasTo').value   = toISO;
-  syncDateDisplay('metricasFrom', 'metricasFromDisplay');
-  syncDateDisplay('metricasTo',   'metricasToDisplay');
+  const rd = document.getElementById('metricasRangeDisplay');
+  if (rd) rd.textContent = fromISO.split('-').reverse().join('/') + ' – ' + toISO.split('-').reverse().join('/');
   await loadMetricas();
 }
 
