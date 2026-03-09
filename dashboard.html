@@ -1392,8 +1392,13 @@ input[type=date]:focus {
 
           <!-- Título flutuante -->
           <div style="margin-bottom:16px;padding:0 4px">
-            <div style="font-size:.55rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--g2);font-weight:700;margin-bottom:3px">Funil de Conversão</div>
-            <div style="font-size:.92rem;font-weight:800;color:var(--t1)">Acumulado do Mês</div>
+            <div style="font-size:.55rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--g2);font-weight:700;margin-bottom:6px">Funil de Conversão</div>
+            <div class="date-picker-wrap date-picker-sm" onclick="openCalRange('dashFunilFrom','dashFunilTo','dashFunilRangeDisplay',this,event)" style="width:100%;box-sizing:border-box">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span id="dashFunilRangeDisplay" class="date-picker-display" style="flex:1">Este mês</span>
+              <input type="date" id="dashFunilFrom">
+              <input type="date" id="dashFunilTo">
+            </div>
           </div>
 
           <!-- Taxa geral pill flutuante -->
@@ -2432,14 +2437,13 @@ function renderHero() {
 
 // ═══ FUNIL DASHBOARD ═══
 async function renderFunilDash() {
-  const el = document.getElementById('funilVisual');
-  if (!el) return;
-
   const now = new Date();
   const y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,'0');
   const lastDay = new Date(y, now.getMonth()+1, 0).getDate();
-  const from = `${y}-${m}-01`;
-  const to   = `${y}-${m}-${String(lastDay).padStart(2,'0')}`;
+  const defaultFrom = `${y}-${m}-01`;
+  const defaultTo   = `${y}-${m}-${String(lastDay).padStart(2,'0')}`;
+  const from = document.getElementById('dashFunilFrom')?.value || defaultFrom;
+  const to   = document.getElementById('dashFunilTo')?.value   || defaultTo;
 
   let totalLig=0, totalConn=0, totalDec=0, totalReun=0;
 
@@ -3266,6 +3270,16 @@ async function loadAll() {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('diarioData').value = today;
   syncDateDisplay('diarioData', 'diarioDataDisplay');
+  // Init dashboard funnel period (current month)
+  const now = new Date();
+  const fy = now.getFullYear(), fm = String(now.getMonth()+1).padStart(2,'0');
+  const fLast = new Date(fy, now.getMonth()+1, 0).getDate();
+  const fFrom = `${fy}-${fm}-01`, fTo = `${fy}-${fm}-${String(fLast).padStart(2,'0')}`;
+  const dfFrom = document.getElementById('dashFunilFrom'), dfTo = document.getElementById('dashFunilTo');
+  if (dfFrom) dfFrom.value = fFrom;
+  if (dfTo)   dfTo.value   = fTo;
+  const dfDisp = document.getElementById('dashFunilRangeDisplay');
+  if (dfDisp) dfDisp.textContent = fFrom.split('-').reverse().join('/') + ' – ' + fTo.split('-').reverse().join('/');
   buildDayBar();
   resetMetricasPeriod();
   renderUnlockPreview();
@@ -3763,7 +3777,8 @@ function syncDateDisplay(inputId, displayId) {
         if (disp) disp.textContent = s.split('-').reverse().join('/') + ' – ' + e.split('-').reverse().join('/');
         el.style.display = 'none';
         rng.active = false;
-        loadMetricas();
+        if (rng.fromId === 'metricasFrom') loadMetricas();
+        else if (rng.fromId === 'dashFunilFrom') renderFunilDash();
       }
     } else {
       const inp  = document.getElementById(state.inputId);
