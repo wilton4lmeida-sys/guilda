@@ -2409,9 +2409,12 @@ input[type=date]:focus {
     <!-- PAINEL INSÍGNIAS -->
     <div id="rankPanelBadges" style="display:none">
       <div class="page-card">
-        <div style="font-size:.94rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--g2);font-weight:700;margin-bottom:6px">Sistema de Insígnias</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <div style="font-size:.94rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--g2);font-weight:700">Sistema de Insígnias</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;color:var(--g1)" id="badgesYourXP">— XP</div>
+        </div>
         <div style="font-size:.96rem;color:var(--t3);margin-bottom:20px">Evolua de nível para desbloquear novas insígnias</div>
-        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px">
+        <div id="badgesGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
           <div style="display:flex;flex-direction:column;align-items:center;gap:7px;padding:14px 8px;border-radius:14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);opacity:1">
             
             
@@ -3178,7 +3181,7 @@ window.switchRankTab = function(tab) {
       b.style.background = 'rgba(245,197,24,.15)';
       b.style.border = '1px solid rgba(245,197,24,.35)';
       b.style.color = '#F5C518';
-      if (t === 'badges') renderBadgesGrid();
+      if (t === 'badges') renderBadgesGridEnhanced();
     } else {
       p.style.display = 'none';
       b.style.background = 'rgba(255,255,255,.04)';
@@ -4285,7 +4288,7 @@ function renderBadgesGridEnhanced() {
       // Normal levels
       const badgeImg = BADGE_IMGS[lvl] || '';
       if (badgeImg) {
-        html += `<img src="${badgeImg}" style="width:72px;height:72px;object-fit:contain;mix-blend-mode:lighten;margin-bottom:10px;${!isUnlocked?'filter:grayscale(.7) brightness(.6);':'filter:drop-shadow(0 0 8px rgba(245,197,24,.2));'}" alt="N${lvl}">`;
+        html += `<img src="${badgeImg}" style="width:80px;height:80px;object-fit:contain;mix-blend-mode:lighten;margin-bottom:10px;${!isUnlocked?'filter:grayscale(.7) brightness(.6);':'filter:drop-shadow(0 0 8px rgba(245,197,24,.2));'}" alt="N${lvl}">`;
       } else {
         html += `<div style="font-size:2.4rem;margin-bottom:10px">${info.emoji}</div>`;
       }
