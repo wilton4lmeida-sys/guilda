@@ -2497,14 +2497,19 @@ async function loadRanking() {
     podiumCfg.forEach(cfg => {
       const m = list[cfg.pos];
       if (!m) { podHtml += `<div style="order:${cfg.order}"></div>`; return; }
-      const av = (m.name || '??').slice(0, 2).toUpperCase();
       const lvl = getLevelInfo(m.xp);
       const isMe = m.id === myId || m.name === userProfile?.name;
       const shadow = cfg.shadow ? `;box-shadow:${cfg.shadow}` : '';
+      const badgeImgPod = BADGE_IMGS[Math.min(lvl.level, BADGE_IMGS.length - 1)];
       podHtml += `<div style="background:${cfg.bg};border:1px solid ${cfg.border};border-radius:${cfg.r};padding:${cfg.pad};display:flex;flex-direction:column;align-items:center;gap:${cfg.gap};position:relative;order:${cfg.order}${shadow}">`;
       podHtml += `<div style="position:absolute;top:0;left:${cfg.lineW};right:${cfg.lineW};height:${cfg.lineH};background:linear-gradient(90deg,transparent,${cfg.glow},transparent);border-radius:2px"></div>`;
       podHtml += `<div style="font-family:'JetBrains Mono',monospace;font-size:.96rem;font-weight:900;color:${cfg.labelClr};letter-spacing:1px;background:${cfg.labelBg};padding:2px 10px;border-radius:20px;border:1px solid ${cfg.labelBorder}">${cfg.label}</div>`;
-      podHtml += `<div style="width:${cfg.size}px;height:${cfg.size}px;border-radius:50%;background:${isMe ? 'linear-gradient(135deg,var(--p2),var(--g2))' : cfg.avatarBg};display:flex;align-items:center;justify-content:center;font-size:${cfg.size >= 60 ? '1rem' : '.9rem'};font-weight:800;color:${isMe ? '#fff' : cfg.avatarClr};box-shadow:0 0 ${cfg.size >= 60 ? '30' : '20'}px ${cfg.border}">${av}</div>`;
+      if (badgeImgPod) {
+        podHtml += `<div style="width:${cfg.size}px;height:${cfg.size}px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 ${cfg.size >= 60 ? '14' : '10'}px ${cfg.border})"><img src="${badgeImgPod}" style="width:${cfg.size}px;height:${cfg.size}px;object-fit:contain;mix-blend-mode:lighten" alt="badge"></div>`;
+      } else {
+        const av = (m.name || '??').slice(0, 2).toUpperCase();
+        podHtml += `<div style="width:${cfg.size}px;height:${cfg.size}px;border-radius:50%;background:${isMe ? 'linear-gradient(135deg,var(--p2),var(--g2))' : cfg.avatarBg};display:flex;align-items:center;justify-content:center;font-size:${cfg.size >= 60 ? '1rem' : '.9rem'};font-weight:800;color:${isMe ? '#fff' : cfg.avatarClr};box-shadow:0 0 ${cfg.size >= 60 ? '30' : '20'}px ${cfg.border}">${av}</div>`;
+      }
       podHtml += `<div style="text-align:center"><div style="font-size:${cfg.size >= 60 ? '.85rem' : '.96rem'};font-weight:${cfg.size >= 60 ? 800 : 700};color:${isMe ? 'var(--g1)' : 'var(--t2)'}">${m.name}</div>`;
       podHtml += `<div style="display:flex;align-items:center;justify-content:center;gap:5px;margin-top:${cfg.size >= 60 ? 5 : 4}px"><span style="font-size:.6rem;color:${isMe ? 'var(--g2)' : 'var(--p3)'};font-weight:600">${lvl.name} N${lvl.level}</span></div></div>`;
       podHtml += `<div style="font-family:'JetBrains Mono',monospace;font-size:${cfg.size >= 60 ? '1.05rem' : '.92rem'};font-weight:900;color:${cfg.xpClr}">${m.xp.toLocaleString('pt-BR')} <span style="font-size:${cfg.size >= 60 ? '.94rem' : '.55rem'};opacity:.7">XP</span></div>`;
@@ -2523,10 +2528,15 @@ async function loadRanking() {
     const lvlFull = getLevelInfo(m.xp);
     const isMe = m.id === myId || m.name === userProfile?.name;
     const pos = i + 1;
-    const av = (m.name || '??').slice(0, 2).toUpperCase();
+    const badgeImgList = BADGE_IMGS[Math.min(lvlFull.level, BADGE_IMGS.length - 1)];
     html += `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;background:${isMe ? 'rgba(232,184,75,.07)' : 'rgba(255,255,255,.035)'};border:1px solid ${isMe ? 'rgba(232,184,75,.2)' : 'rgba(255,255,255,.05)'}">`;
     html += `<span style="font-family:'JetBrains Mono',monospace;font-size:.92rem;font-weight:700;color:${isMe ? 'var(--g1)' : 'var(--t3)'};min-width:24px;text-align:center">${pos}°</span>`;
-    html += `<div style="width:30px;height:30px;border-radius:50%;background:${isMe ? 'linear-gradient(135deg,rgba(232,184,75,.3),rgba(200,154,46,.2))' : 'rgba(255,255,255,.08)'};display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:${isMe ? 'var(--g1)' : 'var(--t2)'};flex-shrink:0">${av}</div>`;
+    if (badgeImgList) {
+      html += `<div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><img src="${badgeImgList}" style="width:32px;height:32px;object-fit:contain;mix-blend-mode:lighten" alt="badge"></div>`;
+    } else {
+      const av = (m.name || '??').slice(0, 2).toUpperCase();
+      html += `<div style="width:30px;height:30px;border-radius:50%;background:${isMe ? 'linear-gradient(135deg,rgba(232,184,75,.3),rgba(200,154,46,.2))' : 'rgba(255,255,255,.08)'};display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:${isMe ? 'var(--g1)' : 'var(--t2)'};flex-shrink:0">${av}</div>`;
+    }
     html += `<div style="flex:1;min-width:0"><div style="font-size:.88rem;font-weight:${isMe ? 700 : 600};color:${isMe ? 'var(--g1)' : 'var(--t2)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}${isMe ? ' <span style="opacity:.55;font-size:.7rem">← você</span>' : ''}</div><div style="font-size:.7rem;color:var(--t3)">${lvlFull.name} · N${lvlFull.level}</div></div>`;
     html += `<div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:800;color:${isMe ? 'var(--g1)' : 'var(--t3)'}">${m.xp.toLocaleString('pt-BR')} XP</div>`;
     html += `</div>`;
@@ -3349,10 +3359,12 @@ async function loadDashboard() {
     let rankHtml='';
     allProfiles.slice(0,5).forEach((p,i)=>{
       const isMe=p.id===userSession.user.id;
-      const av=(p.name||'??').slice(0,2).toUpperCase();
+      const pLvl=getLevelInfo(p.xp);
+      const pBadge=BADGE_IMGS[Math.min(pLvl.level, BADGE_IMGS.length-1)];
       rankHtml+=`<div class="rank-row${isMe?' me':''}">`;
       rankHtml+=`<span class="rank-pos${posCls[i]?' '+posCls[i]:''}">${i+1}</span>`;
-      rankHtml+=`<div class="rank-av">${av}</div>`;
+      if(pBadge){rankHtml+=`<div class="rank-av" style="background:transparent"><img src="${pBadge}" style="width:20px;height:20px;object-fit:contain;mix-blend-mode:lighten" alt="badge"></div>`;}
+      else{const av=(p.name||'??').slice(0,2).toUpperCase();rankHtml+=`<div class="rank-av">${av}</div>`;}
       rankHtml+=`<span class="rank-name">${p.name||'Sem nome'}</span>`;
       rankHtml+=`<span class="rank-xp">${p.xp} XP</span>`;
       rankHtml+=`</div>`;
