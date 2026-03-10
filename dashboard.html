@@ -4136,7 +4136,36 @@ window.salvarDiario = async () => {
     no_show: noShow
   }, { onConflict: 'user_id,date' });
   if (error) return alert('Erro: ' + error.message);
-  alert('Diário salvo!');
+
+  let sheetFailed = false;
+  try {
+    const resp = await fetch('/api/diary-sheet', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        date,
+        user_id: userSession.user.id,
+        user_name: userProfile?.name || '',
+        user_email: userSession.user.email || '',
+        metrics: {
+          ligacoes_totais: contatos,
+          conexoes: atendidas,
+          conexoes_decisor: decisores,
+          reunioes_marcadas: reunioes,
+          reunioes_marcadas_sql: reunioesSql,
+          reunioes_realizadas: realizadas,
+          reunioes_realizadas_sql: realizadasSql,
+          reunioes_remarcadas: remarcadas,
+          no_show: noShow,
+        }
+      })
+    });
+    if (!resp.ok) sheetFailed = true;
+  } catch (e) {
+    sheetFailed = true;
+  }
+
+  alert(sheetFailed ? 'Diário salvo, mas falhou envio ao Sheets' : 'Diário salvo!');
   loadDiario();
   loadDashboard();
   renderFunilDash();
@@ -4542,6 +4571,9 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
+
+
 
 
 
