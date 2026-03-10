@@ -10,15 +10,18 @@ async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido' });
 
-  const auth = new google.auth.GoogleAuth({
-    credentials: {
-      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      private_key: (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
-    },
+  // Normaliza a chave privada — remove aspas extras e converte \n escapado em quebras reais
+  const rawKey = (process.env.GOOGLE_PRIVATE_KEY || '')
+    .replace(/^"([\s\S]*)"$/, '$1')  // remove aspas externas se existirem
+    .replace(/\\n/g, '\n');           // converte \n literal em newline real
+
+  const auth = new google.auth.JWT({
+    email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+    key: rawKey,
     scopes: ['https://www.googleapis.com/auth/drive.file'],
   });
 
-  const drive = google.drive({ version: 'v3', auth });
+  const drive = google.drive({ version: 'v3', auth: auth });
 
   return new Promise((resolve) => {
     const bb = Busboy({ headers: req.headers });
