@@ -44,9 +44,9 @@ module.exports = async function handler(req, res) {
     const drive = google.drive({ version: 'v3', auth: oauth });
     const sheets = google.sheets({ version: 'v4', auth: oauth });
 
-    const sheetFileId = await getOrCreateSheetFile(drive, folderId);
-    await ensureSheetTab(sheets, sheetFileId);
-    await ensureHeaderRow(sheets, sheetFileId);
+    const fileInfo = await getOrCreateSheetFile(drive, folderId);
+    await ensureSheetTab(sheets, fileInfo.id);
+    await ensureHeaderRow(sheets, fileInfo.id);
 
     const row = [
       date,
@@ -65,14 +65,14 @@ module.exports = async function handler(req, res) {
     ];
 
     await sheets.spreadsheets.values.append({
-      spreadsheetId: sheetFileId,
+      spreadsheetId: fileInfo.id,
       range: `${SHEET_NAME}!A1`,
       valueInputOption: 'USER_ENTERED',
       insertDataOption: 'INSERT_ROWS',
       requestBody: { values: [row] },
     });
 
-    return res.status(200).json({ ok: true });
+    return res.status(200).json({ ok: true, sheet_id: fileInfo.id, sheet_url: fileInfo.webViewLink || '' });
   } catch (err) {
     return res.status(500).json({ error: err.message || 'Falha ao enviar para Sheets' });
   }
@@ -83,11 +83,11 @@ async function getOrCreateSheetFile(drive, folderId) {
   const list = await drive.files.list({
     q,
     spaces: 'drive',
-    fields: 'files(id, name)',
+    fields: 'files(id, name, webViewLink)',
     pageSize: 1,
   });
   if (list.data.files && list.data.files.length > 0) {
-    return list.data.files[0].id;
+    return list.data.files[0];
   }
 
   const created = await drive.files.create({
@@ -96,10 +96,10 @@ async function getOrCreateSheetFile(drive, folderId) {
       mimeType: 'application/vnd.google-apps.spreadsheet',
       parents: [folderId],
     },
-    fields: 'id',
+    fields: 'id, webViewLink',
   });
 
-  return created.data.id;
+  return created.data;
 }
 
 async function ensureSheetTab(sheets, spreadsheetId) {
