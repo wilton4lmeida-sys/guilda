@@ -10,31 +10,16 @@ async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido' });
 
-  // Reformata a chave PEM com quebras de linha a cada 64 chars (exigido pelo OpenSSL 3)
-  function formatPemKey(raw) {
-    let key = raw || '';
-    if (key.startsWith('"') && key.endsWith('"')) key = key.slice(1, -1);
-    key = key.replace(/\\n/g, '\n').replace(/\r\n/g, '\n').trim();
-
-    const header = '-----BEGIN PRIVATE KEY-----';
-    const footer = '-----END PRIVATE KEY-----';
-
-    // Extrai apenas o corpo base64, remove todo espaço/newline do meio
-    const body = key
-      .replace(header, '')
-      .replace(footer, '')
-      .replace(/\s+/g, '');
-
-    // Re-envolve em linhas de 64 chars (formato PEM padrão)
-    const wrapped = (body.match(/.{1,64}/g) || []).join('\n');
-    return `${header}\n${wrapped}\n${footer}\n`;
+  // Carrega credenciais do JSON completo da service account (mais confiável que variáveis separadas)
+  let credentials;
+  try {
+    credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON || '{}');
+  } catch {
+    return res.status(500).json({ error: 'GOOGLE_SERVICE_ACCOUNT_JSON inválido ou ausente' });
   }
 
   const auth = new google.auth.GoogleAuth({
-    credentials: {
-      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      private_key: formatPemKey(process.env.GOOGLE_PRIVATE_KEY),
-    },
+    credentials,
     scopes: ['https://www.googleapis.com/auth/drive.file'],
   });
 
