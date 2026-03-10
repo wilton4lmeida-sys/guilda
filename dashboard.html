@@ -4165,7 +4165,20 @@ window.salvarDiario = async () => {
     } 
   } catch (e) {
     sheetFailed = true;
-  }\r\n  const statusEl = document.getElementById('diarioStatus');\r\n  if (statusEl) {\r\n    statusEl.textContent = 'Diário enviado';\r\n    statusEl.style.display = 'block';\r\n    statusEl.style.color = sheetFailed ? '#F87171' : 'var(--g1)';\r\n    statusEl.style.background = sheetFailed ? 'rgba(248,113,113,.12)' : 'rgba(245,197,24,.12)';\r\n    statusEl.style.border = sheetFailed ? '1px solid rgba(248,113,113,.35)' : '1px solid rgba(245,197,24,.35)';\r\n    clearTimeout(window.__diarioStatusTimer);\r\n    window.__diarioStatusTimer = setTimeout(() => {\r\n      statusEl.style.display = 'none';\r\n    }, 3000);\r\n  }\r\n  loadDiario();
+  }
+  const statusEl = document.getElementById('diarioStatus');
+  if (statusEl) {
+    statusEl.textContent = 'Diário enviado';
+    statusEl.style.display = 'block';
+    statusEl.style.color = sheetFailed ? '#F87171' : 'var(--g1)';
+    statusEl.style.background = sheetFailed ? 'rgba(248,113,113,.12)' : 'rgba(245,197,24,.12)';
+    statusEl.style.border = sheetFailed ? '1px solid rgba(248,113,113,.35)' : '1px solid rgba(245,197,24,.35)';
+    clearTimeout(window.__diarioStatusTimer);
+    window.__diarioStatusTimer = setTimeout(() => {
+      statusEl.style.display = 'none';
+    }, 3000);
+  }
+  loadDiario();
   loadDashboard();
   renderFunilDash();
 };
@@ -4570,6 +4583,7 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
 
 
 
