@@ -4162,25 +4162,19 @@ window.salvarDiario = async () => {
     });
     if (!resp.ok) {
       sheetFailed = true;
-    } else {
-      const data = await resp.json().catch(() => ({}));
-      if (data && data.sheet_url) window.__lastDiarySheetUrl = data.sheet_url;
-    }
+    } 
   } catch (e) {
     sheetFailed = true;
   }
 
   if (sheetFailed) {
     alert('Diário salvo, mas falhou envio ao Sheets');
-  } else if (window.__lastDiarySheetUrl) {
-    alert('Diário salvo! Planilha: ' + window.__lastDiarySheetUrl);
   } else {
     alert('Diário salvo!');
   }
   loadDiario();
   loadDashboard();
-  renderFunilDash();
-};
+  renderFunilDash();\r\n};
 
 async function resetMetricasPeriod() {
   const now = new Date();
@@ -4582,6 +4576,20 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
