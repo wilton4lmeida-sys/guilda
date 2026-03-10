@@ -3902,7 +3902,10 @@ window.uploadToDrive = async function() {
     progBar.style.width = '100%';
     progPct.textContent = '100%';
 
-    const data = await res.json();
+    const rawText = await res.text();
+    let data;
+    try { data = JSON.parse(rawText); }
+    catch { throw new Error(`Resposta inesperada (${res.status}): ${rawText.slice(0, 200)}`); }
 
     if (data.success) {
       resultEl.style.display = 'block';
