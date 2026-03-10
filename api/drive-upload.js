@@ -12,8 +12,10 @@ async function handler(req, res) {
 
   // Normaliza a chave privada — remove aspas extras e converte \n escapado em quebras reais
   const rawKey = (process.env.GOOGLE_PRIVATE_KEY || '')
-    .replace(/^"([\s\S]*)"$/, '$1')  // remove aspas externas se existirem
-    .replace(/\\n/g, '\n');           // converte \n literal em newline real
+    .replace(/^"([\s\S]*)"$/, '$1')   // remove aspas externas se existirem
+    .replace(/\\n/g, '\n')            // converte \n literal em newline real
+    .replace(/\r\n/g, '\n')           // normaliza line endings
+    .trim();
 
   const auth = new google.auth.JWT({
     email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
