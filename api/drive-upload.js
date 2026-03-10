@@ -1,10 +1,8 @@
-import { google } from 'googleapis';
-import Busboy from 'busboy';
-import { Readable } from 'stream';
+const { google } = require('googleapis');
+const Busboy = require('busboy');
+const { Readable } = require('stream');
 
-export const config = { api: { bodyParser: false } };
-
-export default async function handler(req, res) {
+async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -15,7 +13,7 @@ export default async function handler(req, res) {
   const auth = new google.auth.GoogleAuth({
     credentials: {
       client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      private_key: (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
     },
     scopes: ['https://www.googleapis.com/auth/drive.file'],
   });
@@ -86,3 +84,6 @@ export default async function handler(req, res) {
     req.pipe(bb);
   });
 }
+
+handler.config = { api: { bodyParser: false } };
+module.exports = handler;
