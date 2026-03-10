@@ -2145,29 +2145,50 @@ input[type=date]:focus {
             style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--g1);background:transparent;border:none;padding:0;text-align:center;width:100%">
         </div>
         <div style="background:var(--card2);border:1px solid rgba(245,197,24,.15);border-radius:12px;padding:14px">
-          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Conexão c/ Atendente</div>
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Conexões</div>
           <input type="text" inputmode="numeric" class="form-input" id="diarioAtendidas" value="0" oninput="this.value=this.value.replace(/\D/g,'')"
             style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--g1);background:transparent;border:none;padding:0;text-align:center;width:100%">
         </div>
         <div style="background:var(--card2);border:1px solid rgba(245,197,24,.15);border-radius:12px;padding:14px">
-          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Conexão c/ Decisor</div>
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Conexões com decisor</div>
           <input type="text" inputmode="numeric" class="form-input" id="diarioDecisores" value="0" oninput="this.value=this.value.replace(/\D/g,'')"
             style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--g1);background:transparent;border:none;padding:0;text-align:center;width:100%">
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:18px">
         <div style="background:var(--card2);border:1px solid rgba(160,160,176,.18);border-radius:12px;padding:14px">
-          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Reuniões Marcadas</div>
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Reuniões marcadas totais</div>
           <input type="text" inputmode="numeric" class="form-input" id="diarioReunioes" value="0" oninput="this.value=this.value.replace(/\D/g,'')"
             style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--p3);background:transparent;border:none;padding:0;text-align:center;width:100%">
         </div>
         <div style="background:var(--card2);border:1px solid rgba(160,160,176,.18);border-radius:12px;padding:14px">
-          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Reuniões Realizadas</div>
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Reuniões marcadas com SQL (fatura R$30k+)</div>
+          <input type="text" inputmode="numeric" class="form-input" id="diarioReunioesSql" value="0" oninput="this.value=this.value.replace(/\D/g,'')"
+            style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--p3);background:transparent;border:none;padding:0;text-align:center;width:100%">
+        </div>
+        <div style="background:var(--card2);border:1px solid rgba(160,160,176,.18);border-radius:12px;padding:14px">
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Reuniões realizadas totais</div>
           <input type="text" inputmode="numeric" class="form-input" id="diarioRealizadas" value="0" oninput="this.value=this.value.replace(/\D/g,'')"
             style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--p3);background:transparent;border:none;padding:0;text-align:center;width:100%">
         </div>
+        <div style="background:var(--card2);border:1px solid rgba(160,160,176,.18);border-radius:12px;padding:14px">
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Reuniões realizadas com SQL (fatura R$30k+)</div>
+          <input type="text" inputmode="numeric" class="form-input" id="diarioRealizadasSql" value="0" oninput="this.value=this.value.replace(/\D/g,'')"
+            style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--p3);background:transparent;border:none;padding:0;text-align:center;width:100%">
+        </div>
+        <div style="background:var(--card2);border:1px solid rgba(160,160,176,.18);border-radius:12px;padding:14px">
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Reuniões remarcadas</div>
+          <input type="text" inputmode="numeric" class="form-input" id="diarioRemarcadas" value="0" oninput="this.value=this.value.replace(/\D/g,'')"
+            style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--p3);background:transparent;border:none;padding:0;text-align:center;width:100%">
+        </div>
+        <div style="background:var(--card2);border:1px solid rgba(160,160,176,.18);border-radius:12px;padding:14px">
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">No-Show</div>
+          <input type="text" inputmode="numeric" class="form-input" id="diarioNoShow" value="0" oninput="this.value=this.value.replace(/\D/g,'')"
+            style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--p3);background:transparent;border:none;padding:0;text-align:center;width:100%">
+        </div>
       </div>
-      <button class="btn btn-gold" onclick="salvarDiario()">Enviar</button>
+      <button class="btn btn-gold" 
+ onclick="salvarDiario()">Enviar</button>
     </div>
     <!-- Upload de áudios para o Drive -->
     <div id="driveUploadCard" style="background:linear-gradient(150deg,#0E0C08 0%,#0A0900 55%,#0C0A04 100%);border:1px solid rgba(245,197,24,.1);border-radius:18px;padding:22px;position:relative;overflow:hidden;margin-bottom:14px">
@@ -2198,7 +2219,7 @@ input[type=date]:focus {
             <span style="font-size:.66rem;color:var(--t3);background:rgba(245,197,24,.06);padding:2px 7px;border-radius:20px;border:1px solid rgba(245,197,24,.1)">WAV</span>
             <span style="font-size:.66rem;color:var(--t3);background:rgba(245,197,24,.06);padding:2px 7px;border-radius:20px;border:1px solid rgba(245,197,24,.1)">M4A</span>
             <span style="font-size:.66rem;color:var(--t3);background:rgba(245,197,24,.06);padding:2px 7px;border-radius:20px;border:1px solid rgba(245,197,24,.1)">OGG</span>
-            <span style="font-size:.66rem;color:var(--t3)">• até 15 arquivos • 5MB cada</span>
+            <span style="font-size:.66rem;color:var(--t3)">• até 15 arquivos • 20MB cada</span>
           </div>
         </div>
 
@@ -3717,9 +3738,9 @@ async function loadDiario() {
     container.innerHTML = '<div class="empty-state"><div class="empty-state-text">Nenhum registro</div></div>';
     return;
   }
-  let html = '<table class="table"><thead><tr><th>Data</th><th>Lig. Totais</th><th>Cx. Atendente</th><th>Cx. Decisor</th><th>Marcadas</th><th>Realizadas</th></tr></thead><tbody>';
+  let html = '<table class="table"><thead><tr><th>Data</th><th>Lig. Totais</th><th>Conexões</th><th>Cx. Decisor</th><th>Marc. Totais</th><th>Marc. SQL</th><th>Real. Totais</th><th>Real. SQL</th><th>Remarc.</th><th>No-Show</th></tr></thead><tbody>';
   diary.forEach(d => {
-    html += `<tr><td>${new Date(d.date+'T12:00:00').toLocaleDateString('pt-BR')}</td><td>${d.contatos_tentados}</td><td>${d.ligacoes_atendidas}</td><td>${d.conexao_decisor}</td><td>${d.reunioes_marcadas}</td><td>${d.reunioes_realizadas||0}</td></tr>`;
+    html += `<tr><td>${new Date(d.date+'T12:00:00').toLocaleDateString('pt-BR')}</td><td>${d.contatos_tentados}</td><td>${d.ligacoes_atendidas}</td><td>${d.conexao_decisor}</td><td>${d.reunioes_marcadas}</td><td>${d.reunioes_marcadas_sql||0}</td><td>${d.reunioes_realizadas||0}</td><td>${d.reunioes_realizadas_sql||0}</td><td>${d.reunioes_remarcadas||0}</td><td>${d.no_show||0}</td></tr>`;
   });
   html += '</tbody></table>';
   container.innerHTML = html;
@@ -3901,73 +3922,80 @@ const DRIVE_MAX_SIZE = 20 * 1024 * 1024; // 20MB
 const DRIVE_AUDIO_EXT = ['.mp3', '.wav', '.m4a', '.ogg', '.webm', '.aac', '.flac'];
 let driveSelectedFiles = [];
 
-function renderDriveFileList() {
-  const listEl    = document.getElementById('driveFileList');
-  const emptyEl   = document.getElementById('driveEmptyState');
-  const footerEl  = document.getElementById('driveZoneFooter');
-  const nameEl    = document.getElementById('driveFileName');
-  const btn       = document.getElementById('driveUploadBtn');
-  const resultEl  = document.getElementById('driveResult');
+window.handleDriveFiles = function(fileList) {
+  if (!fileList || !fileList.length) return;
 
-  if (!driveSelectedFiles.length) {
-    listEl.style.display   = 'none';
-    emptyEl.style.display  = 'block';
-    footerEl.style.display = 'none';
-    btn.disabled           = true;
-    btn.style.opacity      = '.35';
-    btn.style.cursor       = 'not-allowed';
+  const files = Array.from(fileList);
+
+  if (files.length > DRIVE_MAX_FILES) {
+    showDriveError('Limite excedido: máximo de 15 arquivos por envio.');
     return;
   }
 
-  const total = driveSelectedFiles.reduce((s, f) => s + f.size, 0);
-  nameEl.textContent = `${driveSelectedFiles.length} arquivo${driveSelectedFiles.length > 1 ? 's' : ''} · ${(total / 1024 / 1024).toFixed(1)} MB total`;
-
-  listEl.innerHTML = driveSelectedFiles.map((f, i) =>
-    `<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid rgba(245,197,24,.06)">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="2" stroke-linecap="round" style="flex-shrink:0"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg>
-      <span style="flex:1;font-size:.82rem;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(f.name)}</span>
-      <span style="font-size:.7rem;color:var(--t3);flex-shrink:0;margin-right:8px">${(f.size / 1024 / 1024).toFixed(1)}MB</span>
-      <span onclick="removeDriveFile(${i})" style="cursor:pointer;width:20px;height:20px;border-radius:5px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#F87171;font-size:.75rem;line-height:1" title="Remover">✕</span>
-    </div>`
-  ).join('');
-
-  listEl.style.display   = 'flex';
-  listEl.style.flexDirection = 'column';
-  emptyEl.style.display  = 'none';
-  footerEl.style.display = 'flex';
-  resultEl.style.display = 'none';
-  btn.disabled           = false;
-  btn.style.opacity      = '1';
-  btn.style.cursor       = 'pointer';
-}
-
-window.removeDriveFile = function(index) {
-  driveSelectedFiles = driveSelectedFiles.filter((_, i) => i !== index);
-  document.getElementById('driveFileInput').value = '';
-  renderDriveFileList();
-};
-
-window.handleDriveFiles = function(fileList) {
-  if (!fileList || !fileList.length) return;
-  const incoming = Array.from(fileList);
-  const merged   = [...driveSelectedFiles, ...incoming];
-
-  if (merged.length > DRIVE_MAX_FILES) {
-    showDriveError(`Limite de ${DRIVE_MAX_FILES} arquivos excedido.`); return;
+  const invalidType = files.filter((f) => !isAudioFile(f));
+  if (invalidType.length) {
+    showDriveError('Apenas arquivos de áudio são permitidos.');
+    return;
   }
-  const invalid = incoming.filter((f) => !isAudioFile(f));
-  if (invalid.length) { showDriveError('Apenas arquivos de áudio são permitidos.'); return; }
-const DRIVE_MAX_SIZE = 20 * 1024 * 1024; // 20MB
-  if (big.length) { showDriveError('Cada arquivo deve ter no máximo 20MB.'); return; }
 
-  driveSelectedFiles = merged;
-  renderDriveFileList();
+  const oversized = files.filter((f) => f.size > DRIVE_MAX_SIZE);
+  if (oversized.length) {
+    showDriveError('Cada arquivo deve ter no máximo 20MB.');
+    return;
+  }
+
+  driveSelectedFiles = files;
+
+  const emptyState = document.getElementById('driveEmptyState');
+  const listEl = document.getElementById('driveFileList');
+  const footer = document.getElementById('driveZoneFooter');
+  const nameEl = document.getElementById('driveFileName');
+
+  const totalSize = files.reduce((sum, f) => sum + f.size, 0);
+  if (nameEl) nameEl.textContent = `${files.length} arquivo(s) • ${(totalSize / 1024 / 1024).toFixed(2)} MB`;
+
+  if (listEl) {
+    listEl.innerHTML = files.map((f) => {
+      const size = (f.size / 1024 / 1024).toFixed(2);
+      return `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-top:1px solid rgba(245,197,24,.08)">
+        <span style="width:6px;height:6px;border-radius:50%;background:rgba(245,197,24,.6)"></span>
+        <span style="font-size:.78rem;color:var(--t1);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(f.name)}</span>
+        <span style="font-size:.72rem;color:var(--t3)">${size} MB</span>
+      </div>`;
+    }).join('');
+    listEl.style.display = 'flex';
+  }
+
+  if (emptyState) emptyState.style.display = 'none';
+  if (footer) footer.style.display = 'flex';
+
+  const btn = document.getElementById('driveUploadBtn');
+  btn.disabled = false;
+  btn.style.opacity = '1';
+  btn.style.cursor = 'pointer';
+  document.getElementById('driveResult').style.display = 'none';
 };
 
 window.clearDriveFiles = function() {
   driveSelectedFiles = [];
-  document.getElementById('driveFileInput').value = '';
-  renderDriveFileList();
+  const input = document.getElementById('driveFileInput');
+  if (input) input.value = '';
+
+  const emptyState = document.getElementById('driveEmptyState');
+  const listEl = document.getElementById('driveFileList');
+  const footer = document.getElementById('driveZoneFooter');
+  const nameEl = document.getElementById('driveFileName');
+
+  if (listEl) { listEl.innerHTML = ''; listEl.style.display = 'none'; }
+  if (footer) footer.style.display = 'none';
+  if (nameEl) nameEl.textContent = '';
+  if (emptyState) emptyState.style.display = 'block';
+
+  const btn = document.getElementById('driveUploadBtn');
+  btn.disabled = true;
+  btn.style.opacity = '.35';
+  btn.style.cursor = 'not-allowed';
+  document.getElementById('driveResult').style.display = 'none';
 };
 
 window.uploadToDrive = async function() {
@@ -3981,65 +4009,82 @@ window.uploadToDrive = async function() {
 
   btn.disabled = true;
   btn.textContent = 'Enviando...';
-  progWrap.style.display = 'block';
-  progBar.style.width = '0%';
-  progPct.textContent = '0%';
+  if (progWrap) progWrap.style.display = 'block';
+  if (progBar) progBar.style.width = '0%';
+  if (progPct) progPct.textContent = '0%';
   resultEl.style.display = 'none';
 
-  const userName = userProfile?.name || 'Membro';
-  const formData = new FormData();
-  driveSelectedFiles.forEach((file) => formData.append('files', file));
-  formData.append('userName', userName);
-
   try {
-    // Simula progresso enquanto faz upload
+    const tokenRes = await fetch('/api/drive-token');
+    const tokenText = await tokenRes.text();
+    let tokenData;
+    try { tokenData = JSON.parse(tokenText); }
+    catch { throw new Error(`Resposta inesperada (${tokenRes.status}): ${tokenText.slice(0, 200)}`); }
+
+    if (!tokenRes.ok) throw new Error(tokenData.error || 'Falha ao obter token');
+
+    const accessToken = tokenData.access_token;
+    const folderId = tokenData.folder_id;
+
+    let uploadedLinks = [];
     let pct = 0;
     const interval = setInterval(() => {
       pct = Math.min(pct + Math.random() * 12, 90);
-      progBar.style.width = pct + '%';
-      progPct.textContent = Math.round(pct) + '%';
+      if (progBar) progBar.style.width = pct + '%';
+      if (progPct) progPct.textContent = Math.round(pct) + '%';
     }, 300);
 
-    const res = await fetch('/api/drive-upload', { method: 'POST', body: formData });
-    clearInterval(interval);
-    progBar.style.width = '100%';
-    progPct.textContent = '100%';
+    for (const file of driveSelectedFiles) {
+      const createRes = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&fields=id,webViewLink', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: JSON.stringify({
+          name: `[${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}] ${userProfile?.name || 'Membro'} - ${file.name}`,
+          parents: [folderId]
+        })
+      });
 
-    const rawText = await res.text();
-    let data;
-    try { data = JSON.parse(rawText); }
-    catch { throw new Error(`Resposta inesperada (${res.status}): ${rawText.slice(0, 200)}`); }
+      const uploadUrl = createRes.headers.get('location');
+      if (!uploadUrl) throw new Error('Falha ao iniciar upload resumível');
 
-    if (data.success) {
-      const count = (data.files || []).length;
-      const links = (data.files || []).map((f) =>
-        `<a href="${f.link}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;color:#34D399;font-size:.76rem;font-weight:600;text-decoration:none;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>
-          ${escapeHtml(f.fileName || 'Arquivo')}
-        </a>`
-      ).join('');
-      resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:14px 16px;border-radius:12px;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.18)';
-      resultEl.innerHTML = `
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:${links ? '10px' : '0'}">
-          <div style="width:28px;height:28px;border-radius:50%;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <div>
-            <div style="font-size:.88rem;font-weight:800;color:#34D399">Enviado com sucesso!</div>
-            <div style="font-size:.72rem;color:rgba(52,211,153,.6);margin-top:1px">${count} arquivo${count > 1 ? 's' : ''} salvo${count > 1 ? 's' : ''} no Drive</div>
-          </div>
-        </div>
-        ${links ? `<div style="border-top:1px solid rgba(52,211,153,.1);padding-top:8px">${links}</div>` : ''}`;
-      clearDriveFiles();
-      setTimeout(() => { resultEl.style.display = 'none'; }, 3000);
-    } else {
-      throw new Error(data.error || 'Erro desconhecido');
+      const uploadRes = await fetch(uploadUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': file.type || 'application/octet-stream'
+        },
+        body: file
+      });
+
+      if (!uploadRes.ok) {
+        const errText = await uploadRes.text();
+        throw new Error(`Falha ao enviar arquivo: ${errText.slice(0, 200)}`);
+      }
+
+      const uploaded = await uploadRes.json();
+      if (uploaded.webViewLink) {
+        uploadedLinks.push({ fileName: file.name, link: uploaded.webViewLink });
+      }
     }
+
+    clearInterval(interval);
+    if (progBar) progBar.style.width = '100%';
+    if (progPct) progPct.textContent = '100%';
+
+    resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2)';
+    const links = uploadedLinks.map((f) => {
+      const label = escapeHtml(f.fileName || 'Arquivo');
+      return `<div><a href="${f.link}" target="_blank" rel="noopener" style="color:#22C55E;font-weight:700;text-decoration:underline">${label}</a></div>`;
+    }).join('');
+    resultEl.innerHTML = `<div style="font-size:.82rem;font-weight:700;color:#34D399">✓ Enviado com sucesso!</div>${links}`;
+    clearDriveFiles();
   } catch (err) {
     resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2)';
     resultEl.innerHTML = `<div style="font-size:.82rem;font-weight:700;color:#EF4444">✕ Erro ao enviar</div><div style="font-size:.75rem;color:#F87171;margin-top:3px">${err.message}</div>`;
   } finally {
-    setTimeout(() => { progWrap.style.display = 'none'; progBar.style.width = '0%'; }, 1500);
+    setTimeout(() => { if (progWrap) progWrap.style.display = 'none'; if (progBar) progBar.style.width = '0%'; }, 1500);
     btn.disabled = false;
     btn.textContent = 'Enviar';
     btn.style.opacity = driveSelectedFiles.length ? '1' : '.35';
@@ -4070,152 +4115,25 @@ function escapeHtml(value) {
     .replaceAll("'", '&#39;');
 }
 
-// ── Mission Proof Upload ──
-const MISSION_MAX_FILES = 5;
-const MISSION_MAX_SIZE = 100 * 1024 * 1024; // 100MB
-const missionFileState = {};
-
-window.toggleMissionProof = function(missionId) {
-  const wrap = document.getElementById(`missionProof-${missionId}`);
-  if (!wrap) return;
-  wrap.style.display = (wrap.style.display === 'none' || wrap.style.display === '') ? 'block' : 'none';
-
-  if (wrap.style.display === 'block') {
-    const input = document.getElementById(`missionWhatsapp-${missionId}`);
-    if (input && !input.value) {
-      const saved = localStorage.getItem('guilda_whatsapp') || '';
-      input.value = saved;
-    }
-  }
-};
-
-window.handleMissionFiles = function(missionId, fileList) {
-  if (!fileList || !fileList.length) return;
-  const files = Array.from(fileList);
-
-  if (files.length > MISSION_MAX_FILES) {
-    showMissionError(missionId, 'Limite excedido: máximo de 5 arquivos por missão.');
-    return;
-  }
-
-  const oversized = files.filter((f) => f.size > MISSION_MAX_SIZE);
-  if (oversized.length) {
-    showMissionError(missionId, 'Cada arquivo deve ter no máximo 100MB.');
-    return;
-  }
-
-  missionFileState[missionId] = files;
-  const info = document.getElementById(`missionFilesInfo-${missionId}`);
-  if (info) {
-    const totalSize = files.reduce((sum, f) => sum + f.size, 0);
-    info.innerHTML = '<ul style="margin:6px 0 0 0;padding-left:16px">' + files
-      .map((f) => `<li style="margin-bottom:4px">${escapeHtml(f.name)} (${(f.size / 1024 / 1024).toFixed(2)} MB)</li>`)
-      .join('') + '</ul>';
-    info.dataset.total = totalSize;
-  }
-};
-
-window.uploadMissionFiles = async function(missionId) {
-  const files = missionFileState[missionId] || [];
-  if (!files.length) {
-    showMissionError(missionId, 'Selecione os arquivos antes de enviar.');
-    return;
-  }
-
-  const whatsappInput = document.getElementById(`missionWhatsapp-${missionId}`);
-  const whatsappRaw = whatsappInput ? whatsappInput.value : '';
-  const whatsapp = (whatsappRaw || '').replace(/\D/g, '');
-  if (!whatsapp) {
-    showMissionError(missionId, 'Informe seu WhatsApp para enviar a comprovacao.');
-    return;
-  }
-
-  localStorage.setItem('guilda_whatsapp', whatsapp);
-
-  const resultEl = document.getElementById(`missionResult-${missionId}`);
-  const progWrap = document.getElementById(`missionProgressWrap-${missionId}`);
-  const progBar = document.getElementById(`missionProgressBar-${missionId}`);
-  const progPct = document.getElementById(`missionProgressPct-${missionId}`);
-
-  if (progWrap) progWrap.style.display = 'block';
-  if (progBar) progBar.style.width = '0%';
-  if (progPct) progPct.textContent = '0%';
-  if (resultEl) resultEl.style.display = 'none';
-
-  const formData = new FormData();
-  files.forEach((file) => formData.append('files', file));
-  formData.append('userName', userProfile?.name || 'Membro');
-  formData.append('userWhatsapp', whatsapp);
-
-  try {
-    let pct = 0;
-    const interval = setInterval(() => {
-      pct = Math.min(pct + Math.random() * 12, 90);
-      if (progBar) progBar.style.width = pct + '%';
-      if (progPct) progPct.textContent = Math.round(pct) + '%';
-    }, 300);
-
-    const res = await fetch(`/api/mission-upload?missionId=${encodeURIComponent(missionId)}`, {
-      method: 'POST',
-      body: formData,
-    });
-
-    clearInterval(interval);
-    if (progBar) progBar.style.width = '100%';
-    if (progPct) progPct.textContent = '100%';
-
-    const rawText = await res.text();
-    let data;
-    try { data = JSON.parse(rawText); }
-    catch { throw new Error(`Resposta inesperada (${res.status}): ${rawText.slice(0, 200)}`); }
-
-    if (data.success) {
-      if (resultEl) {
-        resultEl.style.display = 'block';
-        resultEl.style.background = 'rgba(34,197,94,.08)';
-        resultEl.style.border = '1px solid rgba(34,197,94,.2)';
-        resultEl.style.color = '#22C55E';
-        const links = (data.files || []).map((f) => {
-          const label = escapeHtml(f.fileName || 'Arquivo');
-          return `<div><a href="${f.link}" target="_blank" rel="noopener" style="color:#22C55E;font-weight:700;text-decoration:underline">${label}</a></div>`;
-        }).join('');
-        resultEl.innerHTML = `✓ Enviado com sucesso!${links ? '<div style="margin-top:6px">' + links + '</div>' : ''}`;
-      }
-      missionFileState[missionId] = [];
-      const input = document.getElementById(`missionFiles-${missionId}`);
-      if (input) input.value = '';
-    } else {
-      throw new Error(data.error || 'Erro desconhecido');
-    }
-  } catch (err) {
-    showMissionError(missionId, `Erro ao enviar: ${err.message}`);
-  } finally {
-    setTimeout(() => { if (progWrap) progWrap.style.display = 'none'; }, 1500);
-  }
-};
-
-function showMissionError(missionId, message) {
-  const resultEl = document.getElementById(`missionResult-${missionId}`);
-  if (!resultEl) return;
-  resultEl.style.display = 'block';
-  resultEl.style.background = 'rgba(239,68,68,.08)';
-  resultEl.style.border = '1px solid rgba(239,68,68,.2)';
-  resultEl.style.color = '#EF4444';
-  resultEl.textContent = message;
-}
 window.salvarDiario = async () => {
   const date = document.getElementById('diarioData').value;
   const contatos = parseInt(document.getElementById('diarioContatos').value) || 0;
   const atendidas = parseInt(document.getElementById('diarioAtendidas').value) || 0;
   const decisores = parseInt(document.getElementById('diarioDecisores').value) || 0;
   const reunioes = parseInt(document.getElementById('diarioReunioes').value) || 0;
+  const reunioesSql = parseInt(document.getElementById('diarioReunioesSql')?.value) || 0;
   const realizadas = parseInt(document.getElementById('diarioRealizadas')?.value) || 0;
+  const realizadasSql = parseInt(document.getElementById('diarioRealizadasSql')?.value) || 0;
+  const remarcadas = parseInt(document.getElementById('diarioRemarcadas')?.value) || 0;
+  const noShow = parseInt(document.getElementById('diarioNoShow')?.value) || 0;
   if (!date) return alert('Selecione uma data');
   const { error } = await sb.from('diary_entries').upsert({
     user_id: userSession.user.id, date,
     contatos_tentados: contatos, ligacoes_atendidas: atendidas,
     conexao_decisor: decisores, reunioes_marcadas: reunioes,
-    reunioes_realizadas: realizadas
+    reunioes_marcadas_sql: reunioesSql, reunioes_realizadas: realizadas,
+    reunioes_realizadas_sql: realizadasSql, reunioes_remarcadas: remarcadas,
+    no_show: noShow
   }, { onConflict: 'user_id,date' });
   if (error) return alert('Erro: ' + error.message);
   alert('Diário salvo!');
@@ -4589,9 +4507,9 @@ window.loadDiarioFiltered = async function() {
     container.innerHTML = '<div class="empty-state"><div class="empty-state-text">Nenhum registro no período</div></div>';
     return;
   }
-  let html = '<table class="table"><thead><tr><th>Data</th><th>Lig. Totais</th><th>Cx. Atendente</th><th>Cx. Decisor</th><th>Marcadas</th><th>Realizadas</th></tr></thead><tbody>';
+  let html = '<table class="table"><thead><tr><th>Data</th><th>Lig. Totais</th><th>Conexões</th><th>Cx. Decisor</th><th>Marc. Totais</th><th>Marc. SQL</th><th>Real. Totais</th><th>Real. SQL</th><th>Remarc.</th><th>No-Show</th></tr></thead><tbody>';
   diary.forEach(d => {
-    html += `<tr><td>${new Date(d.date+'T12:00:00').toLocaleDateString('pt-BR')}</td><td>${d.contatos_tentados}</td><td>${d.ligacoes_atendidas}</td><td>${d.conexao_decisor}</td><td>${d.reunioes_marcadas}</td><td>${d.reunioes_realizadas||0}</td></tr>`;
+    html += `<tr><td>${new Date(d.date+'T12:00:00').toLocaleDateString('pt-BR')}</td><td>${d.contatos_tentados}</td><td>${d.ligacoes_atendidas}</td><td>${d.conexao_decisor}</td><td>${d.reunioes_marcadas}</td><td>${d.reunioes_marcadas_sql||0}</td><td>${d.reunioes_realizadas||0}</td><td>${d.reunioes_realizadas_sql||0}</td><td>${d.reunioes_remarcadas||0}</td><td>${d.no_show||0}</td></tr>`;
   });
   html += '</tbody></table>';
   container.innerHTML = html;
@@ -4624,6 +4542,13 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
+
+
+
+
+
+
 
 
 
