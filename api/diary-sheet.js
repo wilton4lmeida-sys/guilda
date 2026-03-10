@@ -44,7 +44,9 @@ module.exports = async function handler(req, res) {
     const drive = google.drive({ version: 'v3', auth: oauth });
     const sheets = google.sheets({ version: 'v4', auth: oauth });
 
-    const sheetFileId = await getOrCreateSheetFile(drive, sheets, folderId);
+    const sheetFileId = await getOrCreateSheetFile(drive, folderId);
+    await ensureSheetTab(sheets, sheetFileId);
+    await ensureHeaderRow(sheets, sheetFileId);
 
     const row = [
       date,
@@ -76,7 +78,7 @@ module.exports = async function handler(req, res) {
   }
 };
 
-async function getOrCreateSheetFile(drive, sheets, folderId) {
+async function getOrCreateSheetFile(drive, folderId) {
   const q = `mimeType='application/vnd.google-apps.spreadsheet' and name='${FILE_NAME}' and '${folderId}' in parents and trashed=false`;
   const list = await drive.files.list({
     q,
@@ -96,10 +98,35 @@ async function getOrCreateSheetFile(drive, sheets, folderId) {
     },
     fields: 'id',
   });
-  const sheetId = created.data.id;
+
+  return created.data.id;
+}
+
+async function ensureSheetTab(sheets, spreadsheetId) {
+  const meta = await sheets.spreadsheets.get({
+    spreadsheetId,
+    fields: 'sheets(properties(title))',
+  });
+  const hasTab = (meta.data.sheets || []).some(s => s.properties && s.properties.title === SHEET_NAME);
+  if (hasTab) return;
+
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId,
+    requestBody: {
+      requests: [{ addSheet: { properties: { title: SHEET_NAME } } }],
+    },
+  });
+}
+
+async function ensureHeaderRow(sheets, spreadsheetId) {
+  const existing = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: `${SHEET_NAME}!A1:M1`,
+  });
+  if (existing.data.values && existing.data.values.length > 0) return;
 
   await sheets.spreadsheets.values.update({
-    spreadsheetId: sheetId,
+    spreadsheetId,
     range: `${SHEET_NAME}!A1:M1`,
     valueInputOption: 'RAW',
     requestBody: {
@@ -120,8 +147,6 @@ async function getOrCreateSheetFile(drive, sheets, folderId) {
       ]],
     },
   });
-
-  return sheetId;
 }
 
 function getRedirectUri(req) {
