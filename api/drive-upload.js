@@ -10,29 +10,31 @@ async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido' });
 
-  // Normaliza a chave privada — trata todos os formatos que o Vercel pode gerar
-  let rawKey = (process.env.GOOGLE_PRIVATE_KEY || '');
-  // Remove aspas externas adicionadas pelo Vercel
-  if (rawKey.startsWith('"') && rawKey.endsWith('"')) {
-    rawKey = rawKey.slice(1, -1);
-  }
-  // Converte \n literal em newline real
-  rawKey = rawKey.replace(/\\n/g, '\n');
+  // Reformata a chave PEM com quebras de linha a cada 64 chars (exigido pelo OpenSSL 3)
+  function formatPemKey(raw) {
+    let key = raw || '';
+    if (key.startsWith('"') && key.endsWith('"')) key = key.slice(1, -1);
+    key = key.replace(/\\n/g, '\n').replace(/\r\n/g, '\n').trim();
 
-  // Garante que o PEM está bem formado com quebras de linha reais
-  if (!rawKey.includes('\n')) {
-    rawKey = rawKey
-      .replace('-----BEGIN PRIVATE KEY-----', '-----BEGIN PRIVATE KEY-----\n')
-      .replace('-----END PRIVATE KEY-----', '\n-----END PRIVATE KEY-----');
-  }
+    const header = '-----BEGIN PRIVATE KEY-----';
+    const footer = '-----END PRIVATE KEY-----';
 
-  const credentials = {
-    client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-    private_key: rawKey,
-  };
+    // Extrai apenas o corpo base64, remove todo espaço/newline do meio
+    const body = key
+      .replace(header, '')
+      .replace(footer, '')
+      .replace(/\s+/g, '');
+
+    // Re-envolve em linhas de 64 chars (formato PEM padrão)
+    const wrapped = (body.match(/.{1,64}/g) || []).join('\n');
+    return `${header}\n${wrapped}\n${footer}\n`;
+  }
 
   const auth = new google.auth.GoogleAuth({
-    credentials,
+    credentials: {
+      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      private_key: formatPemKey(process.env.GOOGLE_PRIVATE_KEY),
+    },
     scopes: ['https://www.googleapis.com/auth/drive.file'],
   });
 
