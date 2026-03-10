@@ -403,6 +403,28 @@ body::after {
 .mission-info{flex:1;min-width:0}
 .mission-title{font-weight:700;font-size:.92rem;color:var(--t1);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mission-desc{font-size:.7rem;color:var(--t2)}
+    if (m.proof_required) {
+      html += `<div style="margin-top:10px">`;
+      html += `<button class="btn btn-gold btn-sm" onclick="toggleMissionProof('${m.id}')">Enviar comprovacao</button>`;
+      html += `</div>`;
+      html += `<div id="missionProof-${m.id}" data-title="${safeTitle}" style="display:none;margin-top:10px;padding:12px;border-radius:12px;background:var(--card2);border:1px dashed rgba(245,197,24,.25)">`;
+      html += `<div style="font-size:.72rem;color:var(--t3);margin-bottom:6px">Ate 5 arquivos • 100MB cada • Qualquer formato</div>`;
+      html += `<input class="form-input" id="missionWhatsapp-${m.id}" placeholder="WhatsApp (somente numeros)" inputmode="numeric" style="margin-bottom:8px">`;
+      html += `<input type="file" id="missionFiles-${m.id}" multiple onchange="handleMissionFiles('${m.id}', this.files)">`;
+      html += `<div id="missionFilesInfo-${m.id}" style="font-size:.72rem;color:var(--t3);margin-top:6px"></div>`;
+      html += `<button class="btn btn-gold btn-sm" style="margin-top:8px" onclick="uploadMissionFiles('${m.id}')">Enviar comprovacao</button>`;
+      html += `<div id="missionProgressWrap-${m.id}" style="display:none;margin-top:8px">`;
+      html += `<div style="display:flex;justify-content:space-between;margin-bottom:6px">`;
+      html += `<span style="font-size:.75rem;color:var(--t3)">Enviando...</span>`;
+      html += `<span id="missionProgressPct-${m.id}" style="font-size:.75rem;font-weight:700;color:var(--g1)">0%</span>`;
+      html += `</div>`;
+      html += `<div style="height:4px;border-radius:4px;background:rgba(255,255,255,.08)">`;
+      html += `<div id="missionProgressBar-${m.id}" style="height:4px;border-radius:4px;background:var(--grd-accent);width:0%;transition:width .3s"></div>`;
+      html += `</div>`;
+      html += `</div>`;
+      html += `<div id="missionResult-${m.id}" style="display:none;margin-top:8px;padding:10px;border-radius:10px;font-size:.8rem"></div>`;
+      html += `</div>`;
+    }
 .mission-xp{font-family:'JetBrains Mono',monospace;font-size:.92rem;font-weight:700;color:var(--g1);background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.2);padding:3px 9px;border-radius:7px;white-space:nowrap}
 
 /* ══ FUNIL MÉTRICAS ══ */
@@ -2147,61 +2169,70 @@ input[type=date]:focus {
       </div>
       <button class="btn btn-gold" onclick="salvarDiario()">Enviar</button>
     </div>
-    <!-- Upload de arquivos para o Drive -->
-    <div class="page-card" id="driveUploadCard">
-      <div class="card-header">
-        <div class="card-title">
-          <div class="card-icon">
-            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          </div>
-          Enviar Arquivo
+    <!-- Upload de áudios para o Drive -->
+    <div id="driveUploadCard" style="background:linear-gradient(150deg,#0B0914 0%,#07050C 55%,#090612 100%);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:22px;position:relative;overflow:hidden;margin-bottom:14px">
+      <!-- linha decorativa topo -->
+      <div style="position:absolute;top:0;left:20px;right:20px;height:1px;background:linear-gradient(90deg,transparent,rgba(161,136,212,.4) 40%,rgba(139,92,246,.35) 60%,transparent)"></div>
+
+      <!-- Header -->
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+        <div style="width:36px;height:36px;border-radius:10px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        </div>
+        <div>
+          <div style="font-size:.96rem;font-weight:800;color:var(--t1)">Report de Áudio</div>
+          <div style="font-size:.72rem;color:var(--t3);margin-top:1px">Envie seus áudios diários direto para o Drive</div>
         </div>
       </div>
 
       <!-- Drop zone -->
-      <div id="driveDropZone" style="
-        border:2px dashed rgba(245,197,24,.3);border-radius:14px;padding:32px 20px;
-        text-align:center;cursor:pointer;transition:all .2s;margin-bottom:14px;
-        background:rgba(245,197,24,.03);
-      "
+      <div id="driveDropZone" style="border:2px dashed rgba(139,92,246,.25);border-radius:14px;padding:28px 16px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:14px;background:rgba(139,92,246,.03)"
         onclick="document.getElementById('driveFileInput').click()"
-        ondragover="event.preventDefault();this.style.borderColor='rgba(245,197,24,.7)';this.style.background='rgba(245,197,24,.07)'"
-        ondragleave="this.style.borderColor='rgba(245,197,24,.3)';this.style.background='rgba(245,197,24,.03)'"
-        ondrop="event.preventDefault();this.style.borderColor='rgba(245,197,24,.3)';this.style.background='rgba(245,197,24,.03)';handleDriveFile(event.dataTransfer.files[0])"
-      >
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(245,197,24,.5)" stroke-width="1.5" style="margin-bottom:10px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <div style="font-size:.9rem;font-weight:600;color:var(--t2);margin-bottom:4px">Arraste ou clique para selecionar</div>
-        <div style="font-size:.75rem;color:var(--t3)">PDF, DOC, DOCX, MP4, MP3, WAV, M4A • Máx. 100MB</div>
-        <input type="file" id="driveFileInput" style="display:none"
-          accept=".pdf,.doc,.docx,.mp4,.mov,.avi,.mp3,.wav,.m4a,.ogg,.webm,audio/*,video/*"
-          onchange="handleDriveFile(this.files[0])">
+        ondragover="event.preventDefault();this.style.borderColor='rgba(139,92,246,.7)';this.style.background='rgba(139,92,246,.08)'"
+        ondragleave="this.style.borderColor='rgba(139,92,246,.25)';this.style.background='rgba(139,92,246,.03)'"
+        ondrop="event.preventDefault();this.style.borderColor='rgba(139,92,246,.25)';this.style.background='rgba(139,92,246,.03)';handleDriveFiles(event.dataTransfer.files)">
+        <div style="width:48px;height:48px;border-radius:50%;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        </div>
+        <div style="font-size:.88rem;font-weight:600;color:var(--t2);margin-bottom:6px">Arraste ou clique para selecionar</div>
+        <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center">
+          <span style="font-size:.68rem;color:var(--t3);background:rgba(255,255,255,.05);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.07)">MP3</span>
+          <span style="font-size:.68rem;color:var(--t3);background:rgba(255,255,255,.05);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.07)">WAV</span>
+          <span style="font-size:.68rem;color:var(--t3);background:rgba(255,255,255,.05);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.07)">M4A</span>
+          <span style="font-size:.68rem;color:var(--t3);background:rgba(255,255,255,.05);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.07)">OGG</span>
+          <span style="font-size:.68rem;color:var(--t3)">• até 15 arquivos • 5MB cada</span>
+        </div>
+        <input type="file" id="driveFileInput" style="display:none" accept="audio/*" multiple onchange="handleDriveFiles(this.files)">
       </div>
 
-      <!-- Preview do arquivo selecionado -->
-      <div id="driveFilePreview" style="display:none;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:var(--card2);border:1px solid rgba(255,255,255,.08);display:none;align-items:center;gap:10px">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
-        <div style="flex:1;min-width:0">
-          <div id="driveFileName" style="font-size:.85rem;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
-          <div id="driveFileSize" style="font-size:.72rem;color:var(--t3);margin-top:2px"></div>
+      <!-- Lista de arquivos selecionados -->
+      <div id="driveFilePreview" style="display:none;margin-bottom:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <span id="driveFileName" style="font-size:.78rem;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.8px"></span>
+          <span onclick="clearDriveFiles()" style="cursor:pointer;font-size:.72rem;color:var(--t3);padding:3px 8px;border-radius:6px;border:1px solid rgba(255,255,255,.08);transition:all .15s" onmouseover="this.style.color='#EF4444';this.style.borderColor='rgba(239,68,68,.3)'" onmouseout="this.style.color='var(--t3)';this.style.borderColor='rgba(255,255,255,.08)'">Limpar</span>
         </div>
-        <span onclick="clearDriveFile()" style="cursor:pointer;color:var(--t3);font-size:1.1rem;padding:4px">✕</span>
+        <div id="driveFileList" style="display:flex;flex-direction:column;gap:6px"></div>
+        <div id="driveFileSize" style="font-size:.7rem;color:var(--t3);margin-top:8px;text-align:right"></div>
       </div>
 
       <!-- Barra de progresso -->
       <div id="driveProgressWrap" style="display:none;margin-bottom:14px">
-        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-          <span style="font-size:.75rem;color:var(--t3)">Enviando...</span>
-          <span id="driveProgressPct" style="font-size:.75rem;font-weight:700;color:var(--g1)">0%</span>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:.78rem;color:var(--t3);display:flex;align-items:center;gap:6px">
+            <span style="width:6px;height:6px;border-radius:50%;background:#A78BFA;display:inline-block;animation:pulse 1s infinite"></span>
+            Enviando para o Drive...
+          </span>
+          <span id="driveProgressPct" style="font-size:.78rem;font-weight:700;color:#A78BFA">0%</span>
         </div>
-        <div style="height:4px;border-radius:4px;background:rgba(255,255,255,.08)">
-          <div id="driveProgressBar" style="height:4px;border-radius:4px;background:var(--grd-accent);width:0%;transition:width .3s"></div>
+        <div style="height:3px;border-radius:4px;background:rgba(255,255,255,.06)">
+          <div id="driveProgressBar" style="height:3px;border-radius:4px;background:linear-gradient(90deg,#7C3AED,#A78BFA);width:0%;transition:width .3s"></div>
         </div>
       </div>
 
       <!-- Resultado -->
-      <div id="driveResult" style="display:none;margin-bottom:14px;padding:12px 14px;border-radius:10px;font-size:.85rem"></div>
+      <div id="driveResult" style="display:none;margin-bottom:14px;padding:12px 14px;border-radius:10px;font-size:.82rem;line-height:1.5"></div>
 
-      <button class="btn btn-gold" id="driveUploadBtn" onclick="uploadToDrive()" disabled style="opacity:.4;cursor:not-allowed">
+      <button class="btn" id="driveUploadBtn" onclick="uploadToDrive()" disabled style="width:100%;opacity:.35;cursor:not-allowed;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.25);color:#A78BFA;font-weight:700;border-radius:10px;padding:11px">
         Enviar para o Drive
       </button>
     </div>
@@ -3620,6 +3651,7 @@ async function loadMissoes() {
     const cat = catColors[m.category] || {'bg':'rgba(255,255,255,.06)','c':'#A0A0B0','brd':'rgba(255,255,255,.1)'};
     const tip = tipoColors[m.tipo] || {'bg':'rgba(255,255,255,.05)','c':'#808090'};
     const mLocked2 = (m.min_level || 0) > (getLevelInfo(userProfile?.xp||0).level);
+    const safeTitle = encodeURIComponent(m.title || 'Missao');
 
     html += `<div class="mission-item${mLocked2?' locked-card':''}" style="padding:16px 18px;border-radius:14px;margin-bottom:10px;position:relative">`;
     html += `<div style="display:flex;align-items:flex-start;gap:14px">`;
@@ -3843,15 +3875,49 @@ function syncDateDisplay(inputId, displayId) {
 })();
 
 // ── Google Drive Upload ──
-let driveSelectedFile = null;
+const DRIVE_MAX_FILES = 15;
+const DRIVE_MAX_SIZE = 5 * 1024 * 1024; // 5MB
+const DRIVE_AUDIO_EXT = ['.mp3', '.wav', '.m4a', '.ogg', '.webm', '.aac', '.flac'];
+let driveSelectedFiles = [];
 
-window.handleDriveFile = function(file) {
-  if (!file) return;
-  driveSelectedFile = file;
+window.handleDriveFiles = function(fileList) {
+  if (!fileList || !fileList.length) return;
+
+  const files = Array.from(fileList);
+
+  if (files.length > DRIVE_MAX_FILES) {
+    showDriveError('Limite excedido: máximo de 15 arquivos por envio.');
+    return;
+  }
+
+  const invalidType = files.filter((f) => !isAudioFile(f));
+  if (invalidType.length) {
+    showDriveError('Apenas arquivos de áudio são permitidos.');
+    return;
+  }
+
+  const oversized = files.filter((f) => f.size > DRIVE_MAX_SIZE);
+  if (oversized.length) {
+    showDriveError('Cada arquivo deve ter no máximo 5MB.');
+    return;
+  }
+
+  driveSelectedFiles = files;
+
   const preview = document.getElementById('driveFilePreview');
-  document.getElementById('driveFileName').textContent = file.name;
-  document.getElementById('driveFileSize').textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
-  preview.style.display = 'flex';
+  const totalSize = files.reduce((sum, f) => sum + f.size, 0);
+
+  document.getElementById('driveFileName').textContent = `${files.length} arquivo${files.length > 1 ? 's' : ''} selecionado${files.length > 1 ? 's' : ''}`;
+  document.getElementById('driveFileSize').textContent = `Total: ${(totalSize / 1024 / 1024).toFixed(2)} MB`;
+  document.getElementById('driveFileList').innerHTML = files.map((f) =>
+    `<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.12)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg>
+      <span style="flex:1;font-size:.78rem;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(f.name)}</span>
+      <span style="font-size:.68rem;color:var(--t3);flex-shrink:0">${(f.size / 1024 / 1024).toFixed(1)}MB</span>
+    </div>`
+  ).join('');
+
+  preview.style.display = 'block';
   const btn = document.getElementById('driveUploadBtn');
   btn.disabled = false;
   btn.style.opacity = '1';
@@ -3859,40 +3925,44 @@ window.handleDriveFile = function(file) {
   document.getElementById('driveResult').style.display = 'none';
 };
 
-window.clearDriveFile = function() {
-  driveSelectedFile = null;
+window.clearDriveFiles = function() {
+  driveSelectedFiles = [];
   document.getElementById('driveFileInput').value = '';
   document.getElementById('driveFilePreview').style.display = 'none';
+  document.getElementById('driveFileList').innerHTML = '';
+  document.getElementById('driveResult').style.display = 'none';
   const btn = document.getElementById('driveUploadBtn');
   btn.disabled = true;
-  btn.style.opacity = '.4';
+  btn.style.opacity = '.35';
   btn.style.cursor = 'not-allowed';
 };
 
 window.uploadToDrive = async function() {
-  if (!driveSelectedFile) return;
+  if (!driveSelectedFiles.length) return;
 
-  const btn       = document.getElementById('driveUploadBtn');
-  const progWrap  = document.getElementById('driveProgressWrap');
-  const progBar   = document.getElementById('driveProgressBar');
-  const progPct   = document.getElementById('driveProgressPct');
-  const resultEl  = document.getElementById('driveResult');
+  const btn = document.getElementById('driveUploadBtn');
+  const progWrap = document.getElementById('driveProgressWrap');
+  const progBar = document.getElementById('driveProgressBar');
+  const progPct = document.getElementById('driveProgressPct');
+  const resultEl = document.getElementById('driveResult');
 
   btn.disabled = true;
   btn.textContent = 'Enviando...';
   progWrap.style.display = 'block';
+  progBar.style.width = '0%';
+  progPct.textContent = '0%';
   resultEl.style.display = 'none';
 
   const userName = userProfile?.name || 'Membro';
   const formData = new FormData();
-  formData.append('file', driveSelectedFile);
+  driveSelectedFiles.forEach((file) => formData.append('files', file));
   formData.append('userName', userName);
 
   try {
     // Simula progresso enquanto faz upload
     let pct = 0;
     const interval = setInterval(() => {
-      pct = Math.min(pct + Math.random() * 15, 90);
+      pct = Math.min(pct + Math.random() * 12, 90);
       progBar.style.width = pct + '%';
       progPct.textContent = Math.round(pct) + '%';
     }, 300);
@@ -3908,29 +3978,188 @@ window.uploadToDrive = async function() {
     catch { throw new Error(`Resposta inesperada (${res.status}): ${rawText.slice(0, 200)}`); }
 
     if (data.success) {
-      resultEl.style.display = 'block';
-      resultEl.style.background = 'rgba(34,197,94,.08)';
-      resultEl.style.border = '1px solid rgba(34,197,94,.2)';
-      resultEl.style.color = '#22C55E';
-      resultEl.innerHTML = `✓ Enviado com sucesso! <a href="${data.link}" target="_blank" rel="noopener" style="color:#22C55E;font-weight:700;text-decoration:underline">Abrir no Drive →</a>`;
-      clearDriveFile();
+      const links = (data.files || []).map((f) =>
+        `<a href="${f.link}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;color:#34D399;font-size:.78rem;font-weight:600;text-decoration:none;margin-top:5px">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          ${escapeHtml(f.fileName || 'Arquivo')}
+        </a>`
+      ).join('');
+      resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2)';
+      resultEl.innerHTML = `<div style="font-size:.82rem;font-weight:700;color:#34D399">✓ Enviado com sucesso!</div>${links}`;
+      clearDriveFiles();
     } else {
       throw new Error(data.error || 'Erro desconhecido');
     }
   } catch (err) {
-    resultEl.style.display = 'block';
-    resultEl.style.background = 'rgba(239,68,68,.08)';
-    resultEl.style.border = '1px solid rgba(239,68,68,.2)';
-    resultEl.style.color = '#EF4444';
-    resultEl.innerHTML = `✕ Erro ao enviar: ${err.message}`;
+    resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2)';
+    resultEl.innerHTML = `<div style="font-size:.82rem;font-weight:700;color:#EF4444">✕ Erro ao enviar</div><div style="font-size:.75rem;color:#F87171;margin-top:3px">${err.message}</div>`;
   } finally {
     setTimeout(() => { progWrap.style.display = 'none'; progBar.style.width = '0%'; }, 1500);
     btn.disabled = false;
     btn.textContent = 'Enviar para o Drive';
-    btn.style.opacity = driveSelectedFile ? '1' : '.4';
+    btn.style.opacity = driveSelectedFiles.length ? '1' : '.35';
   }
 };
 
+function isAudioFile(file) {
+  if (file.type && file.type.startsWith('audio/')) return true;
+  const lower = (file.name || '').toLowerCase();
+  return DRIVE_AUDIO_EXT.some((ext) => lower.endsWith(ext));
+}
+
+function showDriveError(message) {
+  const resultEl = document.getElementById('driveResult');
+  resultEl.style.display = 'block';
+  resultEl.style.background = 'rgba(239,68,68,.08)';
+  resultEl.style.border = '1px solid rgba(239,68,68,.2)';
+  resultEl.style.color = '#EF4444';
+  resultEl.textContent = message;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+// ── Mission Proof Upload ──
+const MISSION_MAX_FILES = 5;
+const MISSION_MAX_SIZE = 100 * 1024 * 1024; // 100MB
+const missionFileState = {};
+
+window.toggleMissionProof = function(missionId) {
+  const wrap = document.getElementById(`missionProof-${missionId}`);
+  if (!wrap) return;
+  wrap.style.display = (wrap.style.display === 'none' || wrap.style.display === '') ? 'block' : 'none';
+
+  if (wrap.style.display === 'block') {
+    const input = document.getElementById(`missionWhatsapp-${missionId}`);
+    if (input && !input.value) {
+      const saved = localStorage.getItem('guilda_whatsapp') || '';
+      input.value = saved;
+    }
+  }
+};
+
+window.handleMissionFiles = function(missionId, fileList) {
+  if (!fileList || !fileList.length) return;
+  const files = Array.from(fileList);
+
+  if (files.length > MISSION_MAX_FILES) {
+    showMissionError(missionId, 'Limite excedido: máximo de 5 arquivos por missão.');
+    return;
+  }
+
+  const oversized = files.filter((f) => f.size > MISSION_MAX_SIZE);
+  if (oversized.length) {
+    showMissionError(missionId, 'Cada arquivo deve ter no máximo 100MB.');
+    return;
+  }
+
+  missionFileState[missionId] = files;
+  const info = document.getElementById(`missionFilesInfo-${missionId}`);
+  if (info) {
+    const totalSize = files.reduce((sum, f) => sum + f.size, 0);
+    info.innerHTML = '<ul style="margin:6px 0 0 0;padding-left:16px">' + files
+      .map((f) => `<li style="margin-bottom:4px">${escapeHtml(f.name)} (${(f.size / 1024 / 1024).toFixed(2)} MB)</li>`)
+      .join('') + '</ul>';
+    info.insertAdjacentHTML('afterend', '');
+    info.previousSibling;
+    info.dataset.total = totalSize;
+  }
+};
+
+window.uploadMissionFiles = async function(missionId) {
+  const files = missionFileState[missionId] || [];
+  if (!files.length) {
+    showMissionError(missionId, 'Selecione os arquivos antes de enviar.');
+    return;
+  }
+
+  const whatsappInput = document.getElementById(`missionWhatsapp-${missionId}`);
+  const whatsappRaw = whatsappInput ? whatsappInput.value : '';
+  const whatsapp = (whatsappRaw || '').replace(/\D/g, '');
+  if (!whatsapp) {
+    showMissionError(missionId, 'Informe seu WhatsApp para enviar a comprovacao.');
+    return;
+  }
+
+  localStorage.setItem('guilda_whatsapp', whatsapp);
+
+  const resultEl = document.getElementById(`missionResult-${missionId}`);
+  const progWrap = document.getElementById(`missionProgressWrap-${missionId}`);
+  const progBar = document.getElementById(`missionProgressBar-${missionId}`);
+  const progPct = document.getElementById(`missionProgressPct-${missionId}`);
+
+  if (progWrap) progWrap.style.display = 'block';
+  if (progBar) progBar.style.width = '0%';
+  if (progPct) progPct.textContent = '0%';
+  if (resultEl) resultEl.style.display = 'none';
+
+  const formData = new FormData();
+  files.forEach((file) => formData.append('files', file));
+  formData.append('userName', userProfile?.name || 'Membro');
+  formData.append('userWhatsapp', whatsapp);
+
+  try {
+    let pct = 0;
+    const interval = setInterval(() => {
+      pct = Math.min(pct + Math.random() * 12, 90);
+      if (progBar) progBar.style.width = pct + '%';
+      if (progPct) progPct.textContent = Math.round(pct) + '%';
+    }, 300);
+
+    const res = await fetch(`/api/mission-upload?missionId=${encodeURIComponent(missionId)}`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    clearInterval(interval);
+    if (progBar) progBar.style.width = '100%';
+    if (progPct) progPct.textContent = '100%';
+
+    const rawText = await res.text();
+    let data;
+    try { data = JSON.parse(rawText); }
+    catch { throw new Error(`Resposta inesperada (${res.status}): ${rawText.slice(0, 200)}`); }
+
+    if (data.success) {
+      if (resultEl) {
+        resultEl.style.display = 'block';
+        resultEl.style.background = 'rgba(34,197,94,.08)';
+        resultEl.style.border = '1px solid rgba(34,197,94,.2)';
+        resultEl.style.color = '#22C55E';
+        const links = (data.files || []).map((f) => {
+          const label = escapeHtml(f.fileName || 'Arquivo');
+          return `<div><a href="${f.link}" target="_blank" rel="noopener" style="color:#22C55E;font-weight:700;text-decoration:underline">${label}</a></div>`;
+        }).join('');
+        resultEl.innerHTML = `✓ Enviado com sucesso!${links ? '<div style="margin-top:6px">' + links + '</div>' : ''}`;
+      }
+      missionFileState[missionId] = [];
+      const input = document.getElementById(`missionFiles-${missionId}`);
+      if (input) input.value = '';
+    } else {
+      throw new Error(data.error || 'Erro desconhecido');
+    }
+  } catch (err) {
+    showMissionError(missionId, `Erro ao enviar: ${err.message}`);
+  } finally {
+    setTimeout(() => { if (progWrap) progWrap.style.display = 'none'; }, 1500);
+  }
+};
+
+function showMissionError(missionId, message) {
+  const resultEl = document.getElementById(`missionResult-${missionId}`);
+  if (!resultEl) return;
+  resultEl.style.display = 'block';
+  resultEl.style.background = 'rgba(239,68,68,.08)';
+  resultEl.style.border = '1px solid rgba(239,68,68,.2)';
+  resultEl.style.color = '#EF4444';
+  resultEl.textContent = message;
+}
 window.salvarDiario = async () => {
   const date = document.getElementById('diarioData').value;
   const contatos = parseInt(document.getElementById('diarioContatos').value) || 0;
@@ -4352,6 +4581,10 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
+
+
+
 
 
 
