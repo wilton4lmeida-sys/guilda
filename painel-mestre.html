@@ -489,12 +489,13 @@ body::before {
               <th>Título</th>
               <th>Categoria</th>
               <th>XP</th>
+              <th>Comprovação</th>
               <th>Período</th>
               <th>Ações</th>
             </tr>
           </thead>
           <tbody id="missoesTable">
-            <tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-muted);">Carregando...</td></tr>
+            <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted);">Carregando...</td></tr>
           </tbody>
         </table>
       </div>
@@ -838,6 +839,12 @@ body::before {
         <input class="form-input" type="date" id="missaoFim">
       </div>
     </div>
+    <div class="form-group" style="margin-top:6px">
+      <label class="form-label" style="display:flex;align-items:center;gap:8px">
+        <input type="checkbox" id="missaoProofRequired">
+        Exigir envio de comprovacao
+      </label>
+    </div>
     <button class="btn btn-gold" style="width:100%;margin-top:8px;" onclick="criarMissao()">Criar Missão</button>
   </div>
 </div>
@@ -1026,6 +1033,7 @@ async function loadMissoes() {
         <td><strong>${m.title}</strong></td>
         <td>${m.category || '-'}</td>
         <td>${m.xp_reward || 0} XP</td>
+        <td>${m.proof_required ? "Sim" : "Não"}</td>
         <td>${startDate} - ${endDate}</td>
         <td>
           <button class="btn btn-sm btn-red" onclick="deletarMissao('${m.id}')">Excluir</button>
@@ -1410,13 +1418,15 @@ window.criarMissao = async () => {
   const category = document.getElementById('missaoCategoria').value;
   const week_start = document.getElementById('missaoInicio').value;
   const week_end = document.getElementById('missaoFim').value;
+  const proof_required = document.getElementById('missaoProofRequired').checked;
   
   if (!title || !week_start || !week_end) return alert('Preencha título e período');
   
   const { error } = await sb.from('missions').insert({
     title, description, category,
     xp_reward: parseInt(xp_reward),
-    week_start, week_end
+    week_start, week_end,
+    proof_required
   });
   
   if (error) return alert('Erro: ' + error.message);
@@ -1430,6 +1440,7 @@ window.criarMissao = async () => {
   document.getElementById('missaoXP').value = '';
   document.getElementById('missaoInicio').value = '';
   document.getElementById('missaoFim').value = '';
+  document.getElementById('missaoProofRequired').checked = false;
 };
 
 window.deletarMissao = async (id) => {
@@ -1530,3 +1541,9 @@ loadRanking();
 
 </body>
 </html>
+
+
+
+
+
+

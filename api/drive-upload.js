@@ -2,6 +2,11 @@ const { google } = require('googleapis');
 const Busboy = require('busboy');
 const { Readable } = require('stream');
 
+const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
+const MAX_FILES = 15;
+const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+const AUDIO_EXT = ['.mp3', '.wav', '.m4a', '.ogg', '.webm', '.aac', '.flac'];
+
 async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -10,68 +15,106 @@ async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido' });
 
-  // Carrega credenciais do JSON completo da service account (mais confiável que variáveis separadas)
-  let credentials;
-  try {
-    credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON || '{}');
-  } catch {
-    return res.status(500).json({ error: 'GOOGLE_SERVICE_ACCOUNT_JSON inválido ou ausente' });
-  }
+  const folderId = stripWrappingQuotes((process.env.GOOGLE_DRIVE_FOLDER_ID || '').trim());
 
-  const auth = new google.auth.GoogleAuth({
-    credentials,
-    scopes: ['https://www.googleapis.com/auth/drive.file'],
-  });
+  let auth;
+  try {
+    auth = buildGoogleAuth(req);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
 
   const drive = google.drive({ version: 'v3', auth });
 
   return new Promise((resolve) => {
     const bb = Busboy({ headers: req.headers });
 
-    let fileName  = 'upload';
-    let mimeType  = 'application/octet-stream';
-    let chunks    = [];
-    let userName  = 'Membro';
-    let fileFound = false;
+    let files = [];
+    let userName = 'Membro';
+    let tooManyFiles = false;
 
     bb.on('field', (name, val) => {
       if (name === 'userName') userName = val.trim();
     });
 
     bb.on('file', (_name, file, info) => {
-      fileFound = true;
-      fileName  = info.filename || 'upload';
-      mimeType  = info.mimeType || 'application/octet-stream';
-      file.on('data', (chunk) => chunks.push(chunk));
+      if (files.length >= MAX_FILES) {
+        tooManyFiles = true;
+        file.resume();
+        return;
+      }
+
+      const originalName = info.filename || 'upload';
+      const mimeType = info.mimeType || 'application/octet-stream';
+      const isAudio = isAudioFile(originalName, mimeType);
+
+      let size = 0;
+      let tooLarge = false;
+      const chunks = [];
+
+      file.on('data', (chunk) => {
+        size += chunk.length;
+        if (size > MAX_SIZE) tooLarge = true;
+        chunks.push(chunk);
+      });
+
+      file.on('end', () => {
+        files.push({ originalName, mimeType, chunks, size, tooLarge, isAudio });
+      });
     });
 
     bb.on('finish', async () => {
-      if (!fileFound) {
+      if (tooManyFiles) {
+        res.status(400).json({ error: 'Limite excedido: máximo de 15 arquivos por envio' });
+        return resolve();
+      }
+
+      if (!files.length) {
         res.status(400).json({ error: 'Nenhum arquivo enviado' });
         return resolve();
       }
 
-      try {
-        const buffer = Buffer.concat(chunks);
-        const date   = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
-        const finalName = `[${date}] ${userName} - ${fileName}`;
+      const invalidType = files.filter((f) => !f.isAudio);
+      if (invalidType.length) {
+        res.status(400).json({ error: 'Apenas arquivos de áudio são permitidos' });
+        return resolve();
+      }
 
-        const response = await drive.files.create({
-          requestBody: {
-            name: finalName,
-            parents: [process.env.GOOGLE_DRIVE_FOLDER_ID],
-          },
-          media: {
-            mimeType,
-            body: Readable.from(buffer),
-          },
-          fields: 'id,webViewLink',
-        });
+      const oversized = files.filter((f) => f.tooLarge || f.size > MAX_SIZE);
+      if (oversized.length) {
+        res.status(400).json({ error: 'Cada arquivo deve ter no máximo 5MB' });
+        return resolve();
+      }
+
+      try {
+        const date = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
+        const uploaded = [];
+
+        for (const f of files) {
+          const finalName = `[${date}] ${userName} - ${f.originalName}`;
+          const requestBody = { name: finalName };
+          if (folderId) requestBody.parents = [folderId];
+
+          const response = await drive.files.create({
+            requestBody,
+            media: {
+              mimeType: f.mimeType,
+              body: Readable.from(Buffer.concat(f.chunks)),
+            },
+            fields: 'id,webViewLink',
+            supportsAllDrives: true,
+          });
+
+          uploaded.push({
+            fileName: finalName,
+            link: response.data.webViewLink,
+            id: response.data.id,
+          });
+        }
 
         res.status(200).json({
           success: true,
-          fileName: finalName,
-          link: response.data.webViewLink,
+          files: uploaded,
         });
       } catch (err) {
         console.error('Drive upload error:', err);
@@ -92,3 +135,95 @@ async function handler(req, res) {
 
 handler.config = { api: { bodyParser: false } };
 module.exports = handler;
+
+function buildGoogleAuth(req) {
+  const oauthClientId = stripWrappingQuotes((process.env.GOOGLE_OAUTH_CLIENT_ID || '').trim());
+  const oauthClientSecret = stripWrappingQuotes((process.env.GOOGLE_OAUTH_CLIENT_SECRET || '').trim());
+  const oauthRefreshToken = stripWrappingQuotes((process.env.GOOGLE_OAUTH_REFRESH_TOKEN || '').trim());
+
+  if (oauthClientId && oauthClientSecret && oauthRefreshToken) {
+    const oauth = new google.auth.OAuth2(
+      oauthClientId,
+      oauthClientSecret,
+      getRedirectUri(req),
+    );
+    oauth.setCredentials({ refresh_token: oauthRefreshToken });
+    return oauth;
+  }
+
+  const credentialsRaw = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+  if (!credentialsRaw) {
+    throw new Error(
+      'Configuração ausente: defina GOOGLE_OAUTH_CLIENT_ID, GOOGLE_OAUTH_CLIENT_SECRET e GOOGLE_OAUTH_REFRESH_TOKEN',
+    );
+  }
+
+  let credentials;
+  try {
+    credentials = parseServiceAccount(credentialsRaw);
+  } catch {
+    throw new Error('GOOGLE_SERVICE_ACCOUNT_JSON inválido ou ausente');
+  }
+
+  if (credentials.private_key) {
+    credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
+  }
+
+  if (!credentials.client_email || !credentials.private_key) {
+    throw new Error('Credenciais incompletas: client_email/private_key ausentes');
+  }
+
+  return new google.auth.GoogleAuth({
+    credentials,
+    scopes: [DRIVE_SCOPE],
+  });
+}
+
+function getRedirectUri(req) {
+  const explicit = stripWrappingQuotes((process.env.GOOGLE_OAUTH_REDIRECT_URI || '').trim());
+  if (explicit) return explicit;
+
+  const host = req.headers['x-forwarded-host'] || req.headers.host;
+  const proto = req.headers['x-forwarded-proto'] || 'https';
+  return `${proto}://${host}/api/google-oauth-callback`;
+}
+
+function stripWrappingQuotes(value) {
+  if (!value) return value;
+  if (
+    (value.startsWith('"') && value.endsWith('"')) ||
+    (value.startsWith("'") && value.endsWith("'"))
+  ) {
+    return value.slice(1, -1);
+  }
+  return value;
+}
+
+function parseServiceAccount(raw) {
+  const trimmed = (raw || '').trim();
+  const variants = [trimmed, stripWrappingQuotes(trimmed)];
+
+  for (const candidate of variants) {
+    if (!candidate) continue;
+
+    try {
+      const parsed = JSON.parse(candidate);
+      if (parsed && typeof parsed === 'object') return parsed;
+      if (typeof parsed === 'string') {
+        const parsedTwice = JSON.parse(parsed);
+        if (parsedTwice && typeof parsedTwice === 'object') return parsedTwice;
+      }
+    } catch {
+      // tenta proxima variante
+    }
+  }
+
+  throw new Error('Invalid GOOGLE_SERVICE_ACCOUNT_JSON');
+}
+
+function isAudioFile(fileName, mimeType) {
+  if (mimeType && mimeType.startsWith('audio/')) return true;
+  const lower = (fileName || '').toLowerCase();
+  return AUDIO_EXT.some((ext) => lower.endsWith(ext));
+}
+

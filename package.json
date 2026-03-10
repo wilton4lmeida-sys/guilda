@@ -3,10 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   },
   "dependencies": {
     "busboy": "^1.6.0",
-    "googleapis": "^144.0.0"
+    "googleapis": "^144.0.0",
+    "@supabase/supabase-js": "^2.49.1"
   }
 }
+
+
+

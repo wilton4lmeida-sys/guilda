@@ -2170,69 +2170,68 @@ input[type=date]:focus {
       <button class="btn btn-gold" onclick="salvarDiario()">Enviar</button>
     </div>
     <!-- Upload de áudios para o Drive -->
-    <div id="driveUploadCard" style="background:linear-gradient(150deg,#0B0914 0%,#07050C 55%,#090612 100%);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:22px;position:relative;overflow:hidden;margin-bottom:14px">
-      <!-- linha decorativa topo -->
-      <div style="position:absolute;top:0;left:20px;right:20px;height:1px;background:linear-gradient(90deg,transparent,rgba(161,136,212,.4) 40%,rgba(139,92,246,.35) 60%,transparent)"></div>
+    <div id="driveUploadCard" style="background:linear-gradient(150deg,#0E0C08 0%,#0A0900 55%,#0C0A04 100%);border:1px solid rgba(245,197,24,.1);border-radius:18px;padding:22px;position:relative;overflow:hidden;margin-bottom:14px">
+      <div style="position:absolute;top:0;left:20px;right:20px;height:1px;background:linear-gradient(90deg,transparent,rgba(245,197,24,.35) 40%,rgba(232,184,75,.3) 60%,transparent)"></div>
 
       <!-- Header -->
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
-        <div style="width:36px;height:36px;border-radius:10px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+        <div style="width:36px;height:36px;border-radius:10px;background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
         </div>
-        <div>
-          <div style="font-size:.96rem;font-weight:800;color:var(--t1)">Report de Áudio</div>
-          <div style="font-size:.72rem;color:var(--t3);margin-top:1px">Envie seus áudios diários direto para o Drive</div>
+        <div style="font-size:.96rem;font-weight:800;color:var(--t1)">Report de Áudio</div>
+      </div>
+
+      <!-- Drop zone — vira container de arquivos quando há seleção -->
+      <div id="driveDropZone" style="border:2px dashed rgba(245,197,24,.2);border-radius:14px;transition:all .2s;margin-bottom:14px;background:rgba(245,197,24,.02);overflow:hidden"
+        ondragover="event.preventDefault();this.style.borderColor='rgba(245,197,24,.6)';this.style.background='rgba(245,197,24,.06)'"
+        ondragleave="this.style.borderColor='rgba(245,197,24,.2)';this.style.background='rgba(245,197,24,.02)'"
+        ondrop="event.preventDefault();this.style.borderColor='rgba(245,197,24,.2)';this.style.background='rgba(245,197,24,.02)';handleDriveFiles(event.dataTransfer.files)">
+
+        <!-- Estado vazio -->
+        <div id="driveEmptyState" style="padding:28px 16px;text-align:center;cursor:pointer" onclick="document.getElementById('driveFileInput').click()">
+          <div style="width:48px;height:48px;border-radius:50%;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="1.8" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </div>
+          <div style="font-size:.88rem;font-weight:600;color:var(--t2);margin-bottom:6px">Arraste ou clique para selecionar</div>
+          <div style="display:inline-flex;align-items:center;gap:5px;flex-wrap:wrap;justify-content:center">
+            <span style="font-size:.66rem;color:var(--t3);background:rgba(245,197,24,.06);padding:2px 7px;border-radius:20px;border:1px solid rgba(245,197,24,.1)">MP3</span>
+            <span style="font-size:.66rem;color:var(--t3);background:rgba(245,197,24,.06);padding:2px 7px;border-radius:20px;border:1px solid rgba(245,197,24,.1)">WAV</span>
+            <span style="font-size:.66rem;color:var(--t3);background:rgba(245,197,24,.06);padding:2px 7px;border-radius:20px;border:1px solid rgba(245,197,24,.1)">M4A</span>
+            <span style="font-size:.66rem;color:var(--t3);background:rgba(245,197,24,.06);padding:2px 7px;border-radius:20px;border:1px solid rgba(245,197,24,.1)">OGG</span>
+            <span style="font-size:.66rem;color:var(--t3)">• até 15 arquivos • 5MB cada</span>
+          </div>
+        </div>
+
+        <!-- Lista de arquivos (dentro da drop zone) -->
+        <div id="driveFileList" style="display:none;flex-direction:column"></div>
+
+        <!-- Rodapé da drop zone quando há arquivos -->
+        <div id="driveZoneFooter" style="display:none;padding:10px 14px;border-top:1px solid rgba(245,197,24,.08);display:none;align-items:center;justify-content:space-between">
+          <span id="driveFileName" style="font-size:.74rem;color:var(--t3)"></span>
+          <button onclick="document.getElementById('driveFileInput').click()" style="font-size:.72rem;color:var(--g1);background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.15);border-radius:6px;padding:4px 10px;cursor:pointer">+ Adicionar</button>
         </div>
       </div>
 
-      <!-- Drop zone -->
-      <div id="driveDropZone" style="border:2px dashed rgba(139,92,246,.25);border-radius:14px;padding:28px 16px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:14px;background:rgba(139,92,246,.03)"
-        onclick="document.getElementById('driveFileInput').click()"
-        ondragover="event.preventDefault();this.style.borderColor='rgba(139,92,246,.7)';this.style.background='rgba(139,92,246,.08)'"
-        ondragleave="this.style.borderColor='rgba(139,92,246,.25)';this.style.background='rgba(139,92,246,.03)'"
-        ondrop="event.preventDefault();this.style.borderColor='rgba(139,92,246,.25)';this.style.background='rgba(139,92,246,.03)';handleDriveFiles(event.dataTransfer.files)">
-        <div style="width:48px;height:48px;border-radius:50%;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-        </div>
-        <div style="font-size:.88rem;font-weight:600;color:var(--t2);margin-bottom:6px">Arraste ou clique para selecionar</div>
-        <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center">
-          <span style="font-size:.68rem;color:var(--t3);background:rgba(255,255,255,.05);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.07)">MP3</span>
-          <span style="font-size:.68rem;color:var(--t3);background:rgba(255,255,255,.05);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.07)">WAV</span>
-          <span style="font-size:.68rem;color:var(--t3);background:rgba(255,255,255,.05);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.07)">M4A</span>
-          <span style="font-size:.68rem;color:var(--t3);background:rgba(255,255,255,.05);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.07)">OGG</span>
-          <span style="font-size:.68rem;color:var(--t3)">• até 15 arquivos • 5MB cada</span>
-        </div>
-        <input type="file" id="driveFileInput" style="display:none" accept="audio/*" multiple onchange="handleDriveFiles(this.files)">
-      </div>
-
-      <!-- Lista de arquivos selecionados -->
-      <div id="driveFilePreview" style="display:none;margin-bottom:14px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-          <span id="driveFileName" style="font-size:.78rem;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.8px"></span>
-          <span onclick="clearDriveFiles()" style="cursor:pointer;font-size:.72rem;color:var(--t3);padding:3px 8px;border-radius:6px;border:1px solid rgba(255,255,255,.08);transition:all .15s" onmouseover="this.style.color='#EF4444';this.style.borderColor='rgba(239,68,68,.3)'" onmouseout="this.style.color='var(--t3)';this.style.borderColor='rgba(255,255,255,.08)'">Limpar</span>
-        </div>
-        <div id="driveFileList" style="display:flex;flex-direction:column;gap:6px"></div>
-        <div id="driveFileSize" style="font-size:.7rem;color:var(--t3);margin-top:8px;text-align:right"></div>
-      </div>
+      <input type="file" id="driveFileInput" style="display:none" accept="audio/*" multiple onchange="handleDriveFiles(this.files)">
 
       <!-- Barra de progresso -->
       <div id="driveProgressWrap" style="display:none;margin-bottom:14px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
           <span style="font-size:.78rem;color:var(--t3);display:flex;align-items:center;gap:6px">
-            <span style="width:6px;height:6px;border-radius:50%;background:#A78BFA;display:inline-block;animation:pulse 1s infinite"></span>
-            Enviando para o Drive...
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--g1);display:inline-block;animation:pulse 1s infinite"></span>
+            Enviando...
           </span>
-          <span id="driveProgressPct" style="font-size:.78rem;font-weight:700;color:#A78BFA">0%</span>
+          <span id="driveProgressPct" style="font-size:.78rem;font-weight:700;color:var(--g1)">0%</span>
         </div>
         <div style="height:3px;border-radius:4px;background:rgba(255,255,255,.06)">
-          <div id="driveProgressBar" style="height:3px;border-radius:4px;background:linear-gradient(90deg,#7C3AED,#A78BFA);width:0%;transition:width .3s"></div>
+          <div id="driveProgressBar" style="height:3px;border-radius:4px;background:linear-gradient(90deg,#E8B84B,#F5C518);width:0%;transition:width .3s"></div>
         </div>
       </div>
 
       <!-- Resultado -->
-      <div id="driveResult" style="display:none;margin-bottom:14px;padding:12px 14px;border-radius:10px;font-size:.82rem;line-height:1.5"></div>
+      <div id="driveResult" style="display:none;margin-bottom:14px"></div>
 
-      <button class="btn" id="driveUploadBtn" onclick="uploadToDrive()" disabled style="width:100%;opacity:.35;cursor:not-allowed;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.25);color:#A78BFA;font-weight:700;border-radius:10px;padding:11px">
+      <button class="btn btn-gold" id="driveUploadBtn" onclick="uploadToDrive()" disabled style="width:100%;opacity:.35;cursor:not-allowed">
         Enviar para o Drive
       </button>
     </div>
@@ -3664,6 +3663,28 @@ async function loadMissoes() {
     html += `</div>`;
     html += `<div class="mission-title">${m.title}</div>`;
     html += `<div class="mission-desc">${m.description || 'Complete esta missão'}</div>`;
+    if (m.proof_required) {
+      html += `<div style="margin-top:10px">`;
+      html += `<button class="btn btn-gold btn-sm" onclick="toggleMissionProof('${m.id}')">Enviar comprovacao</button>`;
+      html += `</div>`;
+      html += `<div id="missionProof-${m.id}" data-title="${safeTitle}" style="display:none;margin-top:10px;padding:12px;border-radius:12px;background:var(--card2);border:1px dashed rgba(245,197,24,.25)">`;
+      html += `<div style="font-size:.72rem;color:var(--t3);margin-bottom:6px">Ate 5 arquivos • 100MB cada • Qualquer formato</div>`;
+      html += `<input class="form-input" id="missionWhatsapp-${m.id}" placeholder="WhatsApp (somente numeros)" inputmode="numeric" style="margin-bottom:8px">`;
+      html += `<input type="file" id="missionFiles-${m.id}" multiple onchange="handleMissionFiles('${m.id}', this.files)">`;
+      html += `<div id="missionFilesInfo-${m.id}" style="font-size:.72rem;color:var(--t3);margin-top:6px"></div>`;
+      html += `<button class="btn btn-gold btn-sm" style="margin-top:8px" onclick="uploadMissionFiles('${m.id}')">Enviar comprovacao</button>`;
+      html += `<div id="missionProgressWrap-${m.id}" style="display:none;margin-top:8px">`;
+      html += `<div style="display:flex;justify-content:space-between;margin-bottom:6px">`;
+      html += `<span style="font-size:.75rem;color:var(--t3)">Enviando...</span>`;
+      html += `<span id="missionProgressPct-${m.id}" style="font-size:.75rem;font-weight:700;color:var(--g1)">0%</span>`;
+      html += `</div>`;
+      html += `<div style="height:4px;border-radius:4px;background:rgba(255,255,255,.08)">`;
+      html += `<div id="missionProgressBar-${m.id}" style="height:4px;border-radius:4px;background:var(--grd-accent);width:0%;transition:width .3s"></div>`;
+      html += `</div>`;
+      html += `</div>`;
+      html += `<div id="missionResult-${m.id}" style="display:none;margin-top:8px;padding:10px;border-radius:10px;font-size:.8rem"></div>`;
+      html += `</div>`;
+    }
     html += `</div>`;
     html += `<div class="mission-xp" style="flex-shrink:0;font-family:'JetBrains Mono',monospace;font-size:.94rem;font-weight:800;color:#F5C518">+${m.xp_reward} XP</div>`;
     html += `</div></div>`;
@@ -3880,61 +3901,73 @@ const DRIVE_MAX_SIZE = 5 * 1024 * 1024; // 5MB
 const DRIVE_AUDIO_EXT = ['.mp3', '.wav', '.m4a', '.ogg', '.webm', '.aac', '.flac'];
 let driveSelectedFiles = [];
 
-window.handleDriveFiles = function(fileList) {
-  if (!fileList || !fileList.length) return;
+function renderDriveFileList() {
+  const listEl    = document.getElementById('driveFileList');
+  const emptyEl   = document.getElementById('driveEmptyState');
+  const footerEl  = document.getElementById('driveZoneFooter');
+  const nameEl    = document.getElementById('driveFileName');
+  const btn       = document.getElementById('driveUploadBtn');
+  const resultEl  = document.getElementById('driveResult');
 
-  const files = Array.from(fileList);
-
-  if (files.length > DRIVE_MAX_FILES) {
-    showDriveError('Limite excedido: máximo de 15 arquivos por envio.');
+  if (!driveSelectedFiles.length) {
+    listEl.style.display   = 'none';
+    emptyEl.style.display  = 'block';
+    footerEl.style.display = 'none';
+    btn.disabled           = true;
+    btn.style.opacity      = '.35';
+    btn.style.cursor       = 'not-allowed';
     return;
   }
 
-  const invalidType = files.filter((f) => !isAudioFile(f));
-  if (invalidType.length) {
-    showDriveError('Apenas arquivos de áudio são permitidos.');
-    return;
-  }
+  const total = driveSelectedFiles.reduce((s, f) => s + f.size, 0);
+  nameEl.textContent = `${driveSelectedFiles.length} arquivo${driveSelectedFiles.length > 1 ? 's' : ''} · ${(total / 1024 / 1024).toFixed(1)} MB total`;
 
-  const oversized = files.filter((f) => f.size > DRIVE_MAX_SIZE);
-  if (oversized.length) {
-    showDriveError('Cada arquivo deve ter no máximo 5MB.');
-    return;
-  }
-
-  driveSelectedFiles = files;
-
-  const preview = document.getElementById('driveFilePreview');
-  const totalSize = files.reduce((sum, f) => sum + f.size, 0);
-
-  document.getElementById('driveFileName').textContent = `${files.length} arquivo${files.length > 1 ? 's' : ''} selecionado${files.length > 1 ? 's' : ''}`;
-  document.getElementById('driveFileSize').textContent = `Total: ${(totalSize / 1024 / 1024).toFixed(2)} MB`;
-  document.getElementById('driveFileList').innerHTML = files.map((f) =>
-    `<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.12)">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg>
-      <span style="flex:1;font-size:.78rem;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(f.name)}</span>
-      <span style="font-size:.68rem;color:var(--t3);flex-shrink:0">${(f.size / 1024 / 1024).toFixed(1)}MB</span>
+  listEl.innerHTML = driveSelectedFiles.map((f, i) =>
+    `<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid rgba(245,197,24,.06)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="2" stroke-linecap="round" style="flex-shrink:0"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg>
+      <span style="flex:1;font-size:.82rem;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(f.name)}</span>
+      <span style="font-size:.7rem;color:var(--t3);flex-shrink:0;margin-right:8px">${(f.size / 1024 / 1024).toFixed(1)}MB</span>
+      <span onclick="removeDriveFile(${i})" style="cursor:pointer;width:20px;height:20px;border-radius:5px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#F87171;font-size:.75rem;line-height:1" title="Remover">✕</span>
     </div>`
   ).join('');
 
-  preview.style.display = 'block';
-  const btn = document.getElementById('driveUploadBtn');
-  btn.disabled = false;
-  btn.style.opacity = '1';
-  btn.style.cursor = 'pointer';
-  document.getElementById('driveResult').style.display = 'none';
+  listEl.style.display   = 'flex';
+  listEl.style.flexDirection = 'column';
+  emptyEl.style.display  = 'none';
+  footerEl.style.display = 'flex';
+  resultEl.style.display = 'none';
+  btn.disabled           = false;
+  btn.style.opacity      = '1';
+  btn.style.cursor       = 'pointer';
+}
+
+window.removeDriveFile = function(index) {
+  driveSelectedFiles = driveSelectedFiles.filter((_, i) => i !== index);
+  document.getElementById('driveFileInput').value = '';
+  renderDriveFileList();
+};
+
+window.handleDriveFiles = function(fileList) {
+  if (!fileList || !fileList.length) return;
+  const incoming = Array.from(fileList);
+  const merged   = [...driveSelectedFiles, ...incoming];
+
+  if (merged.length > DRIVE_MAX_FILES) {
+    showDriveError(`Limite de ${DRIVE_MAX_FILES} arquivos excedido.`); return;
+  }
+  const invalid = incoming.filter((f) => !isAudioFile(f));
+  if (invalid.length) { showDriveError('Apenas arquivos de áudio são permitidos.'); return; }
+  const big = incoming.filter((f) => f.size > DRIVE_MAX_SIZE);
+  if (big.length) { showDriveError('Cada arquivo deve ter no máximo 5MB.'); return; }
+
+  driveSelectedFiles = merged;
+  renderDriveFileList();
 };
 
 window.clearDriveFiles = function() {
   driveSelectedFiles = [];
   document.getElementById('driveFileInput').value = '';
-  document.getElementById('driveFilePreview').style.display = 'none';
-  document.getElementById('driveFileList').innerHTML = '';
-  document.getElementById('driveResult').style.display = 'none';
-  const btn = document.getElementById('driveUploadBtn');
-  btn.disabled = true;
-  btn.style.opacity = '.35';
-  btn.style.cursor = 'not-allowed';
+  renderDriveFileList();
 };
 
 window.uploadToDrive = async function() {
@@ -3978,14 +4011,25 @@ window.uploadToDrive = async function() {
     catch { throw new Error(`Resposta inesperada (${res.status}): ${rawText.slice(0, 200)}`); }
 
     if (data.success) {
+      const count = (data.files || []).length;
       const links = (data.files || []).map((f) =>
-        `<a href="${f.link}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;color:#34D399;font-size:.78rem;font-weight:600;text-decoration:none;margin-top:5px">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        `<a href="${f.link}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;color:#34D399;font-size:.76rem;font-weight:600;text-decoration:none;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>
           ${escapeHtml(f.fileName || 'Arquivo')}
         </a>`
       ).join('');
-      resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2)';
-      resultEl.innerHTML = `<div style="font-size:.82rem;font-weight:700;color:#34D399">✓ Enviado com sucesso!</div>${links}`;
+      resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:14px 16px;border-radius:12px;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.18)';
+      resultEl.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:${links ? '10px' : '0'}">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div style="font-size:.88rem;font-weight:800;color:#34D399">Enviado com sucesso!</div>
+            <div style="font-size:.72rem;color:rgba(52,211,153,.6);margin-top:1px">${count} arquivo${count > 1 ? 's' : ''} salvo${count > 1 ? 's' : ''} no Drive</div>
+          </div>
+        </div>
+        ${links ? `<div style="border-top:1px solid rgba(52,211,153,.1);padding-top:8px">${links}</div>` : ''}`;
       clearDriveFiles();
     } else {
       throw new Error(data.error || 'Erro desconhecido');
@@ -4066,8 +4110,6 @@ window.handleMissionFiles = function(missionId, fileList) {
     info.innerHTML = '<ul style="margin:6px 0 0 0;padding-left:16px">' + files
       .map((f) => `<li style="margin-bottom:4px">${escapeHtml(f.name)} (${(f.size / 1024 / 1024).toFixed(2)} MB)</li>`)
       .join('') + '</ul>';
-    info.insertAdjacentHTML('afterend', '');
-    info.previousSibling;
     info.dataset.total = totalSize;
   }
 };
@@ -4581,6 +4623,7 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
 
 
 
