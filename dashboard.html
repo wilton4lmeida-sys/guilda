@@ -3897,7 +3897,7 @@ function syncDateDisplay(inputId, displayId) {
 
 // ── Google Drive Upload ──
 const DRIVE_MAX_FILES = 15;
-const DRIVE_MAX_SIZE = 5 * 1024 * 1024; // 5MB
+const DRIVE_MAX_SIZE = 20 * 1024 * 1024; // 20MB
 const DRIVE_AUDIO_EXT = ['.mp3', '.wav', '.m4a', '.ogg', '.webm', '.aac', '.flac'];
 let driveSelectedFiles = [];
 
@@ -3957,8 +3957,8 @@ window.handleDriveFiles = function(fileList) {
   }
   const invalid = incoming.filter((f) => !isAudioFile(f));
   if (invalid.length) { showDriveError('Apenas arquivos de áudio são permitidos.'); return; }
-  const big = incoming.filter((f) => f.size > DRIVE_MAX_SIZE);
-  if (big.length) { showDriveError('Cada arquivo deve ter no máximo 5MB.'); return; }
+const DRIVE_MAX_SIZE = 20 * 1024 * 1024; // 20MB
+  if (big.length) { showDriveError('Cada arquivo deve ter no máximo 20MB.'); return; }
 
   driveSelectedFiles = merged;
   renderDriveFileList();

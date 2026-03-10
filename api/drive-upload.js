@@ -4,7 +4,7 @@ const { Readable } = require('stream');
 
 const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
 const MAX_FILES = 15;
-const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_SIZE = 20 * 1024 * 1024; // 20MB
 const AUDIO_EXT = ['.mp3', '.wav', '.m4a', '.ogg', '.webm', '.aac', '.flac'];
 
 async function handler(req, res) {
@@ -226,4 +226,5 @@ function isAudioFile(fileName, mimeType) {
   const lower = (fileName || '').toLowerCase();
   return AUDIO_EXT.some((ext) => lower.endsWith(ext));
 }
+
 
