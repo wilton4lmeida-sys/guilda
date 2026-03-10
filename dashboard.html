@@ -4031,6 +4031,7 @@ window.uploadToDrive = async function() {
         </div>
         ${links ? `<div style="border-top:1px solid rgba(52,211,153,.1);padding-top:8px">${links}</div>` : ''}`;
       clearDriveFiles();
+      setTimeout(() => { resultEl.style.display = 'none'; }, 3000);
     } else {
       throw new Error(data.error || 'Erro desconhecido');
     }
