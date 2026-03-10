@@ -2188,7 +2188,7 @@ input[type=date]:focus {
         </div>
       </div>
       <button class="btn btn-gold" onclick="salvarDiario()">Enviar</button>
-      <div id="diarioStatus" style="margin-top:10px;font-size:.78rem;color:var(--t3);display:none;"></div>
+      <div id="diarioStatus" style="margin-top:10px;padding:8px 10px;border-radius:10px;font-size:.9rem;font-weight:700;display:none;"></div>
     </div>
     <!-- Upload de áudios para o Drive -->
     <div id="driveUploadCard" style="background:linear-gradient(150deg,#0E0C08 0%,#0A0900 55%,#0C0A04 100%);border:1px solid rgba(245,197,24,.1);border-radius:18px;padding:22px;position:relative;overflow:hidden;margin-bottom:14px">
@@ -4165,19 +4165,7 @@ window.salvarDiario = async () => {
     } 
   } catch (e) {
     sheetFailed = true;
-  }
-  const statusEl = document.getElementById('diarioStatus');
-  if (statusEl) {
-    statusEl.style.display = 'block';
-    if (sheetFailed) {
-      statusEl.textContent = 'Diário salvo, mas falhou envio ao Sheets.';
-      statusEl.style.color = '#F87171';
-    } else {
-      statusEl.textContent = 'Diário salvo e enviado ao Sheets.';
-      statusEl.style.color = '#9CA3AF';
-    }
-  }
-  loadDiario();
+  }\r\n  const statusEl = document.getElementById('diarioStatus');\r\n  if (statusEl) {\r\n    statusEl.textContent = 'Diário enviado';\r\n    statusEl.style.display = 'block';\r\n    statusEl.style.color = sheetFailed ? '#F87171' : 'var(--g1)';\r\n    statusEl.style.background = sheetFailed ? 'rgba(248,113,113,.12)' : 'rgba(245,197,24,.12)';\r\n    statusEl.style.border = sheetFailed ? '1px solid rgba(248,113,113,.35)' : '1px solid rgba(245,197,24,.35)';\r\n    clearTimeout(window.__diarioStatusTimer);\r\n    window.__diarioStatusTimer = setTimeout(() => {\r\n      statusEl.style.display = 'none';\r\n    }, 3000);\r\n  }\r\n  loadDiario();
   loadDashboard();
   renderFunilDash();
 };
@@ -4582,6 +4570,14 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
+
+
+
+
+
+
+
 
 
 
