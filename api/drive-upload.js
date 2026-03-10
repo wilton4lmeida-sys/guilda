@@ -10,20 +10,33 @@ async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido' });
 
-  // Normaliza a chave privada — remove aspas extras e converte \n escapado em quebras reais
-  const rawKey = (process.env.GOOGLE_PRIVATE_KEY || '')
-    .replace(/^"([\s\S]*)"$/, '$1')   // remove aspas externas se existirem
-    .replace(/\\n/g, '\n')            // converte \n literal em newline real
-    .replace(/\r\n/g, '\n')           // normaliza line endings
-    .trim();
+  // Normaliza a chave privada — trata todos os formatos que o Vercel pode gerar
+  let rawKey = (process.env.GOOGLE_PRIVATE_KEY || '');
+  // Remove aspas externas adicionadas pelo Vercel
+  if (rawKey.startsWith('"') && rawKey.endsWith('"')) {
+    rawKey = rawKey.slice(1, -1);
+  }
+  // Converte \n literal em newline real
+  rawKey = rawKey.replace(/\\n/g, '\n');
 
-  const auth = new google.auth.JWT({
-    email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-    key: rawKey,
+  // Garante que o PEM está bem formado com quebras de linha reais
+  if (!rawKey.includes('\n')) {
+    rawKey = rawKey
+      .replace('-----BEGIN PRIVATE KEY-----', '-----BEGIN PRIVATE KEY-----\n')
+      .replace('-----END PRIVATE KEY-----', '\n-----END PRIVATE KEY-----');
+  }
+
+  const credentials = {
+    client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+    private_key: rawKey,
+  };
+
+  const auth = new google.auth.GoogleAuth({
+    credentials,
     scopes: ['https://www.googleapis.com/auth/drive.file'],
   });
 
-  const drive = google.drive({ version: 'v3', auth: auth });
+  const drive = google.drive({ version: 'v3', auth });
 
   return new Promise((resolve) => {
     const bb = Busboy({ headers: req.headers });
