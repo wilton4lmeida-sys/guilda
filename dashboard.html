@@ -2232,7 +2232,7 @@ input[type=date]:focus {
       <div id="driveResult" style="display:none;margin-bottom:14px"></div>
 
       <button class="btn btn-gold" id="driveUploadBtn" onclick="uploadToDrive()" disabled style="width:100%;opacity:.35;cursor:not-allowed">
-        Enviar para o Drive
+        Enviar
       </button>
     </div>
 
@@ -4040,7 +4040,7 @@ window.uploadToDrive = async function() {
   } finally {
     setTimeout(() => { progWrap.style.display = 'none'; progBar.style.width = '0%'; }, 1500);
     btn.disabled = false;
-    btn.textContent = 'Enviar para o Drive';
+    btn.textContent = 'Enviar';
     btn.style.opacity = driveSelectedFiles.length ? '1' : '.35';
   }
 };
