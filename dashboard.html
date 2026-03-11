@@ -3588,7 +3588,16 @@ async function loadArsenal() {
   if (!aulas || aulas.length === 0) { document.getElementById('arsenalTopics').innerHTML = '<div style="text-align:center;padding:40px;color:var(--t3)">Nenhum material disponível no momento.</div>'; return; }
   const hasEncontros = aulas.some(a => a.topic === 'Encontros');
   if (!hasEncontros) {
-    aulas.push({ id: -901, topic: 'Encontros', title: 'Em breve', type: 'video', xp_reward: 0, min_level: 0, order_index: 1, placeholder: true });
+    aulas.push({
+      id: -901,
+      topic: 'Encontros',
+      title: 'Encontro — Acesso',
+      type: 'video',
+      xp_reward: 0,
+      min_level: 0,
+      order_index: 1,
+      video_url: 'https://drive.google.com/file/d/1SFiDO6uPnZBeSW0v46yvXev-tx-FDdTt/view?usp=sharing'
+    });
   }
   const { data: progresses } = await sb.from('material_progress').select('*').eq('user_id', userSession.user.id);
   materialProgress = {};
@@ -4593,6 +4602,7 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
 
 
 
