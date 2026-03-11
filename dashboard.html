@@ -2210,7 +2210,7 @@ input[type=date]:focus {
         ondrop="event.preventDefault();this.style.borderColor='rgba(245,197,24,.2)';this.style.background='rgba(245,197,24,.02)';handleDriveFiles(event.dataTransfer.files)">
 
         <!-- Estado vazio -->
-        <div id="driveEmptyState" style="padding:28px 16px;text-align:center;cursor:pointer" onclick="document.getElementById('driveFileInput').click()">
+        <div id="driveEmptyState" style="padding:28px 16px;text-align:center;cursor:pointer" onclick="openDrivePicker()">
           <div style="width:48px;height:48px;border-radius:50%;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="1.8" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
           </div>
@@ -2225,12 +2225,12 @@ input[type=date]:focus {
         </div>
 
         <!-- Lista de arquivos (dentro da drop zone) -->
-        <div id="driveFileList" style="display:none;flex-direction:column"></div>
+        <div id="driveFileList" style="display:none;flex-direction:column" ondragover="event.preventDefault()" ondrop="event.preventDefault();handleDriveFiles(event.dataTransfer.files)"></div>
 
         <!-- Rodapé da drop zone quando há arquivos -->
         <div id="driveZoneFooter" style="display:none;padding:10px 14px;border-top:1px solid rgba(245,197,24,.08);display:none;align-items:center;justify-content:space-between">
           <span id="driveFileName" style="font-size:.74rem;color:var(--t3)"></span>
-          <button onclick="document.getElementById('driveFileInput').click()" style="font-size:.72rem;color:var(--g1);background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.15);border-radius:6px;padding:4px 10px;cursor:pointer">+ Adicionar</button>
+          <button type="button" onclick="openDrivePicker()" style="font-size:.72rem;color:var(--g1);background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.15);border-radius:6px;padding:4px 10px;cursor:pointer">+ Adicionar</button>
         </div>
       </div>
 
@@ -3926,45 +3926,42 @@ const DRIVE_MAX_SIZE = 20 * 1024 * 1024; // 20MB
 const DRIVE_AUDIO_EXT = ['.mp3', '.wav', '.m4a', '.ogg', '.webm', '.aac', '.flac'];
 let driveSelectedFiles = [];
 
-window.handleDriveFiles = function(fileList) {
-  if (!fileList || !fileList.length) return;
+function driveFileKey(file) {
+  return `${file.name}::${file.size}::${file.lastModified}`;
+}
 
-  const files = Array.from(fileList);
-
-  if (files.length > DRIVE_MAX_FILES) {
-    showDriveError('Limite excedido: máximo de 15 arquivos por envio.');
-    return;
-  }
-
-  const invalidType = files.filter((f) => !isAudioFile(f));
-  if (invalidType.length) {
-    showDriveError('Apenas arquivos de áudio são permitidos.');
-    return;
-  }
-
-  const oversized = files.filter((f) => f.size > DRIVE_MAX_SIZE);
-  if (oversized.length) {
-    showDriveError('Cada arquivo deve ter no máximo 20MB.');
-    return;
-  }
-
-  driveSelectedFiles = files;
-
+function renderDriveFiles() {
   const emptyState = document.getElementById('driveEmptyState');
   const listEl = document.getElementById('driveFileList');
   const footer = document.getElementById('driveZoneFooter');
   const nameEl = document.getElementById('driveFileName');
+  const btn = document.getElementById('driveUploadBtn');
 
-  const totalSize = files.reduce((sum, f) => sum + f.size, 0);
-  if (nameEl) nameEl.textContent = `${files.length} arquivo(s) • ${(totalSize / 1024 / 1024).toFixed(2)} MB`;
+  if (!driveSelectedFiles.length) {
+    if (listEl) { listEl.innerHTML = ''; listEl.style.display = 'none'; }
+    if (footer) footer.style.display = 'none';
+    if (nameEl) nameEl.textContent = '';
+    if (emptyState) emptyState.style.display = 'block';
+    if (btn) {
+      btn.disabled = true;
+      btn.style.opacity = '.35';
+      btn.style.cursor = 'not-allowed';
+    }
+    return;
+  }
+
+  const totalSize = driveSelectedFiles.reduce((sum, f) => sum + f.size, 0);
+  if (nameEl) nameEl.textContent = `${driveSelectedFiles.length} arquivo(s) • ${(totalSize / 1024 / 1024).toFixed(2)} MB`;
 
   if (listEl) {
-    listEl.innerHTML = files.map((f) => {
+    listEl.innerHTML = driveSelectedFiles.map((f) => {
       const size = (f.size / 1024 / 1024).toFixed(2);
+      const key = encodeURIComponent(driveFileKey(f));
       return `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-top:1px solid rgba(245,197,24,.08)">
         <span style="width:6px;height:6px;border-radius:50%;background:rgba(245,197,24,.6)"></span>
         <span style="font-size:.78rem;color:var(--t1);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(f.name)}</span>
         <span style="font-size:.72rem;color:var(--t3)">${size} MB</span>
+        <button type="button" onclick="removeDriveFile('${key}')" style="font-size:.72rem;color:#F87171;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);border-radius:6px;padding:4px 8px;cursor:pointer">Excluir</button>
       </div>`;
     }).join('');
     listEl.style.display = 'flex';
@@ -3973,11 +3970,58 @@ window.handleDriveFiles = function(fileList) {
   if (emptyState) emptyState.style.display = 'none';
   if (footer) footer.style.display = 'flex';
 
-  const btn = document.getElementById('driveUploadBtn');
-  btn.disabled = false;
-  btn.style.opacity = '1';
-  btn.style.cursor = 'pointer';
-  document.getElementById('driveResult').style.display = 'none';
+  if (btn) {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+  }
+  const resultEl = document.getElementById('driveResult');
+  if (resultEl) resultEl.style.display = 'none';
+}
+
+window.removeDriveFile = function(encodedKey) {
+  const key = decodeURIComponent(encodedKey || '');
+  driveSelectedFiles = driveSelectedFiles.filter((f) => driveFileKey(f) !== key);
+  if (!driveSelectedFiles.length) {
+    clearDriveFiles();
+    return;
+  }
+  renderDriveFiles();
+};
+
+function openDrivePicker() {
+  const input = document.getElementById('driveFileInput');
+  if (input) {
+    input.value = '';
+    input.click();
+  }
+}
+window.handleDriveFiles = function(fileList, append = true) {
+  if (!fileList || !fileList.length) return;
+
+  const incoming = Array.from(fileList);
+
+  const invalidType = incoming.filter((f) => !isAudioFile(f));
+  const oversized = incoming.filter((f) => f.size > DRIVE_MAX_SIZE);
+
+  let valid = incoming.filter((f) => isAudioFile(f) && f.size <= DRIVE_MAX_SIZE);
+  if (invalidType.length) showDriveError('Apenas arquivos de áudio são permitidos.');
+  if (oversized.length) showDriveError('Cada arquivo deve ter no máximo 20MB.');
+  if (!valid.length) return;
+
+  let combined = append ? [...driveSelectedFiles, ...valid] : [...valid];
+
+  const unique = new Map();
+  combined.forEach((f) => unique.set(driveFileKey(f), f));
+  combined = Array.from(unique.values());
+
+  if (combined.length > DRIVE_MAX_FILES) {
+    showDriveError('Limite excedido: máximo de 15 arquivos por envio.');
+    combined = combined.slice(0, DRIVE_MAX_FILES);
+  }
+
+  driveSelectedFiles = combined;
+  renderDriveFiles();
 };
 
 window.clearDriveFiles = function() {
@@ -4174,9 +4218,9 @@ window.salvarDiario = async () => {
   if (statusEl) {
     statusEl.style.display = 'block';
     statusEl.textContent = sheetFailed ? 'Falha ao enviar' : 'Relatório enviado com sucesso';
-    statusEl.style.color = sheetFailed ? '#F87171' : 'var(--g1)';
-    statusEl.style.background = sheetFailed ? 'rgba(248,113,113,.12)' : 'rgba(245,197,24,.12)';
-    statusEl.style.border = sheetFailed ? '1px solid rgba(248,113,113,.35)' : '1px solid rgba(245,197,24,.35)';
+    statusEl.style.color = sheetFailed ? '#F87171' : '#16A34A';
+    statusEl.style.background = sheetFailed ? 'rgba(248,113,113,.12)' : 'rgba(34,197,94,.16)';
+    statusEl.style.border = sheetFailed ? '1px solid rgba(248,113,113,.35)' : '1px solid rgba(34,197,94,.45)';
     clearTimeout(window.__diarioStatusTimer);
     window.__diarioStatusTimer = setTimeout(() => {
       statusEl.style.display = 'none';
@@ -4587,6 +4631,8 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
+
 
 
 
