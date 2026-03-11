@@ -2332,7 +2332,7 @@ input[type=date]:focus {
         <div class="quiz-section">
           <div class="quiz-header">
             <div class="quiz-title">Questionário</div>
-            <div class="quiz-xp-badge">+<span id="quizXP">0</span> XP</div>
+
           </div>
           <div id="quizQuestions"></div>
           <button class="btn-submit-quiz" onclick="submitQuiz()">Enviar Respostas</button>
@@ -3268,7 +3268,7 @@ window.openMaterial = async (materialId) => {
   document.getElementById('modalMaterialDesc').textContent = material.description || 'Sem descrição';
   if (material.has_quiz && material.quiz_questions) {
     document.getElementById('quizSection').style.display = 'block';
-    document.getElementById('quizXP').textContent = material.xp_reward || 0;
+
     loadQuiz(material.quiz_questions, progress);
   } else {
     document.getElementById('quizSection').style.display = 'none';
@@ -3356,10 +3356,6 @@ window.submitQuiz = async () => {
     completed_at: new Date().toISOString()
   }, { onConflict: 'user_id,material_id' });
   if (error) return alert('Erro ao salvar: ' + error.message);
-  const newXP = userProfile.xp + (currentMaterial.xp_reward || 0);
-  await sb.from('profiles').update({ xp: newXP }).eq('id', userSession.user.id);
-  userProfile.xp = newXP;
-  alert(`Parabéns! Você ganhou +${currentMaterial.xp_reward} XP!`);
   closeMaterialModal();
   loadProfile();
   loadArsenal();
@@ -3620,7 +3616,7 @@ async function loadArsenal() {
       html += `<div class="material-card${isCompleted ? ' completed' : ''}${isLocked ? ' locked' : ''}" onclick="${canOpen?('openMaterial('+m.id+')'):''}">`;
       html += `<div class="material-tag ${tagClass}">${m.type || 'doc'}</div>`;
       html += `<div class="material-title">${m.title}</div>`;
-      html += `<div class="material-meta"><span class="material-xp">+${m.xp_reward||0} XP</span><div class="material-progress-mini"><div class="material-progress-fill" style="width:${isCompleted?100:(prog?.progress||0)}%"></div></div></div>`;
+      html += `<div class="material-meta"><div class="material-progress-mini"><div class="material-progress-fill" style="width:${isCompleted?100:(prog?.progress||0)}%"></div></div></div>`;
       if(minLvl > 0 && !isPlaceholder) html += `<div class="material-lvl-badge ${isLocked?'material-lvl-lock':'material-lvl-ok'}">Nv.${minLvl}${isLocked?'🔒':'✓'}</div>`;
       if(isPlaceholder) {
         html += `<div class="material-lock"><span>Em breve</span></div>`;
@@ -4590,6 +4586,8 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
+
 
 
 
