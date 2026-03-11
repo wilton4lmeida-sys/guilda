@@ -3586,6 +3586,10 @@ async function loadArsenal() {
     }
   } catch(e) { console.error('Arsenal exception:', e); }
   if (!aulas || aulas.length === 0) { document.getElementById('arsenalTopics').innerHTML = '<div style="text-align:center;padding:40px;color:var(--t3)">Nenhum material disponível no momento.</div>'; return; }
+  const hasEncontros = aulas.some(a => a.topic === 'Encontros');
+  if (!hasEncontros) {
+    aulas.push({ id: -901, topic: 'Encontros', title: 'Em breve', type: 'video', xp_reward: 0, min_level: 0, order_index: 1, placeholder: true });
+  }
   const { data: progresses } = await sb.from('material_progress').select('*').eq('user_id', userSession.user.id);
   materialProgress = {};
   if (progresses) progresses.forEach(p => { materialProgress[p.material_id] = p; });
@@ -3613,13 +3617,19 @@ async function loadArsenal() {
       const tagClass = m.type === 'video' ? 'tag-video' : m.type === 'template' ? 'tag-template' : m.type === 'audio' ? 'tag-audio' : 'tag-script';
       const minLvl = m.min_level || 0;
       const userLvl = getLevelInfo(userProfile.xp).level;
-      const isLocked = !isCompleted && userLvl < minLvl;
-      html += `<div class="material-card${isCompleted ? ' completed' : ''}${isLocked ? ' locked' : ''}" onclick="${isLocked?'':('openMaterial('+m.id+')')}">`;
+      const isPlaceholder = !!m.placeholder;
+      const isLocked = isPlaceholder || (!isCompleted && userLvl < minLvl);
+      const canOpen = !isLocked && !isPlaceholder;
+      html += `<div class="material-card${isCompleted ? ' completed' : ''}${isLocked ? ' locked' : ''}" onclick="${canOpen?('openMaterial('+m.id+')'):''}">`;
       html += `<div class="material-tag ${tagClass}">${m.type || 'doc'}</div>`;
       html += `<div class="material-title">${m.title}</div>`;
       html += `<div class="material-meta"><span class="material-xp">+${m.xp_reward||0} XP</span><div class="material-progress-mini"><div class="material-progress-fill" style="width:${isCompleted?100:(prog?.progress||0)}%"></div></div></div>`;
-      if(minLvl > 0) html += `<div class="material-lvl-badge ${isLocked?'material-lvl-lock':'material-lvl-ok'}">Nv.${minLvl}${isLocked?'🔒':'✓'}</div>`;
-      if(isLocked) html += `<div class="material-lock"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Nível ${minLvl}<br>necessário</span></div>`;
+      if(minLvl > 0 && !isPlaceholder) html += `<div class="material-lvl-badge ${isLocked?'material-lvl-lock':'material-lvl-ok'}">Nv.${minLvl}${isLocked?'🔒':'✓'}</div>`;
+      if(isPlaceholder) {
+        html += `<div class="material-lock"><span>Em breve</span></div>`;
+      } else if(isLocked) {
+        html += `<div class="material-lock"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Nível ${minLvl}<br>necessário</span></div>`;
+      }
       html += `</div>`;
     });
     html += `</div>`;
@@ -4583,6 +4593,11 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
+
+
+
+
 
 
 
