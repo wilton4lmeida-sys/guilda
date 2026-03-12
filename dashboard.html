@@ -3385,6 +3385,7 @@ async function loadAll() {
   renderArsenalLocked();
   renderMissoesLocked();
   renderHero();
+  initDriveDropZone();
   renderFunilDash();
 }
 
@@ -3991,13 +3992,18 @@ window.removeDriveFile = function(encodedKey) {
   renderDriveFiles();
 };
 
-function openDrivePicker() {
-  const input = document.getElementById('driveFileInput');
-  if (input) {
-    input.value = '';
-    input.click();
-  }
+
+function initDriveDropZone() {
+  const dz = document.getElementById('driveDropZone');
+  if (!dz) return;
+  dz.style.cursor = 'pointer';
+  dz.addEventListener('click', (e) => {
+    const target = e.target;
+    if (target && (target.closest('button') || target.closest('a'))) return;
+    openDrivePicker();
+  });
 }
+
 window.handleDriveFiles = function(fileList, append = true) {
   if (!fileList || !fileList.length) return;
 
@@ -4633,6 +4639,7 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
 
 
 
