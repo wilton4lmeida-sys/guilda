@@ -355,6 +355,7 @@ body::after {
 .arsenal-topic{margin-bottom:12px;border:1px solid rgba(255,255,255,.08);border-radius:var(--r);overflow:hidden;background:rgba(255,255,255,.02);transition:all .2s;box-shadow:0 2px 12px rgba(0,0,0,.2)}
 /* cadeado locked */
 .material-card.locked{opacity:.5;cursor:not-allowed!important}
+.material-card.hidden{display:none}
 .material-card.locked:hover{transform:none!important;border-color:rgba(255,80,80,.28)!important;background:rgba(255,80,80,.04)!important}
 .material-lock{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.55);border-radius:var(--rs);backdrop-filter:blur(2px)}
 .material-lock svg{width:28px;height:28px;stroke:#F87171;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-bottom:5px}
@@ -3605,7 +3606,7 @@ async function loadArsenal() {
     html += `<div class="topic-arrow"></div></div>`;
     html += `<div class="topic-content">`;
     html += `<div class="materials-grid">`;
-    topic.materials.slice(0, 8).forEach(m => {
+    topic.materials.forEach((m, idx) => {
       const prog = materialProgress[m.id];
       const isCompleted = prog?.completed;
       const tagClass = m.type === 'video' ? 'tag-video' : m.type === 'template' ? 'tag-template' : m.type === 'audio' ? 'tag-audio' : 'tag-script';
@@ -3613,8 +3614,9 @@ async function loadArsenal() {
       const userLvl = getLevelInfo(userProfile.xp).level;
       const isPlaceholder = !!m.placeholder;
       const isLocked = isPlaceholder || (!isCompleted && userLvl < minLvl);
+      const isHidden = idx >= 8;
       const canOpen = !isLocked && !isPlaceholder;
-      html += `<div class="material-card${isCompleted ? ' completed' : ''}${isLocked ? ' locked' : ''}" onclick="${canOpen?('openMaterial('+m.id+')'):''}">`;
+      html += `<div class="material-card${isCompleted ? ' completed' : ''}${isLocked ? ' locked' : ''}${isHidden ? ' hidden' : ''}" onclick="${canOpen?('openMaterial('+m.id+')'):''}">`;
       html += `<div class="material-tag ${tagClass}">${m.type || 'doc'}</div>`;
       html += `<div class="material-title">${m.title}</div>`;
       html += `<div class="material-meta"><div class="material-progress-mini"><div class="material-progress-fill" style="width:${isCompleted?100:(prog?.progress||0)}%"></div></div></div>`;
@@ -4631,6 +4633,8 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
+
 
 
 
