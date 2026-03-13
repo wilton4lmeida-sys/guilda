@@ -4183,15 +4183,61 @@ window.salvarDiario = async () => {
   const remarcadas = parseInt(document.getElementById('diarioRemarcadas')?.value) || 0;
   const noShow = parseInt(document.getElementById('diarioNoShow')?.value) || 0;
   if (!date) return alert('Selecione uma data');
-  const { error } = await sb.from('diary_entries').upsert({
+
+  const statusEl = document.getElementById('diarioStatus');
+  const showStatus = (text, kind = 'success') => {
+    if (!statusEl) return;
+    statusEl.style.display = 'block';
+    if (kind === 'error') {
+      statusEl.style.color = '#F87171';
+      statusEl.style.background = 'rgba(248,113,113,.12)';
+      statusEl.style.border = '1px solid rgba(248,113,113,.35)';
+    } else if (kind === 'warn') {
+      statusEl.style.color = '#F5C518';
+      statusEl.style.background = 'rgba(245,197,24,.12)';
+      statusEl.style.border = '1px solid rgba(245,197,24,.35)';
+    } else {
+      statusEl.style.color = '#16A34A';
+      statusEl.style.background = 'rgba(34,197,94,.16)';
+      statusEl.style.border = '1px solid rgba(34,197,94,.45)';
+    }
+    statusEl.textContent = text;
+    clearTimeout(window.__diarioStatusTimer);
+    window.__diarioStatusTimer = setTimeout(() => {
+      statusEl.style.display = 'none';
+    }, 3000);
+  };
+
+  const { data: existing, error: checkErr } = await sb
+    .from('diary_entries')
+    .select('id')
+    .eq('user_id', userSession.user.id)
+    .eq('date', date)
+    .limit(1);
+  if (checkErr) {
+    showStatus('Erro ao validar envio', 'error');
+    return;
+  }
+  if (existing && existing.length) {
+    showStatus('Você já enviou as métricas deste dia.', 'warn');
+    return;
+  }
+
+  const { error } = await sb.from('diary_entries').insert({
     user_id: userSession.user.id, date,
     contatos_tentados: contatos, ligacoes_atendidas: atendidas,
     conexao_decisor: decisores, reunioes_marcadas: reunioes,
     reunioes_marcadas_sql: reunioesSql, reunioes_realizadas: realizadas,
     reunioes_realizadas_sql: realizadasSql, reunioes_remarcadas: remarcadas,
     no_show: noShow
-  }, { onConflict: 'user_id,date' });
-  if (error) return alert('Erro: ' + error.message);
+  });
+  if (error) {
+    if (error.code === '23505') {
+      showStatus('Você já enviou as métricas deste dia.', 'warn');
+      return;
+    }
+    return alert('Erro: ' + error.message);
+  }
 
   let sheetFailed = false;
   try {
@@ -4218,22 +4264,11 @@ window.salvarDiario = async () => {
     });
     if (!resp.ok) {
       sheetFailed = true;
-    } 
+    }
   } catch (e) {
     sheetFailed = true;
   }
-  const statusEl = document.getElementById('diarioStatus');
-  if (statusEl) {
-    statusEl.style.display = 'block';
-    statusEl.textContent = sheetFailed ? 'Falha ao enviar' : 'Relatório enviado com sucesso';
-    statusEl.style.color = sheetFailed ? '#F87171' : '#16A34A';
-    statusEl.style.background = sheetFailed ? 'rgba(248,113,113,.12)' : 'rgba(34,197,94,.16)';
-    statusEl.style.border = sheetFailed ? '1px solid rgba(248,113,113,.35)' : '1px solid rgba(34,197,94,.45)';
-    clearTimeout(window.__diarioStatusTimer);
-    window.__diarioStatusTimer = setTimeout(() => {
-      statusEl.style.display = 'none';
-    }, 3000);
-  }
+  showStatus(sheetFailed ? 'Falha ao enviar' : 'Relatório enviado com sucesso', sheetFailed ? 'error' : 'success');
   loadDiario();
   loadDashboard();
   renderFunilDash();
@@ -4639,6 +4674,7 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
 
 
 
