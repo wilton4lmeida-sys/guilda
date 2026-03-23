@@ -3982,6 +3982,31 @@ window.removeDriveFile = function(encodedKey) {
   renderDriveFiles();
 };
 
+window.handleDriveFiles = function(fileList, append = true) {
+  if (!fileList || !fileList.length) return;
+
+  const incoming = Array.from(fileList);
+  const oversized = incoming.filter((f) => f.size > DRIVE_MAX_SIZE);
+  let valid = incoming.filter((f) => f.size <= DRIVE_MAX_SIZE);
+
+  if (oversized.length) showDriveError('Cada arquivo deve ter no máximo 100MB.');
+  if (!valid.length) return;
+
+  let combined = append ? [...driveSelectedFiles, ...valid] : [...valid];
+
+  const unique = new Map();
+  combined.forEach((f) => unique.set(driveFileKey(f), f));
+  combined = Array.from(unique.values());
+
+  if (combined.length > DRIVE_MAX_FILES) {
+    showDriveError('Limite excedido: máximo de 15 arquivos por envio.');
+    combined = combined.slice(0, DRIVE_MAX_FILES);
+  }
+
+  driveSelectedFiles = combined;
+  renderDriveFiles();
+};
+
 
 window.clearDriveFiles = function() {
   driveSelectedFiles = [];
