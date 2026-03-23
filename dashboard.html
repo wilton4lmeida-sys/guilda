@@ -4007,6 +4007,79 @@ window.handleDriveFiles = function(fileList, append = true) {
   renderDriveFiles();
 };
 
+window.uploadToDrive = function() {
+  if (!driveSelectedFiles.length) return;
+
+  const btn = document.getElementById('driveUploadBtn');
+  const progWrap = document.getElementById('driveProgressWrap');
+  const progBar = document.getElementById('driveProgressBar');
+  const progPct = document.getElementById('driveProgressPct');
+  const resultEl = document.getElementById('driveResult');
+
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+    btn.style.opacity = '1';
+    btn.style.cursor = 'not-allowed';
+  }
+
+  if (progWrap) progWrap.style.display = 'block';
+  if (progBar) progBar.style.width = '0%';
+  if (progPct) progPct.textContent = '0%';
+
+  const formData = new FormData();
+  formData.append('userName', userProfile?.name || 'Membro');
+  driveSelectedFiles.forEach((f) => formData.append('files', f, f.name));
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', '/api/drive-upload');
+
+  xhr.upload.onprogress = (e) => {
+    if (!e.lengthComputable) return;
+    const pct = Math.round((e.loaded / e.total) * 100);
+    if (progBar) progBar.style.width = `${pct}%`;
+    if (progPct) progPct.textContent = `${pct}%`;
+  };
+
+  xhr.onload = () => {
+    let payload = null;
+    try { payload = JSON.parse(xhr.responseText || '{}'); } catch {}
+
+    if (xhr.status >= 200 && xhr.status < 300 && payload?.files) {
+      const links = payload.files.map((f) => {
+        const label = escapeHtml(f.fileName || 'Arquivo');
+        return `<div><a href="${f.link}" target="_blank" rel="noopener" style="color:#22C55E;font-weight:700;text-decoration:underline">${label}</a></div>`;
+      }).join('');
+      resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2)';
+      resultEl.innerHTML = `<div style="font-size:.82rem;font-weight:700;color:#34D399">✓ Arquivos enviados com sucesso</div>${links}`;
+      clearDriveFiles();
+    } else {
+      const msg = payload?.error || `Erro ao enviar (HTTP ${xhr.status})`;
+      showDriveError(msg);
+    }
+    if (progWrap) progWrap.style.display = 'none';
+    if (btn) {
+      btn.disabled = !driveSelectedFiles.length;
+      btn.textContent = 'Enviar';
+      btn.style.opacity = driveSelectedFiles.length ? '1' : '.35';
+      btn.style.cursor = driveSelectedFiles.length ? 'pointer' : 'not-allowed';
+    }
+  };
+
+  xhr.onerror = () => {
+    showDriveError('Erro ao enviar');
+    if (progWrap) progWrap.style.display = 'none';
+    if (btn) {
+      btn.disabled = !driveSelectedFiles.length;
+      btn.textContent = 'Enviar';
+      btn.style.opacity = driveSelectedFiles.length ? '1' : '.35';
+      btn.style.cursor = driveSelectedFiles.length ? 'pointer' : 'not-allowed';
+    }
+  };
+
+  xhr.send(formData);
+};
+
 
 window.clearDriveFiles = function() {
   driveSelectedFiles = [];

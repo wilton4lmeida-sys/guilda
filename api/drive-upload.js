@@ -4,8 +4,7 @@ const { Readable } = require('stream');
 
 const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
 const MAX_FILES = 15;
-const MAX_SIZE = 20 * 1024 * 1024; // 20MB
-const AUDIO_EXT = ['.mp3', '.wav', '.m4a', '.ogg', '.webm', '.aac', '.flac'];
+const MAX_SIZE = 100 * 1024 * 1024; // 100MB
 
 async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -46,7 +45,6 @@ async function handler(req, res) {
 
       const originalName = info.filename || 'upload';
       const mimeType = info.mimeType || 'application/octet-stream';
-      const isAudio = isAudioFile(originalName, mimeType);
 
       let size = 0;
       let tooLarge = false;
@@ -59,7 +57,7 @@ async function handler(req, res) {
       });
 
       file.on('end', () => {
-        files.push({ originalName, mimeType, chunks, size, tooLarge, isAudio });
+        files.push({ originalName, mimeType, chunks, size, tooLarge });
       });
     });
 
@@ -74,15 +72,9 @@ async function handler(req, res) {
         return resolve();
       }
 
-      const invalidType = files.filter((f) => !f.isAudio);
-      if (invalidType.length) {
-        res.status(400).json({ error: 'Apenas arquivos de áudio são permitidos' });
-        return resolve();
-      }
-
       const oversized = files.filter((f) => f.tooLarge || f.size > MAX_SIZE);
       if (oversized.length) {
-        res.status(400).json({ error: 'Cada arquivo deve ter no máximo 5MB' });
+        res.status(400).json({ error: 'Cada arquivo deve ter no máximo 100MB' });
         return resolve();
       }
 
@@ -219,12 +211,6 @@ function parseServiceAccount(raw) {
   }
 
   throw new Error('Invalid GOOGLE_SERVICE_ACCOUNT_JSON');
-}
-
-function isAudioFile(fileName, mimeType) {
-  if (mimeType && mimeType.startsWith('audio/')) return true;
-  const lower = (fileName || '').toLowerCase();
-  return AUDIO_EXT.some((ext) => lower.endsWith(ext));
 }
 
 
