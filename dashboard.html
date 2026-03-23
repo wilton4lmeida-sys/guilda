@@ -3915,8 +3915,9 @@ function syncDateDisplay(inputId, displayId) {
 })();
 
 // ── Google Drive Upload ──
-const DRIVE_MAX_FILES = 15;
-const DRIVE_MAX_SIZE = 100 * 1024 * 1024; // 100MB
+  const DRIVE_MAX_FILES = 15;
+  const DRIVE_MAX_SIZE = 100 * 1024 * 1024; // 100MB
+  const DRIVE_MAX_TOTAL = 500 * 1024 * 1024; // 500MB total por envio
 let driveSelectedFiles = [];
 
 function driveFileKey(file) {
@@ -3998,16 +3999,22 @@ window.handleDriveFiles = function(fileList, append = true) {
   combined.forEach((f) => unique.set(driveFileKey(f), f));
   combined = Array.from(unique.values());
 
-  if (combined.length > DRIVE_MAX_FILES) {
-    showDriveError('Limite excedido: máximo de 15 arquivos por envio.');
-    combined = combined.slice(0, DRIVE_MAX_FILES);
-  }
+    if (combined.length > DRIVE_MAX_FILES) {
+      showDriveError('Limite excedido: máximo de 15 arquivos por envio.');
+      combined = combined.slice(0, DRIVE_MAX_FILES);
+    }
+
+    const totalSize = combined.reduce((sum, f) => sum + f.size, 0);
+    if (totalSize > DRIVE_MAX_TOTAL) {
+      showDriveError('Limite total excedido: máximo de 500MB por envio.');
+      return;
+    }
 
   driveSelectedFiles = combined;
   renderDriveFiles();
 };
 
-window.uploadToDrive = function() {
+window.uploadToDrive = async function() {
   if (!driveSelectedFiles.length) return;
 
   const btn = document.getElementById('driveUploadBtn');
@@ -4023,28 +4030,143 @@ window.uploadToDrive = function() {
     btn.style.cursor = 'not-allowed';
   }
 
-    if (progWrap) progWrap.style.display = 'block';
-    if (progBar) progBar.style.width = '0%';
-    if (progPct) progPct.textContent = '0%';
-    if (resultEl) {
-      resultEl.style.display = 'block';
-      resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.25);color:var(--t1)';
-      resultEl.innerHTML = '<div style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:.86rem;"><span class="loading-spinner" style="width:16px;height:16px;border-width:2px"></span>Enviando arquivos...</div>';
+  if (progWrap) progWrap.style.display = 'block';
+  if (progBar) progBar.style.width = '0%';
+  if (progPct) progPct.textContent = '0%';
+  if (resultEl) {
+    resultEl.style.display = 'block';
+    resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.25);color:var(--t1)';
+    resultEl.innerHTML = '<div style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:.86rem;"><span class="loading-spinner" style="width:16px;height:16px;border-width:2px"></span>Enviando arquivos...</div>';
+  }
+
+  const totalBytes = driveSelectedFiles.reduce((sum, f) => sum + f.size, 0);
+  if (totalBytes > DRIVE_MAX_TOTAL) {
+    showDriveError('Limite total excedido: máximo de 500MB por envio.');
+    if (progWrap) progWrap.style.display = 'none';
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'Enviar';
+      btn.style.opacity = '1';
+      btn.style.cursor = 'pointer';
     }
+    return;
+  }
 
-  const formData = new FormData();
-  formData.append('userName', userProfile?.name || 'Membro');
-  driveSelectedFiles.forEach((f) => formData.append('files', f, f.name));
+  let tokenPayload = null;
+  try {
+    const tokenRes = await fetch('/api/drive-token', { method: 'POST' });
+    tokenPayload = await tokenRes.json();
+    if (!tokenRes.ok || !tokenPayload?.accessToken) {
+      throw new Error(tokenPayload?.error || 'Falha ao obter token do Drive');
+    }
+  } catch (err) {
+    showDriveError(err.message || 'Falha ao obter token do Drive');
+    if (progWrap) progWrap.style.display = 'none';
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'Enviar';
+      btn.style.opacity = '1';
+      btn.style.cursor = 'pointer';
+    }
+    return;
+  }
 
-  const xhr = new XMLHttpRequest();
-  xhr.open('POST', '/api/drive-upload');
+  const accessToken = tokenPayload.accessToken;
+  const folderId = tokenPayload.folderId;
+  const date = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
+  const userName = userProfile?.name || 'Membro';
+  const uploaded = [];
+  let loadedTotal = 0;
 
-  xhr.upload.onprogress = (e) => {
-    if (!e.lengthComputable) return;
-    const pct = Math.round((e.loaded / e.total) * 100);
+  const updateProgress = () => {
+    const pct = totalBytes ? Math.min(100, Math.round((loadedTotal / totalBytes) * 100)) : 0;
     if (progBar) progBar.style.width = `${pct}%`;
     if (progPct) progPct.textContent = `${pct}%`;
   };
+
+  try {
+    for (const file of driveSelectedFiles) {
+      const finalName = `[${date}] ${userName} - ${file.name}`;
+      const metadata = { name: finalName };
+      if (folderId) metadata.parents = [folderId];
+
+      const initRes = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&fields=id,webViewLink', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json; charset=UTF-8',
+          'X-Upload-Content-Length': String(file.size),
+          'X-Upload-Content-Type': file.type || 'application/octet-stream',
+        },
+        body: JSON.stringify(metadata),
+      });
+
+      if (!initRes.ok) {
+        throw new Error(`Falha ao iniciar upload (HTTP ${initRes.status})`);
+      }
+
+      const uploadUrl = initRes.headers.get('Location');
+      if (!uploadUrl) {
+        throw new Error('Falha ao iniciar upload (URL ausente)');
+      }
+
+      const fileData = await new Promise((resolve, reject) => {
+        let fileLoaded = 0;
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', uploadUrl);
+        xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+        xhr.upload.onprogress = (e) => {
+          if (!e.lengthComputable) return;
+          const delta = e.loaded - fileLoaded;
+          fileLoaded = e.loaded;
+          loadedTotal += delta;
+          updateProgress();
+        };
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            if (fileLoaded < file.size) {
+              loadedTotal += (file.size - fileLoaded);
+              updateProgress();
+            }
+            let payload = {};
+            try { payload = JSON.parse(xhr.responseText || '{}'); } catch {}
+            resolve(payload);
+          } else {
+            reject(new Error(`Erro ao enviar (HTTP ${xhr.status})`));
+          }
+        };
+        xhr.onerror = () => reject(new Error('Erro ao enviar'));
+        xhr.send(file);
+      });
+
+      uploaded.push({
+        fileName: finalName,
+        link: fileData?.webViewLink || '',
+        id: fileData?.id || '',
+      });
+    }
+
+    const links = uploaded.map((f) => {
+      const label = escapeHtml(f.fileName || 'Arquivo');
+      if (!f.link) return `<div style="font-size:.78rem;color:var(--t2)">${label}</div>`;
+      return `<div><a href="${f.link}" target="_blank" rel="noopener" style="color:#22C55E;font-weight:700;text-decoration:underline">${label}</a></div>`;
+    }).join('');
+
+    resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.35);color:#22C55E';
+    resultEl.innerHTML = `<div style="font-size:.9rem;font-weight:800;color:#22C55E">✓ Envio confirmado</div><div style="font-size:.78rem;color:var(--t2);margin-top:4px">Arquivos enviados com sucesso</div>${links}`;
+    clearDriveFiles(true);
+  } catch (err) {
+    showDriveError(err.message || 'Erro ao enviar');
+  } finally {
+    if (progWrap) progWrap.style.display = 'none';
+    if (btn) {
+      btn.disabled = !driveSelectedFiles.length;
+      btn.textContent = 'Enviar';
+      btn.style.opacity = driveSelectedFiles.length ? '1' : '.35';
+      btn.style.cursor = driveSelectedFiles.length ? 'pointer' : 'not-allowed';
+    }
+  }
+};
 
   xhr.onload = () => {
     let payload = null;
@@ -4639,6 +4761,7 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
 
 
 
