@@ -3976,7 +3976,7 @@ window.removeDriveFile = function(encodedKey) {
   const key = decodeURIComponent(encodedKey || '');
   driveSelectedFiles = driveSelectedFiles.filter((f) => driveFileKey(f) !== key);
   if (!driveSelectedFiles.length) {
-    clearDriveFiles();
+        clearDriveFiles(true);
     return;
   }
   renderDriveFiles();
@@ -4023,9 +4023,14 @@ window.uploadToDrive = function() {
     btn.style.cursor = 'not-allowed';
   }
 
-  if (progWrap) progWrap.style.display = 'block';
-  if (progBar) progBar.style.width = '0%';
-  if (progPct) progPct.textContent = '0%';
+    if (progWrap) progWrap.style.display = 'block';
+    if (progBar) progBar.style.width = '0%';
+    if (progPct) progPct.textContent = '0%';
+    if (resultEl) {
+      resultEl.style.display = 'block';
+      resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.25);color:var(--t1)';
+      resultEl.innerHTML = '<div style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:.86rem;"><span class="loading-spinner" style="width:16px;height:16px;border-width:2px"></span>Enviando arquivos...</div>';
+    }
 
   const formData = new FormData();
   formData.append('userName', userProfile?.name || 'Membro');
@@ -4050,8 +4055,8 @@ window.uploadToDrive = function() {
         const label = escapeHtml(f.fileName || 'Arquivo');
         return `<div><a href="${f.link}" target="_blank" rel="noopener" style="color:#22C55E;font-weight:700;text-decoration:underline">${label}</a></div>`;
       }).join('');
-      resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2)';
-      resultEl.innerHTML = `<div style="font-size:.82rem;font-weight:700;color:#34D399">✓ Arquivos enviados com sucesso</div>${links}`;
+        resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.35);color:#22C55E';
+        resultEl.innerHTML = `<div style="font-size:.9rem;font-weight:800;color:#22C55E">✓ Envio confirmado</div><div style="font-size:.78rem;color:var(--t2);margin-top:4px">Arquivos enviados com sucesso</div>${links}`;
       clearDriveFiles();
     } else {
       const msg = payload?.error || `Erro ao enviar (HTTP ${xhr.status})`;
@@ -4081,7 +4086,7 @@ window.uploadToDrive = function() {
 };
 
 
-window.clearDriveFiles = function() {
+  window.clearDriveFiles = function(preserveResult = false) {
   driveSelectedFiles = [];
   const input = document.getElementById('driveFileInput');
   if (input) input.value = '';
@@ -4100,8 +4105,8 @@ window.clearDriveFiles = function() {
   btn.disabled = true;
   btn.style.opacity = '.35';
   btn.style.cursor = 'not-allowed';
-  document.getElementById('driveResult').style.display = 'none';
-};
+    if (!preserveResult) document.getElementById('driveResult').style.display = 'none';
+  };
 
 
 function showDriveError(message) {
