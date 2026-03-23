@@ -2213,7 +2213,7 @@ input[type=date]:focus {
         <!-- Estado vazio -->
         <div id="driveEmptyState" style="padding:28px 16px;text-align:center;cursor:pointer">
           <div style="width:48px;height:48px;border-radius:50%;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;cursor:pointer">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="1.8" stroke-linecap="round" onclick="window.openDrivePicker()" style="cursor:pointer"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="1.8" stroke-linecap="round"  style="cursor:pointer"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
           </div>
           <div style="font-size:.88rem;font-weight:600;color:var(--t2);margin-bottom:6px">Arraste ou clique para selecionar</div>
           </div>
@@ -2224,7 +2224,7 @@ input[type=date]:focus {
         <!-- Rodapé da drop zone quando há arquivos -->
         <div id="driveZoneFooter" style="display:none;padding:10px 14px;border-top:1px solid rgba(245,197,24,.08);display:none;align-items:center;justify-content:space-between">
           <span id="driveFileName" style="font-size:.74rem;color:var(--t3)"></span>
-          <button type="button" style="font-size:.72rem;color:var(--g1);background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.15);border-radius:6px;padding:4px 10px;cursor:pointer">+ Adicionar</button>
+          <button type="button" onclick="window.openDrivePicker()" style="font-size:.72rem;color:var(--g1);background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.15);border-radius:6px;padding:4px 10px;cursor:pointer">+ Adicionar</button>
         </div>
       </div>
 
@@ -3378,7 +3378,8 @@ async function loadAll() {
   renderArsenalLocked();
   renderMissoesLocked();
   renderHero();
-    renderFunilDash();
+  window.initDriveDropZone();
+  window.initDriveDropZone();
 }
 
 async function buildDayBar() {
@@ -3984,14 +3985,6 @@ window.removeDriveFile = function(encodedKey) {
 };
 
 
-window.openDrivePicker = function() {
-  const input = document.getElementById('driveFileInput');
-  if (input) {
-    input.value = '';
-    input.click();
-  }
-};
-
 window.clearDriveFiles = function() {
   driveSelectedFiles = [];
   const input = document.getElementById('driveFileInput');
@@ -4014,99 +4007,6 @@ window.clearDriveFiles = function() {
   document.getElementById('driveResult').style.display = 'none';
 };
 
-window.uploadToDrive = async function() {
-  if (!driveSelectedFiles.length) return;
-
-  const btn = document.getElementById('driveUploadBtn');
-  const progWrap = document.getElementById('driveProgressWrap');
-  const progBar = document.getElementById('driveProgressBar');
-  const progPct = document.getElementById('driveProgressPct');
-  const resultEl = document.getElementById('driveResult');
-
-  btn.disabled = true;
-  btn.textContent = 'Enviando...';
-  if (progWrap) progWrap.style.display = 'block';
-  if (progBar) progBar.style.width = '0%';
-  if (progPct) progPct.textContent = '0%';
-  resultEl.style.display = 'none';
-
-  try {
-    const tokenRes = await fetch('/api/drive-token');
-    const tokenText = await tokenRes.text();
-    let tokenData;
-    try { tokenData = JSON.parse(tokenText); }
-    catch { throw new Error(`Resposta inesperada (${tokenRes.status}): ${tokenText.slice(0, 200)}`); }
-
-    if (!tokenRes.ok) throw new Error(tokenData.error || 'Falha ao obter token');
-
-    const accessToken = tokenData.access_token;
-    const folderId = tokenData.folder_id;
-
-    let uploadedLinks = [];
-    let pct = 0;
-    const interval = setInterval(() => {
-      pct = Math.min(pct + Math.random() * 12, 90);
-      if (progBar) progBar.style.width = pct + '%';
-      if (progPct) progPct.textContent = Math.round(pct) + '%';
-    }, 300);
-
-    for (const file of driveSelectedFiles) {
-      const createRes = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&fields=id,webViewLink', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json; charset=UTF-8'
-        },
-        body: JSON.stringify({
-          name: `[${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}] ${userProfile?.name || 'Membro'} - ${file.name}`,
-          parents: [folderId]
-        })
-      });
-
-      const uploadUrl = createRes.headers.get('location');
-      if (!uploadUrl) throw new Error('Falha ao iniciar upload resumível');
-
-      const uploadRes = await fetch(uploadUrl, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': file.type || 'application/octet-stream'
-        },
-        body: file
-      });
-
-      if (!uploadRes.ok) {
-        const errText = await uploadRes.text();
-        throw new Error(`Falha ao enviar arquivo: ${errText.slice(0, 200)}`);
-      }
-
-      const uploaded = await uploadRes.json();
-      if (uploaded.webViewLink) {
-        uploadedLinks.push({ fileName: file.name, link: uploaded.webViewLink });
-      }
-    }
-
-    clearInterval(interval);
-    if (progBar) progBar.style.width = '100%';
-    if (progPct) progPct.textContent = '100%';
-
-    resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2)';
-    const links = uploadedLinks.map((f) => {
-      const label = escapeHtml(f.fileName || 'Arquivo');
-      return `<div><a href="${f.link}" target="_blank" rel="noopener" style="color:#22C55E;font-weight:700;text-decoration:underline">${label}</a></div>`;
-    }).join('');
-    resultEl.innerHTML = `<div style="font-size:.82rem;font-weight:700;color:#34D399">✓ Arquivos enviados com sucesso</div>${links}`;
-    clearDriveFiles();
-  } catch (err) {
-    resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2)';
-    resultEl.innerHTML = `<div style="font-size:.82rem;font-weight:700;color:#EF4444">✕ Erro ao enviar</div><div style="font-size:.75rem;color:#F87171;margin-top:3px">${err.message}</div>`;
-  } finally {
-    setTimeout(() => { if (progWrap) progWrap.style.display = 'none'; if (progBar) progBar.style.width = '0%'; }, 1500);
-    btn.disabled = false;
-    btn.textContent = 'Enviar';
-    btn.style.opacity = driveSelectedFiles.length ? '1' : '.35';
-  }
-};
-
 
 function showDriveError(message) {
   const resultEl = document.getElementById('driveResult');
@@ -4125,6 +4025,25 @@ function escapeHtml(value) {
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
 }
+
+window.openDrivePicker = function() {
+  const input = document.getElementById('driveFileInput');
+  if (input) {
+    input.value = '';
+    input.click();
+  }
+};
+
+window.initDriveDropZone = function() {
+  const dz = document.getElementById('driveDropZone');
+  if (!dz) return;
+  dz.style.cursor = 'pointer';
+  dz.addEventListener('click', (e) => {
+    const t = e.target;
+    if (t && (t.closest('button') || t.closest('a'))) return;
+    window.openDrivePicker();
+  });
+};
 
 window.salvarDiario = async () => {
   const date = document.getElementById('diarioData').value;
@@ -4629,6 +4548,10 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
+
+
+
 
 
 
