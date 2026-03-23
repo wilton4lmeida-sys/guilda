@@ -2205,14 +2205,14 @@ input[type=date]:focus {
       </div>
 
       <!-- Drop zone — vira container de arquivos quando há seleção -->
-      <div id="driveDropZone" onclick="window.openDrivePicker()" style="border:2px dashed rgba(245,197,24,.2);border-radius:14px;transition:all .2s;margin-bottom:14px;background:rgba(245,197,24,.02);overflow:hidden"
+      <div id="driveDropZone" style="border:2px dashed rgba(245,197,24,.2);border-radius:14px;transition:all .2s;margin-bottom:14px;background:rgba(245,197,24,.02);overflow:hidden"
         ondragover="event.preventDefault();this.style.borderColor='rgba(245,197,24,.6)';this.style.background='rgba(245,197,24,.06)'"
         ondragleave="this.style.borderColor='rgba(245,197,24,.2)';this.style.background='rgba(245,197,24,.02)'"
         ondrop="event.preventDefault();this.style.borderColor='rgba(245,197,24,.2)';this.style.background='rgba(245,197,24,.02)';handleDriveFiles(event.dataTransfer.files)">
 
         <!-- Estado vazio -->
-        <div id="driveEmptyState" style="padding:28px 16px;text-align:center;cursor:pointer" onclick="window.openDrivePicker()">
-          <div style="width:48px;height:48px;border-radius:50%;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;cursor:pointer" onclick="window.openDrivePicker()">
+        <div id="driveEmptyState" style="padding:28px 16px;text-align:center;cursor:pointer">
+          <div style="width:48px;height:48px;border-radius:50%;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;cursor:pointer">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="1.8" stroke-linecap="round" onclick="window.openDrivePicker()" style="cursor:pointer"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
           </div>
           <div style="font-size:.88rem;font-weight:600;color:var(--t2);margin-bottom:6px">Arraste ou clique para selecionar</div>
@@ -2224,7 +2224,7 @@ input[type=date]:focus {
         <!-- Rodapé da drop zone quando há arquivos -->
         <div id="driveZoneFooter" style="display:none;padding:10px 14px;border-top:1px solid rgba(245,197,24,.08);display:none;align-items:center;justify-content:space-between">
           <span id="driveFileName" style="font-size:.74rem;color:var(--t3)"></span>
-          <button type="button" onclick="window.openDrivePicker()" style="font-size:.72rem;color:var(--g1);background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.15);border-radius:6px;padding:4px 10px;cursor:pointer">+ Adicionar</button>
+          <button type="button" style="font-size:.72rem;color:var(--g1);background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.15);border-radius:6px;padding:4px 10px;cursor:pointer">+ Adicionar</button>
         </div>
       </div>
 
@@ -3378,8 +3378,7 @@ async function loadAll() {
   renderArsenalLocked();
   renderMissoesLocked();
   renderHero();
-  window.initDriveDropZone();
-  renderFunilDash();
+    renderFunilDash();
 }
 
 async function buildDayBar() {
@@ -3991,42 +3990,6 @@ window.openDrivePicker = function() {
     input.value = '';
     input.click();
   }
-};
-window.initDriveDropZone = function() {
-  const dz = document.getElementById('driveDropZone');
-  if (!dz) return;
-  dz.style.cursor = 'pointer';
-  dz.addEventListener('click', (e) => {
-    const target = e.target;
-    if (target && (target.closest('button') || target.closest('a'))) return;
-    window.openDrivePicker();
-  });
-}
-
-window.handleDriveFiles = function(fileList, append = true) {
-  if (!fileList || !fileList.length) return;
-
-  const incoming = Array.from(fileList);
-
-  const oversized = incoming.filter((f) => f.size > DRIVE_MAX_SIZE);
-
-  let valid = incoming.filter((f) => f.size <= DRIVE_MAX_SIZE);
-  if (oversized.length) showDriveError('Cada arquivo deve ter no máximo 100MB.');
-  if (!valid.length) return;
-
-  let combined = append ? [...driveSelectedFiles, ...valid] : [...valid];
-
-  const unique = new Map();
-  combined.forEach((f) => unique.set(driveFileKey(f), f));
-  combined = Array.from(unique.values());
-
-  if (combined.length > DRIVE_MAX_FILES) {
-    showDriveError('Limite excedido: máximo de 15 arquivos por envio.');
-    combined = combined.slice(0, DRIVE_MAX_FILES);
-  }
-
-  driveSelectedFiles = combined;
-  renderDriveFiles();
 };
 
 window.clearDriveFiles = function() {
@@ -4666,6 +4629,7 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
 
 
 
