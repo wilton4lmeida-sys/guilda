@@ -2217,11 +2217,8 @@ input[type=date]:focus {
           </div>
           <div style="font-size:.88rem;font-weight:600;color:var(--t2);margin-bottom:6px">Arraste ou clique para selecionar</div>
           <div style="display:inline-flex;align-items:center;gap:5px;flex-wrap:wrap;justify-content:center">
-            <span style="font-size:.66rem;color:var(--t3);background:rgba(245,197,24,.06);padding:2px 7px;border-radius:20px;border:1px solid rgba(245,197,24,.1)">MP3</span>
-            <span style="font-size:.66rem;color:var(--t3);background:rgba(245,197,24,.06);padding:2px 7px;border-radius:20px;border:1px solid rgba(245,197,24,.1)">WAV</span>
-            <span style="font-size:.66rem;color:var(--t3);background:rgba(245,197,24,.06);padding:2px 7px;border-radius:20px;border:1px solid rgba(245,197,24,.1)">M4A</span>
-            <span style="font-size:.66rem;color:var(--t3);background:rgba(245,197,24,.06);padding:2px 7px;border-radius:20px;border:1px solid rgba(245,197,24,.1)">OGG</span>
-            <span style="font-size:.66rem;color:var(--t3)">• até 15 arquivos • 20MB cada</span>
+            <span style="font-size:.66rem;color:var(--t3);background:rgba(245,197,24,.06);padding:2px 7px;border-radius:20px;border:1px solid rgba(245,197,24,.1)">Qualquer formato</span>
+            <span style="font-size:.66rem;color:var(--t3)">• até 15 arquivos • 100MB cada</span>
           </div>
         </div>
 
@@ -2235,7 +2232,7 @@ input[type=date]:focus {
         </div>
       </div>
 
-      <input type="file" id="driveFileInput" style="display:none" accept="audio/*" multiple onchange="handleDriveFiles(this.files)">
+      <input type="file" id="driveFileInput" style="display:none" accept="*/*" multiple onchange="handleDriveFiles(this.files)">
 
       <!-- Barra de progresso -->
       <div id="driveProgressWrap" style="display:none;margin-bottom:14px">
@@ -3925,8 +3922,7 @@ function syncDateDisplay(inputId, displayId) {
 
 // ── Google Drive Upload ──
 const DRIVE_MAX_FILES = 15;
-const DRIVE_MAX_SIZE = 20 * 1024 * 1024; // 20MB
-const DRIVE_AUDIO_EXT = ['.mp3', '.wav', '.m4a', '.ogg', '.webm', '.aac', '.flac'];
+const DRIVE_MAX_SIZE = 100 * 1024 * 1024; // 100MB
 let driveSelectedFiles = [];
 
 function driveFileKey(file) {
@@ -4009,12 +4005,10 @@ window.handleDriveFiles = function(fileList, append = true) {
 
   const incoming = Array.from(fileList);
 
-  const invalidType = incoming.filter((f) => !isAudioFile(f));
   const oversized = incoming.filter((f) => f.size > DRIVE_MAX_SIZE);
 
-  let valid = incoming.filter((f) => isAudioFile(f) && f.size <= DRIVE_MAX_SIZE);
-  if (invalidType.length) showDriveError('Apenas arquivos de áudio são permitidos.');
-  if (oversized.length) showDriveError('Cada arquivo deve ter no máximo 20MB.');
+  let valid = incoming.filter((f) => f.size <= DRIVE_MAX_SIZE);
+  if (oversized.length) showDriveError('Cada arquivo deve ter no máximo 100MB.');
   if (!valid.length) return;
 
   let combined = append ? [...driveSelectedFiles, ...valid] : [...valid];
@@ -4147,11 +4141,6 @@ window.uploadToDrive = async function() {
   }
 };
 
-function isAudioFile(file) {
-  if (file.type && file.type.startsWith('audio/')) return true;
-  const lower = (file.name || '').toLowerCase();
-  return DRIVE_AUDIO_EXT.some((ext) => lower.endsWith(ext));
-}
 
 function showDriveError(message) {
   const resultEl = document.getElementById('driveResult');
@@ -4674,6 +4663,10 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
+
+
+
 
 
 
