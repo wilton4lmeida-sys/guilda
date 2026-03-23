@@ -1,0 +1,37 @@
+    <!-- Filtro de período -->
+    <div class="page-card" style="margin-bottom:14px;padding:16px 20px">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <div style="font-size:.82rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--t3);font-weight:700;flex-shrink:0">Período</div>
+        <div class="date-picker-wrap date-picker-sm" onclick="openCalRange('metricasFrom','metricasTo','metricasRangeDisplay',this,event)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="metricasRangeDisplay" class="date-picker-display">Selecionar período</span>
+          <input type="date" id="metricasFrom">
+          <input type="date" id="metricasTo">
+        </div>
+        <div style="flex:1;min-width:100px;text-align:right">
+          <span style="font-size:.7rem;color:var(--t3);font-weight:500" id="metricasPeriodLabel">Carregando...</span>
+        </div>
+      </div>
+    </div>
+    <!-- Resumo numérico -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
+      <div class="stat-card"><div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2"/></svg></div><div class="stat-value" id="metricasTotalContatos">0</div><div class="stat-label">Total Contatos</div></div>
+      <div class="stat-card"><div class="stat-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="stat-value" id="metricasTotalAtendidas">0</div><div class="stat-label">Atendidas</div></div>
+      <div class="stat-card"><div class="stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><div class="stat-value" id="metricasTotalDecisores">0</div><div class="stat-label">Decisores</div></div>
+      <div class="stat-card"><div class="stat-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="stat-value" id="metricasTotalReunioes">0</div><div class="stat-label">Reuniões</div></div>
+      <div class="stat-card"><div class="stat-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="stat-value" id="metricasTaxaConversao">—</div><div class="stat-label">Taxa Geral</div></div>
+      <div class="stat-card"><div class="stat-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="stat-value" id="metricasTotalXP">0</div><div class="stat-label">XP Total</div></div>
+    </div>
+
+    <!-- Funil de Conversão -->
+    <div class="page-card">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon gold"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          Funil de Conversão por Etapa
+        </div>
+      </div>
+      <div id="metricasFunil">
+        <div class="empty-state"><div class="empty-state-text">Carregando métricas...</div></div>
+      </div>
+    </div>

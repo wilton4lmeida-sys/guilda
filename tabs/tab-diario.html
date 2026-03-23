@@ -1,0 +1,137 @@
+    <div class="page-card">
+      <div class="card-header"><div class="card-title"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>Registro Diário</div></div>
+      <div style="margin:10px 0 16px;padding:10px 12px;border-radius:10px;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.25);font-size:.8rem;color:var(--t2);font-weight:600">Atenção, o envio das métricas do dia e o envio dos arquivos de gravação das ligações são envios independentes</div>
+
+      <!-- data no estilo dash -->
+      <div class="form-group" style="max-width:220px">
+        <label class="form-label">DATA DE REFERÊNCIA</label>
+        <div class="date-picker-wrap" onclick="openCal('diarioData','diarioDataDisplay',this,event)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="diarioDataDisplay" class="date-picker-display">dd/mm/aaaa</span>
+          <input type="date" id="diarioData">
+        </div>
+      </div>
+      <!-- grid de métricas como tiles -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:10px">
+        <div style="background:var(--card2);border:1px solid rgba(245,197,24,.15);border-radius:12px;padding:14px">
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Ligações Totais</div>
+          <input type="text" inputmode="numeric" class="form-input" id="diarioContatos" value="0" oninput="this.value=this.value.replace(/\D/g,'')"
+            style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--g1);background:transparent;border:none;padding:0;text-align:center;width:100%">
+        </div>
+        <div style="background:var(--card2);border:1px solid rgba(245,197,24,.15);border-radius:12px;padding:14px">
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Conexões</div>
+          <input type="text" inputmode="numeric" class="form-input" id="diarioAtendidas" value="0" oninput="this.value=this.value.replace(/\D/g,'')"
+            style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--g1);background:transparent;border:none;padding:0;text-align:center;width:100%">
+        </div>
+        <div style="background:var(--card2);border:1px solid rgba(245,197,24,.15);border-radius:12px;padding:14px">
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Conexões com decisor</div>
+          <input type="text" inputmode="numeric" class="form-input" id="diarioDecisores" value="0" oninput="this.value=this.value.replace(/\D/g,'')"
+            style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--g1);background:transparent;border:none;padding:0;text-align:center;width:100%">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:18px">
+        <div style="background:var(--card2);border:1px solid rgba(160,160,176,.18);border-radius:12px;padding:14px">
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Reuniões marcadas totais</div>
+          <input type="text" inputmode="numeric" class="form-input" id="diarioReunioes" value="0" oninput="this.value=this.value.replace(/\D/g,'')"
+            style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--p3);background:transparent;border:none;padding:0;text-align:center;width:100%">
+        </div>
+        <div style="background:var(--card2);border:1px solid rgba(160,160,176,.18);border-radius:12px;padding:14px">
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Reuniões marcadas com SQL (fatura R$30k+)</div>
+          <input type="text" inputmode="numeric" class="form-input" id="diarioReunioesSql" value="0" oninput="this.value=this.value.replace(/\D/g,'')"
+            style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--p3);background:transparent;border:none;padding:0;text-align:center;width:100%">
+        </div>
+        <div style="background:var(--card2);border:1px solid rgba(160,160,176,.18);border-radius:12px;padding:14px">
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Reuniões realizadas totais</div>
+          <input type="text" inputmode="numeric" class="form-input" id="diarioRealizadas" value="0" oninput="this.value=this.value.replace(/\D/g,'')"
+            style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--p3);background:transparent;border:none;padding:0;text-align:center;width:100%">
+        </div>
+        <div style="background:var(--card2);border:1px solid rgba(160,160,176,.18);border-radius:12px;padding:14px">
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Reuniões realizadas com SQL (fatura R$30k+)</div>
+          <input type="text" inputmode="numeric" class="form-input" id="diarioRealizadasSql" value="0" oninput="this.value=this.value.replace(/\D/g,'')"
+            style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--p3);background:transparent;border:none;padding:0;text-align:center;width:100%">
+        </div>
+        <div style="background:var(--card2);border:1px solid rgba(160,160,176,.18);border-radius:12px;padding:14px">
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">Reuniões remarcadas</div>
+          <input type="text" inputmode="numeric" class="form-input" id="diarioRemarcadas" value="0" oninput="this.value=this.value.replace(/\D/g,'')"
+            style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--p3);background:transparent;border:none;padding:0;text-align:center;width:100%">
+        </div>
+        <div style="background:var(--card2);border:1px solid rgba(160,160,176,.18);border-radius:12px;padding:14px">
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--t3);margin-bottom:8px;font-weight:700">No-Show</div>
+          <input type="text" inputmode="numeric" class="form-input" id="diarioNoShow" value="0" oninput="this.value=this.value.replace(/\D/g,'')"
+            style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--p3);background:transparent;border:none;padding:0;text-align:center;width:100%">
+        </div>
+      </div>
+      <button class="btn btn-gold" style="width:100%" onclick="salvarDiario()">Enviar</button>
+      <div id="diarioStatus" style="margin-top:10px;padding:8px 10px;border-radius:10px;font-size:.9rem;font-weight:700;display:none;"></div>
+    </div>
+    <!-- Upload de áudios para o Drive -->
+    <div id="driveUploadCard" style="background:linear-gradient(150deg,#0E0C08 0%,#0A0900 55%,#0C0A04 100%);border:1px solid rgba(245,197,24,.1);border-radius:18px;padding:22px;position:relative;overflow:hidden;margin-bottom:14px">
+      <div style="position:absolute;top:0;left:20px;right:20px;height:1px;background:linear-gradient(90deg,transparent,rgba(245,197,24,.35) 40%,rgba(232,184,75,.3) 60%,transparent)"></div>
+
+      <!-- Header -->
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+        <div style="width:36px;height:36px;border-radius:10px;background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        </div>
+        <div style="font-size:.96rem;font-weight:800;color:var(--t1)">Report de Áudio</div>
+      </div>
+
+      <!-- Drop zone — vira container de arquivos quando há seleção -->
+      <div id="driveDropZone" style="border:2px dashed rgba(245,197,24,.2);border-radius:14px;transition:all .2s;margin-bottom:14px;background:rgba(245,197,24,.02);overflow:hidden"
+        ondragover="event.preventDefault();this.style.borderColor='rgba(245,197,24,.6)';this.style.background='rgba(245,197,24,.06)'"
+        ondragleave="this.style.borderColor='rgba(245,197,24,.2)';this.style.background='rgba(245,197,24,.02)'"
+        ondrop="event.preventDefault();this.style.borderColor='rgba(245,197,24,.2)';this.style.background='rgba(245,197,24,.02)';handleDriveFiles(event.dataTransfer.files)">
+
+        <!-- Estado vazio -->
+        <div id="driveEmptyState" style="padding:28px 16px;text-align:center;cursor:pointer" onclick="openDrivePicker()">
+          <div style="width:48px;height:48px;border-radius:50%;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;cursor:pointer" onclick="openDrivePicker()">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="1.8" stroke-linecap="round" onclick="openDrivePicker()" style="cursor:pointer"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </div>
+          <div style="font-size:.88rem;font-weight:600;color:var(--t2);margin-bottom:6px">Arraste ou clique para selecionar</div>
+          <div style="display:inline-flex;align-items:center;gap:5px;flex-wrap:wrap;justify-content:center">
+            <span style="font-size:.66rem;color:var(--t3);background:rgba(245,197,24,.06);padding:2px 7px;border-radius:20px;border:1px solid rgba(245,197,24,.1)">MP3</span>
+            <span style="font-size:.66rem;color:var(--t3);background:rgba(245,197,24,.06);padding:2px 7px;border-radius:20px;border:1px solid rgba(245,197,24,.1)">WAV</span>
+            <span style="font-size:.66rem;color:var(--t3);background:rgba(245,197,24,.06);padding:2px 7px;border-radius:20px;border:1px solid rgba(245,197,24,.1)">M4A</span>
+            <span style="font-size:.66rem;color:var(--t3);background:rgba(245,197,24,.06);padding:2px 7px;border-radius:20px;border:1px solid rgba(245,197,24,.1)">OGG</span>
+            <span style="font-size:.66rem;color:var(--t3)">• até 15 arquivos • 20MB cada</span>
+          </div>
+        </div>
+
+        <!-- Lista de arquivos (dentro da drop zone) -->
+        <div id="driveFileList" style="display:none;flex-direction:column" ondragover="event.preventDefault()" ondrop="event.preventDefault();handleDriveFiles(event.dataTransfer.files)"></div>
+
+        <!-- Rodapé da drop zone quando há arquivos -->
+        <div id="driveZoneFooter" style="display:none;padding:10px 14px;border-top:1px solid rgba(245,197,24,.08);display:none;align-items:center;justify-content:space-between">
+          <span id="driveFileName" style="font-size:.74rem;color:var(--t3)"></span>
+          <button type="button" onclick="openDrivePicker()" style="font-size:.72rem;color:var(--g1);background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.15);border-radius:6px;padding:4px 10px;cursor:pointer">+ Adicionar</button>
+        </div>
+      </div>
+
+      <input type="file" id="driveFileInput" style="display:none" accept="audio/*" multiple onchange="handleDriveFiles(this.files)">
+
+      <!-- Barra de progresso -->
+      <div id="driveProgressWrap" style="display:none;margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:.78rem;color:var(--t3);display:flex;align-items:center;gap:6px">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--g1);display:inline-block;animation:pulse 1s infinite"></span>
+            Enviando...
+          </span>
+          <span id="driveProgressPct" style="font-size:.78rem;font-weight:700;color:var(--g1)">0%</span>
+        </div>
+        <div style="height:3px;border-radius:4px;background:rgba(255,255,255,.06)">
+          <div id="driveProgressBar" style="height:3px;border-radius:4px;background:linear-gradient(90deg,#E8B84B,#F5C518);width:0%;transition:width .3s"></div>
+        </div>
+      </div>
+
+      <!-- Resultado -->
+      <div id="driveResult" style="display:none;margin-bottom:14px"></div>
+
+      <button class="btn btn-gold" id="driveUploadBtn" onclick="uploadToDrive()" disabled style="width:100%;opacity:.35;cursor:not-allowed">
+        Enviar
+      </button>
+    </div>
+
+    <div class="page-card">
+      <div class="card-header"><div class="card-title"><div class="card-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>Histórico</div></div>
+      <div id="diarioHistorico"><div class="empty-state"><div class="empty-state-text">Carregando...</div></div></div>
+    </div>

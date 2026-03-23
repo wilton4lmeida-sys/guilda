@@ -1,0 +1,396 @@
+
+    <!-- Header -->
+    <div style="background:linear-gradient(150deg,#0B0914 0%,#060508 55%,#080612 100%);border-radius:18px;padding:22px 26px;position:relative;overflow:hidden;margin-bottom:18px">
+      <div style="position:absolute;top:0;left:20px;right:20px;height:2px;background:linear-gradient(90deg,transparent,#E8B84B 40%,#C99A2E 60%,transparent)"></div>
+      <div style="position:absolute;top:-50px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(61,50,88,.2) 0%,transparent 65%);pointer-events:none"></div>
+      <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+        <div>
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--g2);font-weight:700;margin-bottom:4px">Missões Ativas</div>
+          <div style="font-size:1rem;font-weight:800;color:var(--t1)">Suas Missões</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MISSÕES N2 (ATIVAS) ═══ -->
+    <div id="missoesList">
+
+      <!-- DIÁRIAS -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="height:1px;flex:1;background:rgba(232,184,75,.1)"></div>
+        <div style="font-size:.6rem;font-weight:800;color:var(--g2);text-transform:uppercase;letter-spacing:2px;display:flex;align-items:center;gap:6px">
+          <span>Diárias</span>
+          <span style="background:rgba(232,184,75,.1);color:var(--g2);padding:1px 8px;border-radius:10px;font-size:.55rem;border:1px solid rgba(232,184,75,.15)">N2 · Captador</span>
+        </div>
+        <div style="height:1px;flex:1;background:rgba(232,184,75,.1)"></div>
+      </div>
+
+      <div class="mission-card daily" data-cat="daily">
+        <div class="mission-check"></div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
+            <span style="font-size:.92rem;font-weight:700;color:var(--t1)">10 Ligações usando Script SPICED</span>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+            <span class="mission-tag green">Prática</span>
+            <span class="mission-tag blue">N2</span>
+            <span style="font-size:.6rem;color:var(--t3)">📄 Arsenal → Script Básico de Abordagem</span>
+          </div>
+          <div style="font-size:.6rem;color:var(--t3)">Registre as ligações no Diário após completar</div>
+        </div>
+        <div class="mission-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:var(--g1)">+30 XP</div>
+          <div style="font-size:.94rem;color:var(--t3);margin-top:3px">⏱ Hoje · 23:59</div>
+          <div style="font-size:.92rem;color:#F87171;font-weight:600;margin-top:2px">N2 mín.</div>
+        </div>
+      </div>
+
+      <div class="mission-card daily" data-cat="daily">
+        <div class="mission-check"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:4px">Enviar Report de Áudio Diário</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+            <span class="mission-tag purple">Execução</span>
+            <span class="mission-tag blue">N2</span>
+            <span style="font-size:.6rem;color:var(--t3)">🎧 Arsenal → Áudio-guia: Tom e Abordagem</span>
+          </div>
+          <div style="font-size:.6rem;color:var(--t3)">Áudio de até 2 min no grupo principal</div>
+        </div>
+        <div class="mission-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:var(--g1)">+20 XP</div>
+          <div style="font-size:.94rem;color:var(--t3);margin-top:3px">⏱ Hoje · 23:59</div>
+          <div style="font-size:.92rem;color:#F87171;font-weight:600;margin-top:2px">N2 mín.</div>
+        </div>
+      </div>
+
+      <div class="mission-card daily" data-cat="daily">
+        <div class="mission-check"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:4px">Preencher Relatório Diário</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+            <span class="mission-tag blue">Execução</span>
+            <span class="mission-tag blue">N0+</span>
+          </div>
+          <div style="font-size:.6rem;color:var(--t3)">Aba Diário → todos os campos obrigatórios</div>
+        </div>
+        <div class="mission-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:var(--g1)">+15 XP</div>
+          <div style="font-size:.94rem;color:var(--t3);margin-top:3px">⏱ Hoje · 23:59</div>
+          <div style="font-size:.92rem;color:#34D399;font-weight:600;margin-top:2px">Todos</div>
+        </div>
+      </div>
+
+      <div class="mission-card daily" data-cat="daily">
+        <div class="mission-check"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:4px">Estudar 1 Módulo do Arsenal</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+            <span class="mission-tag gold">Estudo</span>
+            <span class="mission-tag blue">N1+</span>
+            <span style="font-size:.6rem;color:var(--t3)">📄 Arsenal → qualquer material desbloqueado</span>
+          </div>
+          <div style="font-size:.6rem;color:var(--t3)">Resumo breve obrigatório após estudo</div>
+        </div>
+        <div class="mission-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:var(--g1)">+25 XP</div>
+          <div style="font-size:.94rem;color:var(--t3);margin-top:3px">⏱ Hoje · 23:59</div>
+          <div style="font-size:.92rem;color:var(--g2);font-weight:600;margin-top:2px">N1 mín.</div>
+        </div>
+      </div>
+
+      <!-- SEMANAIS -->
+      <div style="display:flex;align-items:center;gap:10px;margin:18px 0 10px">
+        <div style="height:1px;flex:1;background:rgba(96,165,250,.1)"></div>
+        <div style="font-size:.6rem;font-weight:800;color:#60A5FA;text-transform:uppercase;letter-spacing:2px;display:flex;align-items:center;gap:6px">
+          <span>Semanais</span>
+          <span style="background:rgba(96,165,250,.08);color:#60A5FA;padding:1px 8px;border-radius:10px;font-size:.55rem;border:1px solid rgba(96,165,250,.15)">N2 · Captador</span>
+        </div>
+        <div style="height:1px;flex:1;background:rgba(96,165,250,.1)"></div>
+      </div>
+
+      <div class="mission-card weekly" data-cat="weekly">
+        <div class="mission-check weekly-check"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:4px">Realizar 50 Ligações na Semana</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:6px">
+            <span class="mission-tag green">Volume</span>
+            <span class="mission-tag blue">N2</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="flex:1;background:rgba(255,255,255,.06);border-radius:4px;height:5px;max-width:120px"><div style="width:42%;height:5px;border-radius:4px;background:linear-gradient(90deg,#34D399,#22C55E)"></div></div>
+            <span style="font-size:.6rem;color:var(--t3)">21 / 50 ligações</span>
+          </div>
+        </div>
+        <div class="mission-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:var(--g1)">+150 XP</div>
+          <div style="font-size:.94rem;color:var(--t3);margin-top:3px">⏱ Dom 08/03</div>
+          <div style="font-size:.92rem;color:#F87171;font-weight:600;margin-top:2px">N2 mín.</div>
+        </div>
+      </div>
+
+      <div class="mission-card weekly" data-cat="weekly">
+        <div class="mission-check weekly-check"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:4px">Marcar 3 Reuniões com Decisores</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:6px">
+            <span class="mission-tag gold">Resultado</span>
+            <span class="mission-tag blue">N2</span>
+            <span style="font-size:.6rem;color:var(--t3)">📋 Template: Diagnóstico de Reunião</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="flex:1;background:rgba(255,255,255,.06);border-radius:4px;height:5px;max-width:120px"><div style="width:66%;height:5px;border-radius:4px;background:linear-gradient(90deg,var(--g2),var(--g1))"></div></div>
+            <span style="font-size:.6rem;color:var(--t3)">2 / 3 reuniões</span>
+          </div>
+        </div>
+        <div class="mission-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:var(--g1)">+200 XP</div>
+          <div style="font-size:.94rem;color:var(--t3);margin-top:3px">⏱ Dom 08/03</div>
+          <div style="font-size:.92rem;color:#F87171;font-weight:600;margin-top:2px">N2 mín.</div>
+        </div>
+      </div>
+
+      <div class="mission-card weekly" data-cat="weekly">
+        <div class="mission-check weekly-check"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:4px">Ler Playbook Completo de Prospecção</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+            <span class="mission-tag gold">Estudo</span>
+            <span class="mission-tag blue">N1+</span>
+            <span style="font-size:.6rem;color:var(--t3)">📄 Arsenal → Playbook Prospecção 28 pág.</span>
+          </div>
+          <div style="font-size:.6rem;color:var(--t3)">Envie resumo em áudio ao mentor após ler</div>
+        </div>
+        <div class="mission-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:var(--g1)">+80 XP</div>
+          <div style="font-size:.94rem;color:var(--t3);margin-top:3px">⏱ Dom 08/03</div>
+          <div style="font-size:.92rem;color:var(--g2);font-weight:600;margin-top:2px">N1 mín.</div>
+        </div>
+      </div>
+
+      <div class="mission-card weekly" data-cat="weekly">
+        <div class="mission-check weekly-check"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:4px">Participar de Sessão ao Vivo</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+            <span class="mission-tag purple">Comunidade</span>
+            <span class="mission-tag blue">N0+</span>
+          </div>
+          <div style="font-size:.6rem;color:var(--t3)">Próximo encontro: 08/03 · Discord</div>
+        </div>
+        <div class="mission-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:var(--g1)">+80 XP</div>
+          <div style="font-size:.94rem;color:var(--t3);margin-top:3px">⏱ Dom 08/03</div>
+          <div style="font-size:.92rem;color:#34D399;font-weight:600;margin-top:2px">Todos</div>
+        </div>
+      </div>
+
+      <div class="mission-card weekly" data-cat="weekly">
+        <div class="mission-check weekly-check"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:4px">Áudio de Análise Semanal</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+            <span class="mission-tag gold">Análise</span>
+            <span class="mission-tag blue">N2</span>
+          </div>
+          <div style="font-size:.6rem;color:var(--t3)">Gravação 2-3 min: o que foi bem e o que melhorar</div>
+        </div>
+        <div class="mission-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:var(--g1)">+100 XP</div>
+          <div style="font-size:.94rem;color:var(--t3);margin-top:3px">⏱ Dom 08/03</div>
+          <div style="font-size:.92rem;color:#F87171;font-weight:600;margin-top:2px">N2 mín.</div>
+        </div>
+      </div>
+
+      <!-- MENSAIS -->
+      <div style="display:flex;align-items:center;gap:10px;margin:18px 0 10px">
+        <div style="height:1px;flex:1;background:rgba(232,184,75,.12)"></div>
+        <div style="font-size:.6rem;font-weight:800;color:var(--g1);text-transform:uppercase;letter-spacing:2px;display:flex;align-items:center;gap:6px">
+          <span>Mensais</span>
+          <span style="background:rgba(232,184,75,.1);color:var(--g2);padding:1px 8px;border-radius:10px;font-size:.55rem;border:1px solid rgba(232,184,75,.15)">N2 · Captador</span>
+        </div>
+        <div style="height:1px;flex:1;background:rgba(232,184,75,.12)"></div>
+      </div>
+
+      <div class="mission-card monthly" data-cat="monthly">
+        <div class="mission-check monthly-check"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:4px">7 Dias Seguidos com Checklist Completo</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:6px">
+            <span class="mission-tag gold">Consistência</span>
+            <span class="mission-tag blue">N0+</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="flex:1;background:rgba(255,255,255,.06);border-radius:4px;height:5px;max-width:120px"><div style="width:57%;height:5px;border-radius:4px;background:linear-gradient(90deg,var(--g2),var(--g1))"></div></div>
+            <span style="font-size:.6rem;color:var(--t3)">4 / 7 dias</span>
+          </div>
+        </div>
+        <div class="mission-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:var(--g1)">+200 XP</div>
+          <div style="font-size:.94rem;color:var(--t3);margin-top:3px">⏱ 31/03</div>
+          <div style="font-size:.92rem;color:#34D399;font-weight:600;margin-top:2px">Todos</div>
+        </div>
+      </div>
+
+      <div class="mission-card monthly" data-cat="monthly">
+        <div class="mission-check monthly-check"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:4px">Atingir Meta de XP do Mês (1.500 XP)</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:6px">
+            <span class="mission-tag gold">Meta</span>
+            <span class="mission-tag blue">N2</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="flex:1;background:rgba(255,255,255,.06);border-radius:4px;height:5px;max-width:120px"><div style="width:30%;height:5px;border-radius:4px;background:linear-gradient(90deg,var(--g2),var(--g1))"></div></div>
+            <span style="font-size:.6rem;color:var(--t3)">450 / 1.500 XP</span>
+          </div>
+        </div>
+        <div class="mission-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:var(--g1)">+250 XP</div>
+          <div style="font-size:.94rem;color:var(--t3);margin-top:3px">⏱ 31/03</div>
+          <div style="font-size:.92rem;color:#F87171;font-weight:600;margin-top:2px">N2 mín.</div>
+        </div>
+      </div>
+
+      <div class="mission-card monthly" data-cat="monthly">
+        <div class="mission-check monthly-check"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:4px">Fazer Resumo do Guia SPICED e Enviar ao Mentor</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+            <span class="mission-tag gold">Estudo</span>
+            <span class="mission-tag blue">N2</span>
+            <span style="font-size:.6rem;color:var(--t3)">📄 Arsenal → Guia de Estrutura de Reunião SPICED</span>
+          </div>
+          <div style="font-size:.6rem;color:var(--t3)">Resumo em PDF ou áudio enviado via Discord</div>
+        </div>
+        <div class="mission-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:var(--g1)">+150 XP</div>
+          <div style="font-size:.94rem;color:var(--t3);margin-top:3px">⏱ 31/03</div>
+          <div style="font-size:.92rem;color:#F87171;font-weight:600;margin-top:2px">N2 mín.</div>
+        </div>
+      </div>
+
+
+      <!-- Extra daily -->
+      <div class="mission-card daily" data-cat="daily">
+        <div class="mission-check"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:4px">Qualificar 5 Leads no CRM</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+            <span class="mission-tag blue">Execução</span>
+            <span class="mission-tag blue">N2</span>
+            <span style="font-size:.6rem;color:var(--t3)">📄 Arsenal → Introdução ao CRM Rugido</span>
+          </div>
+          <div style="font-size:.6rem;color:var(--t3)">Preencher todos os campos do card no CRM</div>
+        </div>
+        <div class="mission-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:var(--g1)">+25 XP</div>
+          <div style="font-size:.94rem;color:var(--t3);margin-top:3px">Hoje · 23:59</div>
+          <div style="font-size:.92rem;color:#F87171;font-weight:600;margin-top:2px">N2 mín.</div>
+        </div>
+      </div>
+
+      <!-- Extra weekly -->
+      <div class="mission-card weekly" data-cat="weekly">
+        <div class="mission-check weekly-check"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:4px">Enviar Cadência Completa para 10 Leads</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+            <span class="mission-tag green">Volume</span>
+            <span class="mission-tag blue">N2</span>
+            <span style="font-size:.6rem;color:var(--t3)">📋 Arsenal → Cadência de Follow-up 7 Dias</span>
+          </div>
+          <div style="font-size:.6rem;color:var(--t3)">Usar a cadência do Arsenal — documentar os envios</div>
+        </div>
+        <div class="mission-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:var(--g1)">+120 XP</div>
+          <div style="font-size:.94rem;color:var(--t3);margin-top:3px">Dom 08/03</div>
+          <div style="font-size:.92rem;color:#F87171;font-weight:600;margin-top:2px">N2 mín.</div>
+        </div>
+      </div>
+
+      <div class="mission-card weekly" data-cat="weekly">
+        <div class="mission-check weekly-check"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:4px">Ouvir Áudio-guia de Follow-up e Aplicar</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+            <span class="mission-tag gold">Estudo</span>
+            <span class="mission-tag blue">N2</span>
+            <span style="font-size:.6rem;color:var(--t3)">Arsenal → Áudio-guia: Tom e Abordagem no FU</span>
+          </div>
+          <div style="font-size:.6rem;color:var(--t3)">Registre em áudio: 3 aprendizados após ouvir</div>
+        </div>
+        <div class="mission-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:var(--g1)">+90 XP</div>
+          <div style="font-size:.94rem;color:var(--t3);margin-top:3px">Dom 08/03</div>
+          <div style="font-size:.92rem;color:#F87171;font-weight:600;margin-top:2px">N2 mín.</div>
+        </div>
+      </div>
+
+      <!-- Extra monthly -->
+      <div class="mission-card monthly" data-cat="monthly">
+        <div class="mission-check monthly-check"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:4px">Responder Questionário de Objeções</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+            <span class="mission-tag blue">Avaliação</span>
+            <span class="mission-tag blue">N2</span>
+            <span style="font-size:.6rem;color:var(--t3)">Arsenal → Objeções Mapeadas + Respostas</span>
+          </div>
+          <div style="font-size:.6rem;color:var(--t3)">Questionário disponível no portal — nota mínima 7/10</div>
+        </div>
+        <div class="mission-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:var(--g1)">+120 XP</div>
+          <div style="font-size:.94rem;color:var(--t3);margin-top:3px">31/03</div>
+          <div style="font-size:.92rem;color:#F87171;font-weight:600;margin-top:2px">N2 mín.</div>
+        </div>
+      </div>
+
+      <div class="mission-card monthly" data-cat="monthly">
+        <div class="mission-check monthly-check"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:4px">Apresentar Case de Sucesso em Sessão Ao Vivo</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+            <span class="mission-tag purple">Comunidade</span>
+            <span class="mission-tag blue">N2</span>
+          </div>
+          <div style="font-size:.6rem;color:var(--t3)">Compartilhar 1 caso real: desafio + solução + resultado</div>
+        </div>
+        <div class="mission-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:var(--g1)">+180 XP</div>
+          <div style="font-size:.94rem;color:var(--t3);margin-top:3px">31/03</div>
+          <div style="font-size:.92rem;color:#F87171;font-weight:600;margin-top:2px">N2 mín.</div>
+        </div>
+      </div>
+
+      <!-- ═══ MISSÕES BLOQUEADAS (N3+) ═══ -->
+      <div style="display:flex;align-items:center;gap:10px;margin:22px 0 10px">
+        <div style="height:1px;flex:1;background:rgba(255,255,255,.05)"></div>
+        <div style="font-size:.6rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:2px">🔒 Missões de níveis superiores</div>
+        <div style="height:1px;flex:1;background:rgba(255,255,255,.05)"></div>
+      </div>
+
+      <div style="position:relative;border-radius:14px;overflow:hidden">
+        <div style="filter:blur(3px) saturate(.1);pointer-events:none;display:flex;flex-direction:column;gap:7px">
+          <div class="mission-card" style="border-color:rgba(255,255,255,.04);background:rgba(255,255,255,.015)">
+            <div style="width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,.1);flex-shrink:0"></div>
+            <div style="flex:1"><div style="font-size:.92rem;font-weight:700;color:#333;margin-bottom:3px">Role-play com Feedback do Líder</div><div style="font-size:.6rem;color:#222">N3 · Semanal · +120 XP</div></div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:#333">+120 XP</div>
+          </div>
+          <div class="mission-card" style="border-color:rgba(255,255,255,.04);background:rgba(255,255,255,.015)">
+            <div style="width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,.1);flex-shrink:0"></div>
+            <div style="flex:1"><div style="font-size:.92rem;font-weight:700;color:#333;margin-bottom:3px">Fechar 1 Projeto Premium no Mês</div><div style="font-size:.6rem;color:#222">N4 · Mensal · Exclusivo</div></div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:#333">+500 XP</div>
+          </div>
+          <div class="mission-card" style="border-color:rgba(255,255,255,.04);background:rgba(255,255,255,.015)">
+            <div style="width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,.1);flex-shrink:0"></div>
+            <div style="flex:1"><div style="font-size:.92rem;font-weight:700;color:#333;margin-bottom:3px">Mentoria com Fundador — Estratégia</div><div style="font-size:.6rem;color:#222">N5+ · Exclusivo</div></div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:900;color:#333">+800 XP</div>
+          </div>
+        </div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;background:rgba(6,5,8,.55);border-radius:14px;border:1px solid rgba(255,255,255,.04)">
+          <div style="font-size:1.6rem">🔒</div>
+          <div style="font-size:.96rem;font-weight:700;color:var(--t2);text-align:center">Missões disponíveis para N3, N4 e N5+</div>
+          <div style="font-size:.96rem;color:var(--t3);text-align:center">Continue evoluindo para desbloquear</div>
+        </div>
+      </div>
+
+    </div><!-- /missoesList -->
