@@ -4122,90 +4122,6 @@ window.uploadToDrive = async function() {
           loadedTotal += delta;
           updateProgress();
         };
-        xhr.onload = () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            if (fileLoaded < file.size) {
-              loadedTotal += (file.size - fileLoaded);
-              updateProgress();
-            }
-            let payload = {};
-            try { payload = JSON.parse(xhr.responseText || '{}'); } catch {}
-            resolve(payload);
-          } else {
-            reject(new Error(`Erro ao enviar (HTTP ${xhr.status})`));
-          }
-        };
-        xhr.onerror = () => reject(new Error('Erro ao enviar'));
-        xhr.send(file);
-      });
-
-      uploaded.push({
-        fileName: finalName,
-        link: fileData?.webViewLink || '',
-        id: fileData?.id || '',
-      });
-    }
-
-    const links = uploaded.map((f) => {
-      const label = escapeHtml(f.fileName || 'Arquivo');
-      if (!f.link) return `<div style="font-size:.78rem;color:var(--t2)">${label}</div>`;
-      return `<div><a href="${f.link}" target="_blank" rel="noopener" style="color:#22C55E;font-weight:700;text-decoration:underline">${label}</a></div>`;
-    }).join('');
-
-    resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.35);color:#22C55E';
-    resultEl.innerHTML = `<div style="font-size:.9rem;font-weight:800;color:#22C55E">✓ Envio confirmado</div><div style="font-size:.78rem;color:var(--t2);margin-top:4px">Arquivos enviados com sucesso</div>${links}`;
-    clearDriveFiles(true);
-  } catch (err) {
-    showDriveError(err.message || 'Erro ao enviar');
-  } finally {
-    if (progWrap) progWrap.style.display = 'none';
-    if (btn) {
-      btn.disabled = !driveSelectedFiles.length;
-      btn.textContent = 'Enviar';
-      btn.style.opacity = driveSelectedFiles.length ? '1' : '.35';
-      btn.style.cursor = driveSelectedFiles.length ? 'pointer' : 'not-allowed';
-    }
-  }
-};
-
-  xhr.onload = () => {
-    let payload = null;
-    try { payload = JSON.parse(xhr.responseText || '{}'); } catch {}
-
-    if (xhr.status >= 200 && xhr.status < 300 && payload?.files) {
-      const links = payload.files.map((f) => {
-        const label = escapeHtml(f.fileName || 'Arquivo');
-        return `<div><a href="${f.link}" target="_blank" rel="noopener" style="color:#22C55E;font-weight:700;text-decoration:underline">${label}</a></div>`;
-      }).join('');
-        resultEl.style.cssText = 'display:block;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.35);color:#22C55E';
-        resultEl.innerHTML = `<div style="font-size:.9rem;font-weight:800;color:#22C55E">✓ Envio confirmado</div><div style="font-size:.78rem;color:var(--t2);margin-top:4px">Arquivos enviados com sucesso</div>${links}`;
-      clearDriveFiles();
-    } else {
-      const msg = payload?.error || `Erro ao enviar (HTTP ${xhr.status})`;
-      showDriveError(msg);
-    }
-    if (progWrap) progWrap.style.display = 'none';
-    if (btn) {
-      btn.disabled = !driveSelectedFiles.length;
-      btn.textContent = 'Enviar';
-      btn.style.opacity = driveSelectedFiles.length ? '1' : '.35';
-      btn.style.cursor = driveSelectedFiles.length ? 'pointer' : 'not-allowed';
-    }
-  };
-
-  xhr.onerror = () => {
-    showDriveError('Erro ao enviar');
-    if (progWrap) progWrap.style.display = 'none';
-    if (btn) {
-      btn.disabled = !driveSelectedFiles.length;
-      btn.textContent = 'Enviar';
-      btn.style.opacity = driveSelectedFiles.length ? '1' : '.35';
-      btn.style.cursor = driveSelectedFiles.length ? 'pointer' : 'not-allowed';
-    }
-  };
-
-  xhr.send(formData);
-};
 
 
   window.clearDriveFiles = function(preserveResult = false) {
@@ -4761,6 +4677,7 @@ window.loadDiarioFiltered = async function() {
 
 </body>
 </html>
+
 
 
 
