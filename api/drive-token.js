@@ -1,6 +1,6 @@
 const { google } = require('googleapis');
 
-const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
+const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive';
 
 async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');

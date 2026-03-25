@@ -4106,7 +4106,13 @@ window.uploadToDrive = async function() {
       });
 
       if (!initRes.ok) {
-        throw new Error(`Falha ao iniciar upload (HTTP ${initRes.status})`);
+        let errorDetail = '';
+        try {
+          const errJson = await initRes.json();
+          const msg = errJson?.error?.message || errJson?.error?.errors?.[0]?.reason;
+          if (msg) errorDetail = `: ${msg}`;
+        } catch {}
+        throw new Error(`Falha ao iniciar upload (HTTP ${initRes.status})${errorDetail}`);
       }
 
       const uploadUrl = initRes.headers.get('Location');

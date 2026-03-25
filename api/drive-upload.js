@@ -2,7 +2,7 @@ const { google } = require('googleapis');
 const Busboy = require('busboy');
 const { Readable } = require('stream');
 
-const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
+const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive';
 const MAX_FILES = 15;
 const MAX_SIZE = 100 * 1024 * 1024; // 100MB
 
