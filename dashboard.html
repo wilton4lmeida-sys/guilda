@@ -3511,10 +3511,14 @@ async function loadDashboard() {
   if(diary){
     let _c=0,_a=0,_d=0,_r=0;
     diary.forEach(d=>{ _c+=d.contatos_tentados||0; _a+=d.ligacoes_atendidas||0; _d+=d.conexao_decisor||0; _r+=d.reunioes_marcadas||0; });
-    document.getElementById('mContatos').textContent=_c;
-    document.getElementById('mAtendidas').textContent=_a;
-    document.getElementById('mDecisores').textContent=_d;
-    document.getElementById('mReunioes').textContent=_r;
+    const elC = document.getElementById('mContatos');
+    const elA = document.getElementById('mAtendidas');
+    const elD = document.getElementById('mDecisores');
+    const elR = document.getElementById('mReunioes');
+    if (elC) elC.textContent = _c;
+    if (elA) elA.textContent = _a;
+    if (elD) elD.textContent = _d;
+    if (elR) elR.textContent = _r;
   }
 }
 
