@@ -37,24 +37,24 @@ async function handler(req, res) {
 module.exports = handler;
 
 function buildGoogleAuth(req) {
-  const oauthClientId = stripWrappingQuotes((process.env.GOOGLE_OAUTH_CLIENT_ID || '').trim());
-  const oauthClientSecret = stripWrappingQuotes((process.env.GOOGLE_OAUTH_CLIENT_SECRET || '').trim());
-  const oauthRefreshToken = stripWrappingQuotes((process.env.GOOGLE_OAUTH_REFRESH_TOKEN || '').trim());
-
-  if (oauthClientId && oauthClientSecret && oauthRefreshToken) {
-    const oauth = new google.auth.OAuth2(
-      oauthClientId,
-      oauthClientSecret,
-      getRedirectUri(req),
-    );
-    oauth.setCredentials({ refresh_token: oauthRefreshToken });
-    return oauth;
-  }
-
   const credentialsRaw = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
   if (!credentialsRaw) {
+    const oauthClientId = stripWrappingQuotes((process.env.GOOGLE_OAUTH_CLIENT_ID || '').trim());
+    const oauthClientSecret = stripWrappingQuotes((process.env.GOOGLE_OAUTH_CLIENT_SECRET || '').trim());
+    const oauthRefreshToken = stripWrappingQuotes((process.env.GOOGLE_OAUTH_REFRESH_TOKEN || '').trim());
+
+    if (oauthClientId && oauthClientSecret && oauthRefreshToken) {
+      const oauth = new google.auth.OAuth2(
+        oauthClientId,
+        oauthClientSecret,
+        getRedirectUri(req),
+      );
+      oauth.setCredentials({ refresh_token: oauthRefreshToken });
+      return oauth;
+    }
+
     throw new Error(
-      'Configuração ausente: defina GOOGLE_OAUTH_CLIENT_ID, GOOGLE_OAUTH_CLIENT_SECRET e GOOGLE_OAUTH_REFRESH_TOKEN',
+      'Configuração ausente: defina GOOGLE_SERVICE_ACCOUNT_JSON ou credenciais OAuth',
     );
   }
 
