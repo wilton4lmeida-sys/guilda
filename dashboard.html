@@ -4294,12 +4294,13 @@ window.salvarDiario = async () => {
     return alert('Erro: ' + error.message);
   }
 
-  let sheetFailed = false;
-  try {
-    const resp = await fetch('/api/diary-sheet', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    let sheetFailed = false;
+    let sheetErrorMsg = '';
+    try {
+      const resp = await fetch('/api/diary-sheet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
         date,
         user_id: userSession.user.id,
         user_name: userProfile?.name || '',
@@ -4315,15 +4316,23 @@ window.salvarDiario = async () => {
           reunioes_remarcadas: remarcadas,
           no_show: noShow,
         }
-      })
-    });
-    if (!resp.ok) {
+        })
+      });
+      if (!resp.ok) {
+        sheetFailed = true;
+        try {
+          const payload = await resp.json();
+          sheetErrorMsg = payload?.error ? String(payload.error) : '';
+        } catch {}
+      }
+    } catch (e) {
       sheetFailed = true;
+      sheetErrorMsg = e?.message ? String(e.message) : '';
     }
-  } catch (e) {
-    sheetFailed = true;
-  }
-  showStatus(sheetFailed ? 'Falha ao enviar' : 'Relatório enviado com sucesso', sheetFailed ? 'error' : 'success');
+    const finalMsg = sheetFailed
+      ? `Falha ao enviar${sheetErrorMsg ? ': ' + sheetErrorMsg : ''}`
+      : 'Relatório enviado com sucesso';
+    showStatus(finalMsg, sheetFailed ? 'error' : 'success');
   loadDiario();
   loadDashboard();
   renderFunilDash();
