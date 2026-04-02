@@ -4278,14 +4278,16 @@ window.salvarDiario = async () => {
     return;
   }
 
-  const { error } = await sb.from('diary_entries').insert({
-    user_id: userSession.user.id, date,
-    contatos_tentados: contatos, ligacoes_atendidas: atendidas,
-    conexao_decisor: decisores, reunioes_marcadas: reunioes,
-    reunioes_marcadas_sql: reunioesSql, reunioes_realizadas: realizadas,
-    reunioes_realizadas_sql: realizadasSql, reunioes_remarcadas: remarcadas,
-    no_show: noShow
-  });
+    const { error } = await sb.from('diary_entries').insert({
+      user_id: userSession.user.id,
+      user_name: userProfile?.name || '',
+      date,
+      contatos_tentados: contatos, ligacoes_atendidas: atendidas,
+      conexao_decisor: decisores, reunioes_marcadas: reunioes,
+      reunioes_marcadas_sql: reunioesSql, reunioes_realizadas: realizadas,
+      reunioes_realizadas_sql: realizadasSql, reunioes_remarcadas: remarcadas,
+      no_show: noShow
+    });
   if (error) {
     if (error.code === '23505') {
       showStatus('Você já enviou as métricas deste dia.', 'warn');
